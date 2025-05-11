@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Unit : MonoBehaviour, IActiveClickable
@@ -7,17 +8,19 @@ public class Unit : MonoBehaviour, IActiveClickable
     {
         activator = transform.GetChild(0);
     }
+    public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
-    ObjectTypeEnum IActiveClickable.ActiveObject()
+    public void ActiveObject()
     {
         activator.gameObject.SetActive(true);
-        return ObjectTypeEnum.unit;
     }
-
     public void DeActiveObject()
     {
         activator.gameObject.SetActive(false);
     }
 
-
+    public List<UnitNameEnum> GetUnitsToBuyList()
+    {
+        throw new System.NotImplementedException();
+    }
 }

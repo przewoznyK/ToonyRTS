@@ -24,7 +24,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LPM Move",
+                    "name": "RPM Click",
+                    "type": "Button",
+                    "id": "a4bc7b79-23e5-49e3-aca4-dd5e05f45e51",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LPM Hold",
                     "type": "Button",
                     "id": "04e58e49-ccd9-4bbf-ac67-3e6ee635d3a2",
                     "expectedControlType": "",
@@ -36,6 +45,15 @@
                     "name": "LPM Double Click",
                     "type": "Button",
                     "id": "fe146916-b6af-4760-a2ba-8560fd9869c0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "4d7ab0a1-71cb-4904-9d4c-817b282621c3",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -100,12 +118,23 @@
                 },
                 {
                     "name": "",
+                    "id": "5303203f-2b1e-4ea6-a54a-685afb32a706",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RPM Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "060d46ef-169e-4a5f-9a5d-736d12769eff",
                     "path": "<Mouse>/leftButton",
                     "interactions": "Hold",
                     "processors": "",
                     "groups": "",
-                    "action": "LPM Move",
+                    "action": "LPM Hold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -117,6 +146,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LPM Double Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e3c0f842-dc7e-4ba6-b3d8-2b468512247f",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

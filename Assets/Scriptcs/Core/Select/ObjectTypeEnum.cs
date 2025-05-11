@@ -1,7 +1,6 @@
-using UnityEngine;
-
 public enum ObjectTypeEnum
 {
-    unit
+    unit,
+    building
 
 }

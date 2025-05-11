@@ -1,74 +1,212 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
 public class ActiveClickableObject : MonoBehaviour
 {
+    #region Constructor Variable
+    InputManager inputManager;
+    ControlledUnits controlledUnits;
     ActiveUnits activeUnits;
-
-    private InputAction lpmClick;
-    private InputAction lpmMove;
-    private InputAction lpmDoubleClick;
-
+    SelectionInfoUI selectionInfoUI;
+    CommandPanelUI commandPanelUI;
+    #endregion
+    #region Inputs
+    private InputAction lpmClickAction;
+    private InputAction lpmHoldAction;
+    private InputAction lpmDoubleClickAction;
+    private InputAction shiftAction;
+    #endregion
+    #region Flags
+    private bool shiftPressed = false;
+    private bool initialized = false;
+    private bool lpmHolding = false;
+    private bool pointerOverUI;
+    #endregion
+    #region SelectionBox
+    RectTransform boxVisual;
+    Rect selectionBox;
+    Vector2 startPosition;
+    Vector2 endPosition;
+    #endregion
     [SerializeField] private LayerMask clickableLayer;
-
-    public ActiveClickableObject(ActiveUnits activeUnits)
+    public void Init(InputManager inputManager, ControlledUnits controlledUnits, ActiveUnits activeUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI ,RectTransform boxVisual)
     {
+        this.inputManager = inputManager;
+        this.controlledUnits = controlledUnits;
         this.activeUnits = activeUnits;
-    }
+        this.selectionInfoUI = selectionInfoUI;
+        this.commandPanelUI = commandPanelUI;
+        this.boxVisual = boxVisual;
 
-    private void Awake()
-    {
-        lpmClick = InputManager.Instance.Inputs.actions[InputManager.INPUT_GAME_LPM_Click];
-        lpmMove = InputManager.Instance.Inputs.actions[InputManager.INPUT_GAME_LPM_Move];
-        lpmDoubleClick = InputManager.Instance.Inputs.actions[InputManager.INPUT_GAME_LPM_Double_Click];
-    }
+        lpmClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LPM_Click];
+        lpmHoldAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LPM_HOLD];
+        lpmDoubleClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LPM_Double_Click];
+        shiftAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_SHIFT];
+        
 
+        lpmClickAction.performed += OnLpmClick;
+        lpmHoldAction.started += OnLpmHold;
+        lpmHoldAction.performed += OnLpmHold;
+        lpmHoldAction.canceled += OnLpmHold;
+        lpmDoubleClickAction.performed += OnLpmDoubleClick;
+
+        initialized = true;
+    }
     private void OnEnable()
     {
-        lpmClick.performed += OnLpmClick;
-        lpmMove.performed += OnLpmMove;
-        lpmDoubleClick.performed += OnLpmDoubleClick;
+        if (initialized == false)
+            return;
+        lpmClickAction.performed += OnLpmClick;
+        lpmHoldAction.started += OnLpmHold;
+        lpmHoldAction.performed += OnLpmHold;
+        lpmHoldAction.canceled += OnLpmHold;
+        lpmDoubleClickAction.performed += OnLpmDoubleClick;
     }
 
     private void OnDisable()
     {
-        lpmClick.performed -= OnLpmClick;
-        lpmMove.performed -= OnLpmMove;
-        lpmDoubleClick.performed -= OnLpmDoubleClick;
-    }
-    private void Update()
-    {
-       // Debug.Log(activeUnits);
+        lpmClickAction.performed -= OnLpmClick;
+        lpmHoldAction.started -= OnLpmHold;
+        lpmHoldAction.performed -= OnLpmHold;
+        lpmHoldAction.canceled -= OnLpmHold;
+        lpmDoubleClickAction.performed -= OnLpmDoubleClick;
     }
     private void OnLpmClick(InputAction.CallbackContext ctx)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, clickableLayer))
+        if(pointerOverUI == false)
         {
-            var clickable = hit.collider.GetComponent<IActiveClickable>();
-            if (clickable != null)
+            commandPanelUI.gameObject.SetActive(false);
+            selectionInfoUI.gameObject.SetActive(false);
+            if (shiftAction.IsPressed() == false)
+                ResetSelection();
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, clickableLayer))
             {
-                if (clickable.ActiveObject() == ObjectTypeEnum.unit)
+                var clickable = hit.collider.GetComponent<IActiveClickable>();
+                if (clickable != null)
                 {
-                    Debug.Log(activeUnits);
-                  //  activeUnits.AddUnit(hit.collider.GetComponent<Unit>());
+                    if (clickable.CheckObjectType() == ObjectTypeEnum.unit)
+                    {
+                        clickable.ActiveObject();
+                        activeUnits.AddUnit(hit.collider.GetComponent<Unit>());
+                        selectionInfoUI.gameObject.SetActive(true);
+                    }
+                    else if (clickable.CheckObjectType() == ObjectTypeEnum.building)
+                    {
+                        clickable.ActiveObject();
+                        commandPanelUI.SetButtonsTypeList(clickable.GetUnitsToBuyList());
+                        commandPanelUI.gameObject.SetActive(true);
+                    }
                 }
-                
             }
         }
 
-        Debug.Log("lpmClick");
     }
-    private void OnLpmMove(InputAction.CallbackContext ctx)
+    private void OnLpmHold(InputAction.CallbackContext ctx)
     {
-
-        Debug.Log("lpmMove");
+        if (ctx.phase == InputActionPhase.Started)
+        {
+            boxVisual.gameObject.SetActive(true);
+            startPosition = Input.mousePosition;
+            selectionBox = new Rect();
+            lpmHolding = true;
+        }
+        else if (ctx.phase == InputActionPhase.Canceled)
+        {
+            lpmHolding = false;
+            boxVisual.gameObject.SetActive(false);
+            startPosition = Vector2.zero;
+            endPosition = Vector2.zero;
+            DrawVisual();
+        }
     }
     private void OnLpmDoubleClick(InputAction.CallbackContext ctx)
     {
 
         Debug.Log("lpmDoubleClick");
     }
+    private void Update()
+    {
+        pointerOverUI = EventSystem.current.IsPointerOverGameObject();
 
+        if (lpmHolding)
+        {
+            endPosition = Input.mousePosition;
+            DrawVisual();
+            DrawSelection();
+        }
+    }
+    private void ResetSelection()
+    {
+        foreach (var unit in activeUnits.unitsSelected)
+        {
+            unit.DeActiveObject();
+        }
+
+        activeUnits.ClearUnitsList();
+    }
+
+    void DrawVisual()
+    {
+        Vector2 boxStart = startPosition;
+        Vector2 boxEnd = endPosition;
+
+        Vector2 boxCenter = (boxStart + boxEnd) / 2;
+        boxVisual.position = boxCenter;
+
+        Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
+
+        boxVisual.sizeDelta = boxSize;
+    }
+
+    void DrawSelection()
+    {
+        // do X calculations
+        if (Input.mousePosition.x < startPosition.x)
+        {
+            // dragging left
+            selectionBox.xMin = Input.mousePosition.x;
+            selectionBox.xMax = startPosition.x;
+        }
+        else
+        {
+            // dragging right
+            selectionBox.xMin = startPosition.x;
+            selectionBox.xMax = Input.mousePosition.x;
+        }
+
+        // do Y calculations
+
+        if (Input.mousePosition.y < startPosition.y)
+        {
+            // dragging down
+            selectionBox.yMin = Input.mousePosition.y;
+            selectionBox.yMax = startPosition.y;
+        }
+        else
+        {
+            // dragging up
+            selectionBox.yMin = startPosition.y;
+            selectionBox.yMax = Input.mousePosition.y;
+        }
+    }
+
+    void SelectUnits()
+    {
+        // lopp thru all the units
+        foreach (var unit in controlledUnits.allUnits)
+        {
+            // if unit is within the bounds ofthe selection rect
+            if (selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
+            {
+                // if any unit is within the selection add them to selection
+                activeUnits.AddUnit(unit);
+                selectionInfoUI.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    
 }
