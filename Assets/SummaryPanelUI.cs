@@ -3,19 +3,29 @@ using UnityEngine;
 
 public class SummaryPanelUI : MonoBehaviour
 {
-    PlayerResources playerResources;
-
     [SerializeField] private TextMeshProUGUI foodText;
     [SerializeField] private TextMeshProUGUI woodText;
     [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private TextMeshProUGUI rockText;
-    public void Init(PlayerResources playerResources)
-    {
-        this.playerResources = playerResources;
 
-        foodText.text = playerResources.currentFood.ToString();
-        woodText.text = playerResources.currentWood.ToString();
-        goldText.text = playerResources.currentGold.ToString();
-        rockText.text = playerResources.currentRock.ToString();
+    public void UpdateResource(ResourceTypesEnum resourceType, int value)
+    {
+        switch (resourceType)
+        {
+            case ResourceTypesEnum.food:
+                foodText.text = value.ToString();
+                break;
+            case ResourceTypesEnum.wood:
+                woodText.text = value.ToString();
+                break;
+            case ResourceTypesEnum.gold:
+                goldText.text = value.ToString();
+                break;
+            case ResourceTypesEnum.rock:
+                rockText.text = value.ToString();
+                break;
+            default:
+                break;
+        }
     }
 }

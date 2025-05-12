@@ -5,36 +5,41 @@ using UnityEngine.UI;
 public class CommandPanelUI : MonoBehaviour
 {
     PlayerResources playerResources;
-    [SerializeField] private List<UnitNameEnum> unitToBuyList = new();
+    ShopManager shopManager;
     [SerializeField] private Button[] buttons;
-
-    public void Init(PlayerResources playerResources)
+    List<UnitNameEnum> unitCanBuyList;
+    public void Init(PlayerResources playerResources, ShopManager shopManager)
     {
         this.playerResources = playerResources;
+        this.shopManager = shopManager;
     }
 
-    public void SetButtonsTypeList(List<UnitNameEnum> unitToBuyList)
+    public void PrepareBuildingUI(Building buildingToPrepare)
     {
-        this.unitToBuyList = unitToBuyList;
-        for (int i = 0; i < unitToBuyList.Count; i++)
+        unitCanBuyList = buildingToPrepare.GetUnitsCanBuyList();
+
+        for (int i = 0; i < unitCanBuyList.Count; i++)
         {
-            var currentUnit = UnitDatabase.Instance.GetUnitDataByNameEnum(unitToBuyList[i]);
+            var currentUnit = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
             var currentButton = buttons[i];
+
             currentButton.image.sprite = currentUnit.unitSprite;
-            SetButtonStatusByPrice(currentButton, currentUnit.objectPrices);
+            SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
+            currentButton.onClick.AddListener(() => shopManager.BuyUnit(buildingToPrepare, currentUnit.unitName));
+
         }
     }
-
     internal void ActivePanel()
     {
         gameObject.SetActive(true);
     }
 
-    public void SetButtonStatusByPrice(Button button, List<ObjectPrices> objectPrices)
+    public void SetButtonColorStatusByPrice(Button button, List<ObjectPrices> objectPrices)
     {
-        Image background = button.GetComponent<Image>();
+        Image background = button.transform.parent.GetComponent<Image>();
         if (playerResources.CanPlayerBuyIt(objectPrices))
         {
+
             button.enabled = true;
             background.color = Color.green;
          
@@ -43,9 +48,19 @@ public class CommandPanelUI : MonoBehaviour
         {
             button.enabled = false;
             background.color = Color.red;
-        
-
         }
 
+    }
+
+    public void RefreshButtonsStatus()
+    {
+        for (int i = 0; i < unitCanBuyList.Count; i++)
+        {
+            var currentUnit = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
+            var currentButton = buttons[i];
+
+            currentButton.image.sprite = currentUnit.unitSprite;
+            SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
+        }
     }
 }

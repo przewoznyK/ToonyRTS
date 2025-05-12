@@ -96,7 +96,8 @@ public class ActiveClickableObject : MonoBehaviour
                     else if (clickable.CheckObjectType() == ObjectTypeEnum.building)
                     {
                         clickable.ActiveObject();
-                        commandPanelUI.SetButtonsTypeList(clickable.GetUnitsToBuyList());
+                        Building buildingToPrepare = hit.collider.GetComponent<Building>();
+                        commandPanelUI.PrepareBuildingUI(buildingToPrepare);
                         commandPanelUI.gameObject.SetActive(true);
                     }
                 }

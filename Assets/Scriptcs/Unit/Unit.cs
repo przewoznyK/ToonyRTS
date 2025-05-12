@@ -19,7 +19,7 @@ public class Unit : MonoBehaviour, IActiveClickable
         activator.gameObject.SetActive(false);
     }
 
-    public List<UnitNameEnum> GetUnitsToBuyList()
+    public List<UnitNameEnum> GetUnitsCanBuyList()
     {
         throw new System.NotImplementedException();
     }

@@ -5,5 +5,5 @@ public interface IActiveClickable
 {
     public ObjectTypeEnum CheckObjectType();
     public void ActiveObject();
-    public List<UnitNameEnum> GetUnitsToBuyList();
+    public List<UnitNameEnum> GetUnitsCanBuyList();
 }

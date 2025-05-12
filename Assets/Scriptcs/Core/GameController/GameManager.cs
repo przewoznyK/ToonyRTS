@@ -7,11 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject manageSelectionUnitsPrefab;
     [SerializeField] private GameObject playerUIPrefab;
     [SerializeField] private GameObject holdSelectionUnitCanvas;
-    private InputManager inputManager;
-    private ActiveClickableObject activeClickableObject;
-    private ManageSelectionUnits manageSelectionUnits;
     // Player UI
-    private SelectionInfoUI selectionInfoUI;
 
     
     private void Awake()
@@ -19,39 +15,45 @@ public class GameManager : MonoBehaviour
         var blueTeam = new PlayerController(TeamColorEnum.Blue);
         var controlledUnits = new ControlledUnits();
         var activeUnits = new ActiveUnits();
-        var playerResources = new PlayerResources(50,30,20,10);
+
+
         // Input Manager
         GameObject inputManagerInstatiate = Instantiate(inputManagerPrefab);
-        inputManager = inputManagerInstatiate.GetComponent<InputManager>();
+        var inputManager = inputManagerInstatiate.GetComponent<InputManager>();
 
 
         // Active Clickable Object
         GameObject activeClickableObjectInstatiate = Instantiate(activeClickableObjectPrefab);
-        activeClickableObject = activeClickableObjectInstatiate.GetComponent<ActiveClickableObject>();
+        var activeClickableObject = activeClickableObjectInstatiate.GetComponent<ActiveClickableObject>();
         
         // Manage Selection Units
         GameObject manageSelectionUnitsInstatiate = Instantiate(manageSelectionUnitsPrefab);
-        manageSelectionUnits = manageSelectionUnitsInstatiate.GetComponent<ManageSelectionUnits>();
-        manageSelectionUnits.Init(inputManager, activeUnits);
+        var manageSelectionUnits = manageSelectionUnitsInstatiate.GetComponent<ManageSelectionUnits>();
+
 
         // PLAYER UI
         GameObject playerUIPrefabInstantiate = Instantiate(playerUIPrefab);
         var playerUIChild = playerUIPrefabInstantiate.transform.GetChild(0);
-        selectionInfoUI = playerUIChild.GetComponent<SelectionInfoUI>();
-        selectionInfoUI.Init(activeUnits);
+        var selectionInfoUI = playerUIChild.GetComponent<SelectionInfoUI>();
+
         
         playerUIChild = playerUIPrefabInstantiate.transform.GetChild(1);
         var commandPanelUI = playerUIChild.GetComponent<CommandPanelUI>();
-        commandPanelUI.Init(playerResources);
+
         playerUIChild = playerUIPrefabInstantiate.transform.GetChild(2);
         var summaryPanelUI = playerUIChild.GetComponent<SummaryPanelUI>();
-        summaryPanelUI.Init(playerResources);
+
 
         var holdSelectionUnitCanbasInstantiate = Instantiate(holdSelectionUnitCanvas);
         var holdSelectionUnitCanbasChild = holdSelectionUnitCanbasInstantiate.transform.GetChild(0);
         var boxVisual = holdSelectionUnitCanbasChild.GetComponent<RectTransform>();
 
+        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,50, 30, 20, 10);
+        var shopManager = new ShopManager(playerResources);
+        manageSelectionUnits.Init(inputManager, activeUnits);
+        commandPanelUI.Init(playerResources, shopManager);
+        selectionInfoUI.Init(activeUnits);
         activeClickableObject.Init(inputManager, controlledUnits, activeUnits, selectionInfoUI, commandPanelUI,
-            boxVisual);
+        boxVisual);
     }
 }
