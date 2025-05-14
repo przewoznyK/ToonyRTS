@@ -6,17 +6,23 @@ public class CommandPanelUI : MonoBehaviour
 {
     PlayerResources playerResources;
     ShopManager shopManager;
+    BuildingProduction buildingProduction;
     [SerializeField] private Button[] buttons;
+    [SerializeField] private Transform productionPanel;
+    [SerializeField] private GameObject productRepresentationPrefab;
     List<UnitNameEnum> unitCanBuyList;
-    public void Init(PlayerResources playerResources, ShopManager shopManager)
+    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction)
     {
         this.playerResources = playerResources;
         this.shopManager = shopManager;
+        this.buildingProduction = buildingProduction;
     }
 
-    public void PrepareBuildingUI(Building buildingToPrepare)
+    public void PrepareBuildingUI(Building building)
     {
-        unitCanBuyList = buildingToPrepare.GetUnitsCanBuyList();
+        unitCanBuyList = building.GetUnitsCanBuyList();
+
+        DisplayProductionQueue(building);
 
         for (int i = 0; i < unitCanBuyList.Count; i++)
         {
@@ -25,7 +31,8 @@ public class CommandPanelUI : MonoBehaviour
 
             currentButton.image.sprite = currentUnit.unitSprite;
             SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
-            currentButton.onClick.AddListener(() => shopManager.BuyUnit(buildingToPrepare, currentUnit.unitName));
+            currentButton.onClick.AddListener(() => shopManager.BuyUnit(building, currentUnit.unitName));
+
 
         }
     }
@@ -61,6 +68,27 @@ public class CommandPanelUI : MonoBehaviour
 
             currentButton.image.sprite = currentUnit.unitSprite;
             SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
+        }
+    }
+
+    public void DisplayProductionQueue(Building building)
+    {
+        var productsList = buildingProduction.GetProductsFromThisBuilding(building);
+
+        foreach (Transform child in productionPanel)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+
+        if (productsList != null)
+        {
+            foreach (var product in productsList)
+            {
+                var productRepresentationInstantiate = Instantiate(productRepresentationPrefab, productionPanel);
+                var child = productRepresentationInstantiate.transform.GetChild(1);
+                child.GetComponent<Image>().sprite = product.productSprite;
+            }
         }
     }
 }

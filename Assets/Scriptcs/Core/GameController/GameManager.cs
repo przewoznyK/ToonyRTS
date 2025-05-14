@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject manageSelectionUnitsPrefab;
     [SerializeField] private GameObject playerUIPrefab;
     [SerializeField] private GameObject holdSelectionUnitCanvas;
+    [SerializeField] private GameObject buildingProducionPrefab;
     // Player UI
 
     
@@ -30,6 +31,8 @@ public class GameManager : MonoBehaviour
         GameObject manageSelectionUnitsInstatiate = Instantiate(manageSelectionUnitsPrefab);
         var manageSelectionUnits = manageSelectionUnitsInstatiate.GetComponent<ManageSelectionUnits>();
 
+        GameObject buildingProductionInstatiate = Instantiate(buildingProducionPrefab);
+        var buildingProduction = buildingProductionInstatiate.GetComponent<BuildingProduction>();
 
         // PLAYER UI
         GameObject playerUIPrefabInstantiate = Instantiate(playerUIPrefab);
@@ -48,12 +51,13 @@ public class GameManager : MonoBehaviour
         var holdSelectionUnitCanbasChild = holdSelectionUnitCanbasInstantiate.transform.GetChild(0);
         var boxVisual = holdSelectionUnitCanbasChild.GetComponent<RectTransform>();
 
-        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,50, 30, 20, 10);
-        var shopManager = new ShopManager(playerResources);
+        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,300, 30, 20, 10);
+        var shopManager = new ShopManager(playerResources, buildingProduction);
         manageSelectionUnits.Init(inputManager, activeUnits);
-        commandPanelUI.Init(playerResources, shopManager);
+        commandPanelUI.Init(playerResources, shopManager, buildingProduction);
         selectionInfoUI.Init(activeUnits);
         activeClickableObject.Init(inputManager, controlledUnits, activeUnits, selectionInfoUI, commandPanelUI,
         boxVisual);
+        buildingProduction.Init(commandPanelUI);
     }
 }

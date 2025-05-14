@@ -11,5 +11,6 @@ public class UnitData : ScriptableObject
     public float speed;
     public Sprite unitSprite;
     public GameObject unitPrefab;
+    public int productionTime;
     [field: SerializeField] public List<ObjectPrices> objectPrices = new List<ObjectPrices>();
 }
