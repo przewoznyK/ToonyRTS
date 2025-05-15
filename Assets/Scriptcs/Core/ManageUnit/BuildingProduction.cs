@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class BuildingProduction : MonoBehaviour
     public void CreateProductAndAddToProductionDictionary(Building building, UnitData unitData)
     {
         var productSprite = unitData.unitSprite;
-        var newProduct = new Product(productSprite);
+        var newProduct = new Product(productSprite, unitData.productionTime);
 
         AddProductToProductionDictionary(building, newProduct);
     }
@@ -28,7 +29,7 @@ public class BuildingProduction : MonoBehaviour
         productionDictionary[building].Enqueue(product);
 
         commandPanelUI.DisplayProductionQueue(building);
-        
+        StartCoroutine(Production(building, productionDictionary[building]));
     }
 
     public Queue<Product> GetProductsFromThisBuilding(Building building)
@@ -43,15 +44,21 @@ public class BuildingProduction : MonoBehaviour
         }
     }
 
-    private void Update()
+    IEnumerator Production(Building building, Queue<Product> products)
     {
-        foreach (var kvp in productionDictionary)
-        {
-            if (kvp.Value.Count > 0)
-            {
-                Debug.Log(kvp.Value.Peek());
 
-            }
+        float productionTime = products.Peek().productionTime;
+        commandPanelUI.StartUpdatingProductionImageFill(productionTime);
+        yield return new WaitForSeconds(productionTime);
+        products.Dequeue();
+        commandPanelUI.DisplayProductionQueue(building);
+        if (products.Count > 0)
+            StartCoroutine(Production(building, products));
+        else
+        {
+            productionDictionary.Remove(building);
+
         }
     }
+
 }

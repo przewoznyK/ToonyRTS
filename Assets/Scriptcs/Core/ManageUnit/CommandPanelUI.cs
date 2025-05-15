@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,7 @@ public class CommandPanelUI : MonoBehaviour
     [SerializeField] private Transform productionPanel;
     [SerializeField] private GameObject productRepresentationPrefab;
     List<UnitNameEnum> unitCanBuyList;
+    private Image currentProductionImageFill;
     public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction)
     {
         this.playerResources = playerResources;
@@ -88,7 +91,29 @@ public class CommandPanelUI : MonoBehaviour
                 var productRepresentationInstantiate = Instantiate(productRepresentationPrefab, productionPanel);
                 var child = productRepresentationInstantiate.transform.GetChild(1);
                 child.GetComponent<Image>().sprite = product.productSprite;
+                if(productsList.Peek() == product)
+                {
+                    var fillImageChild = productRepresentationInstantiate.transform.GetChild(2);
+                    currentProductionImageFill = fillImageChild.GetComponent<Image>();
+                }
             }
+        }
+    }
+
+    public void StartUpdatingProductionImageFill(float productionTime)
+    {
+        StartCoroutine(UpdateCurrentProductionImageFill(productionTime));
+    }
+
+    IEnumerator UpdateCurrentProductionImageFill(float productionTime)
+    {
+        Debug.Log(productionTime);
+        float timer = productionTime;
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            currentProductionImageFill.fillAmount = timer / productionTime;
+            yield return null;
         }
     }
 }
