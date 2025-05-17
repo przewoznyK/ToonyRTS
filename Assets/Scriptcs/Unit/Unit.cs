@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Unit : MonoBehaviour, IActiveClickable
 {
+    [SerializeField] private NavMeshAgent agent;
     Transform activator;
+    Vector3 meetingPosition;
     private void Start()
     {
         activator = transform.GetChild(0);
@@ -23,4 +26,6 @@ public class Unit : MonoBehaviour, IActiveClickable
     {
         throw new System.NotImplementedException();
     }
+
+    public void GoMeetingPosition(Vector3 position) => agent.SetDestination(position);
 }

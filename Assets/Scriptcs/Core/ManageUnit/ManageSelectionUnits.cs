@@ -8,7 +8,7 @@ public class ManageSelectionUnits : MonoBehaviour
     InputManager inputManager;
     ActiveUnits activeUnits;
 
-    private InputAction rpmClick;
+    private InputAction rmbClickAction;
 
     private bool initialized = false;
     internal void Init(InputManager inputManager, ActiveUnits activeUnits)
@@ -16,10 +16,10 @@ public class ManageSelectionUnits : MonoBehaviour
         this.inputManager = inputManager;
         this.activeUnits = activeUnits;
 
-        rpmClick = inputManager.Inputs.actions[InputManager.INPUT_GAME_RPM_Click];
+        rmbClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RPM_Click];
 
 
-        rpmClick.performed += OnRpmClick;
+        rmbClickAction.performed += OnRpmClick;
 
         initialized = true;
     }

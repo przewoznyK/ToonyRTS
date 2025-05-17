@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Building : MonoBehaviour, IActiveClickable
 {
@@ -26,9 +26,15 @@ public class Building : MonoBehaviour, IActiveClickable
 
     public void AddToProductionQueue(UnitData unitData)
     {
-        Debug.Log(unitData);
         unitProductionQueue.Enqueue(unitData);
     }
 
+    internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;
 
+    public void SpawnUnit(int unitID)
+    {
+        GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
+        GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
+        unitInstantiate.GetComponent<Unit>().GoMeetingPosition(meetingPoint.transform.position);
+    }
 }

@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,300, 30, 20, 10);
         var shopManager = new ShopManager(playerResources, buildingProduction);
         manageSelectionUnits.Init(inputManager, activeUnits);
-        commandPanelUI.Init(playerResources, shopManager, buildingProduction);
+        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager);
         selectionInfoUI.Init(activeUnits);
         activeClickableObject.Init(inputManager, controlledUnits, activeUnits, selectionInfoUI, commandPanelUI,
         boxVisual);

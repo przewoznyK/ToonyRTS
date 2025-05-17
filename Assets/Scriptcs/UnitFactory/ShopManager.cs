@@ -15,8 +15,7 @@ public class ShopManager
     public void BuyUnit(Building building, UnitNameEnum unitNameEnum)
     {
         UnitData unitData = UnitDatabase.Instance.GetUnitDataByNameEnum(unitNameEnum);
-       
-
+        
         // Spend resources
         List<ObjectPrices> objectPrices = new List<ObjectPrices>();
         objectPrices = unitData.objectPrices;

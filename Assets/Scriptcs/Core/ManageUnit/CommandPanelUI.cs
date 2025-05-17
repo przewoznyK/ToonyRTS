@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CommandPanelUI : MonoBehaviour
@@ -9,20 +9,31 @@ public class CommandPanelUI : MonoBehaviour
     PlayerResources playerResources;
     ShopManager shopManager;
     BuildingProduction buildingProduction;
+    InputManager inputManager;
+
+    private InputAction rmbClickAction;
+
     [SerializeField] private Button[] buttons;
     [SerializeField] private Transform productionPanel;
     [SerializeField] private GameObject productRepresentationPrefab;
     List<UnitNameEnum> unitCanBuyList;
     private Image currentProductionImageFill;
-    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction)
+    private Building currentBuilding;
+    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager)
     {
         this.playerResources = playerResources;
         this.shopManager = shopManager;
         this.buildingProduction = buildingProduction;
+        this.inputManager = inputManager;
+
+        rmbClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RPM_Click];
+        rmbClickAction.performed += SetMeetingPositionWithRightMouseButton;
     }
 
     public void PrepareBuildingUI(Building building)
     {
+        currentBuilding = building;
+
         unitCanBuyList = building.GetUnitsCanBuyList();
 
         DisplayProductionQueue(building);
@@ -31,19 +42,50 @@ public class CommandPanelUI : MonoBehaviour
         {
             var currentUnit = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
             var currentButton = buttons[i];
-
+            currentButton.onClick.RemoveAllListeners();
             currentButton.image.sprite = currentUnit.unitSprite;
             SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
             currentButton.onClick.AddListener(() => shopManager.BuyUnit(building, currentUnit.unitName));
-
-
         }
     }
-    internal void ActivePanel()
+
+    public void DisplayProductionQueue(Building building)
     {
-        gameObject.SetActive(true);
+        var productsList = buildingProduction.GetProductsFromThisBuilding(building);
+
+        foreach (Transform child in productionPanel)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        if (productsList != null)
+        {
+            foreach (var product in productsList)
+            {
+                var productRepresentationInstantiate = Instantiate(productRepresentationPrefab, productionPanel);
+                var child = productRepresentationInstantiate.transform.GetChild(1);
+                child.GetComponent<Image>().sprite = product.productSprite;
+                if(productsList.Peek() == product)
+                {
+                    var fillImageChild = productRepresentationInstantiate.transform.GetChild(2);
+                    currentProductionImageFill = fillImageChild.GetComponent<Image>();
+                }
+            }
+        }
     }
 
+    public IEnumerator UpdateCurrentProductionImageFill(float productionTime)
+    {
+        float timer = productionTime;
+        while (timer > 0f)
+        {
+            timer -= Time.deltaTime;
+            currentProductionImageFill.fillAmount = timer / productionTime;
+            yield return null;
+        }
+    }
+
+    // BUTTONS
     public void SetButtonColorStatusByPrice(Button button, List<ObjectPrices> objectPrices)
     {
         Image background = button.transform.parent.GetComponent<Image>();
@@ -52,7 +94,7 @@ public class CommandPanelUI : MonoBehaviour
 
             button.enabled = true;
             background.color = Color.green;
-         
+
         }
         else
         {
@@ -74,46 +116,24 @@ public class CommandPanelUI : MonoBehaviour
         }
     }
 
-    public void DisplayProductionQueue(Building building)
+    private void SetMeetingPositionWithRightMouseButton(InputAction.CallbackContext ctx)
     {
-        var productsList = buildingProduction.GetProductsFromThisBuilding(building);
-
-        foreach (Transform child in productionPanel)
+        if(currentBuilding != false)
         {
-            GameObject.Destroy(child.gameObject);
-        }
-
-
-        if (productsList != null)
-        {
-            foreach (var product in productsList)
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = Camera.main.nearClipPlane;
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 100))
             {
-                var productRepresentationInstantiate = Instantiate(productRepresentationPrefab, productionPanel);
-                var child = productRepresentationInstantiate.transform.GetChild(1);
-                child.GetComponent<Image>().sprite = product.productSprite;
-                if(productsList.Peek() == product)
-                {
-                    var fillImageChild = productRepresentationInstantiate.transform.GetChild(2);
-                    currentProductionImageFill = fillImageChild.GetComponent<Image>();
-                }
+                currentBuilding.SetMeetingPoint(hit.point);
+
             }
         }
     }
 
-    public void StartUpdatingProductionImageFill(float productionTime)
+    private void OnDisable()
     {
-        StartCoroutine(UpdateCurrentProductionImageFill(productionTime));
-    }
-
-    IEnumerator UpdateCurrentProductionImageFill(float productionTime)
-    {
-        Debug.Log(productionTime);
-        float timer = productionTime;
-        while (timer > 0f)
-        {
-            timer -= Time.deltaTime;
-            currentProductionImageFill.fillAmount = timer / productionTime;
-            yield return null;
-        }
+        rmbClickAction.performed -= SetMeetingPositionWithRightMouseButton;
     }
 }
