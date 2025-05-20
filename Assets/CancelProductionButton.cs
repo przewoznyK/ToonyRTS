@@ -25,4 +25,10 @@ public class CancelProductionButton : MonoBehaviour, IPointerEnterHandler, IPoin
         color.a = alpha;
         hoverImage.color = color;
     }
+
+    public void CancelProduction(PlayerResources playerResources, BuildingProduction buildingProduction, Building building, Product product)
+    {
+        playerResources.AddResources(product.objectPrices);
+        buildingProduction.RemoveProductFromProductionDictionary(building, product);
+    }
 }

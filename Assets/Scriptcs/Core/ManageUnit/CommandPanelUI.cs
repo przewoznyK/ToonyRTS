@@ -63,10 +63,16 @@ public class CommandPanelUI : MonoBehaviour
             foreach (var product in productsList)
             {
                 var productRepresentationInstantiate = Instantiate(productRepresentationPrefab, productionPanel);
+                // Prepare Cancel Button
+                var button = productRepresentationInstantiate.GetComponent<Button>();
+                var cancelProduction = productRepresentationInstantiate.GetComponent<CancelProductionButton>();
+                button.onClick.AddListener(() => cancelProduction.CancelProduction(playerResources, buildingProduction, currentBuilding, product));
+                // Set Icon
                 var child = productRepresentationInstantiate.transform.GetChild(1);
                 child.GetComponent<Image>().sprite = product.productSprite;
                 if(productsList.Peek() == product)
                 {
+                    // Set First Production Fill to Dicrease Overtime
                     var fillImageChild = productRepresentationInstantiate.transform.GetChild(2);
                     currentProductionImageFill = fillImageChild.GetComponent<Image>();
                 }
@@ -79,6 +85,7 @@ public class CommandPanelUI : MonoBehaviour
         float timer = productionTime;
         while (timer > 0f)
         {
+            if (currentProductionImageFill == null) break;
             timer -= Time.deltaTime;
             currentProductionImageFill.fillAmount = timer / productionTime;
             yield return null;

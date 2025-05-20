@@ -23,6 +23,34 @@ public class PlayerResources
         summaryPanelUI.UpdateResource(ResourceTypesEnum.rock, currentRock);
     }
 
+    public void AddResources(List<ObjectPrices> objectPrices)
+    {
+        foreach (var price in objectPrices)
+        {
+            switch (price.priceType)
+            {
+                case ResourceTypesEnum.food:
+                    currentFood += price.priceValue;
+                    summaryPanelUI.UpdateResource(ResourceTypesEnum.food, currentFood);
+                    break;
+                case ResourceTypesEnum.wood:
+                    currentWood += price.priceValue;
+                    summaryPanelUI.UpdateResource(ResourceTypesEnum.wood, currentWood);
+                    break;
+                case ResourceTypesEnum.gold:
+                    currentGold += price.priceValue;
+                    summaryPanelUI.UpdateResource(ResourceTypesEnum.gold, currentGold);
+                    break;
+                case ResourceTypesEnum.rock:
+                    currentRock += price.priceValue;
+                    summaryPanelUI.UpdateResource(ResourceTypesEnum.rock, currentRock);
+                    break;
+                default:
+                    break;
+            }
+        }
+        commandPanelUI.RefreshButtonsStatus();
+    }
     public void SpendResources(List<ObjectPrices> objectPrices)
     {
         foreach (var price in objectPrices)
