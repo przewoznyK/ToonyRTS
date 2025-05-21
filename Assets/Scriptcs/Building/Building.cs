@@ -6,12 +6,6 @@ public class Building : MonoBehaviour, IActiveClickable
 {
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] private Transform meetingPoint;
-
-    public Queue<UnitData> unitProductionQueue;
-    private void Awake()
-    {
-        unitProductionQueue = new Queue<UnitData>();
-    }
     public ObjectTypeEnum CheckObjectType()
     {
         return ObjectTypeEnum.building;
@@ -21,14 +15,15 @@ public class Building : MonoBehaviour, IActiveClickable
 
     void IActiveClickable.ActiveObject()
     {
+        Debug.Log("ODPALAM");
         //throw new System.NotImplementedException();
+        meetingPoint.gameObject.SetActive(true);
     }
-
-    public void AddToProductionQueue(UnitData unitData)
+    public void DisableObject()
     {
-        unitProductionQueue.Enqueue(unitData);
+        Debug.Log("WYLACZAM");
+        meetingPoint.gameObject.SetActive(false);
     }
-
     internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;
 
     public void SpawnUnit(int unitID)

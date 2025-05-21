@@ -27,7 +27,6 @@ public class CommandPanelUI : MonoBehaviour
         this.inputManager = inputManager;
 
         rmbClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RPM_Click];
-        rmbClickAction.performed += SetMeetingPositionWithRightMouseButton;
     }
 
     public void PrepareBuildingUI(Building building)
@@ -125,7 +124,7 @@ public class CommandPanelUI : MonoBehaviour
 
     private void SetMeetingPositionWithRightMouseButton(InputAction.CallbackContext ctx)
     {
-        if(currentBuilding != false)
+        if (currentBuilding != false)
         {
             Vector3 mousePos = Input.mousePosition;
             mousePos.z = Camera.main.nearClipPlane;
@@ -138,9 +137,13 @@ public class CommandPanelUI : MonoBehaviour
             }
         }
     }
-
+    private void OnEnable()
+    {
+        rmbClickAction.performed += SetMeetingPositionWithRightMouseButton;
+    }
     private void OnDisable()
     {
+        currentBuilding.DisableObject();
         rmbClickAction.performed -= SetMeetingPositionWithRightMouseButton;
     }
 }

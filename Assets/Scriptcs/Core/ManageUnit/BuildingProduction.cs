@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BuildingProduction : MonoBehaviour
 {
     CommandPanelUI commandPanelUI;
-    Dictionary<Building, Queue<Product>> productionDictionary = new();
-    private Coroutine productionCoroutine;
+    Dictionary<Building, BuildingProductionData> productionDictionary = new();
+    private Coroutine UIproductionCoroutine;
     public void Init(CommandPanelUI commandPanelUI)
     {
         this.commandPanelUI = commandPanelUI;
@@ -24,43 +23,37 @@ public class BuildingProduction : MonoBehaviour
     {
         bool existingKey = productionDictionary.ContainsKey(building);
         if (existingKey == false)
-            productionDictionary[building] = new Queue<Product>();
+            productionDictionary[building] = new BuildingProductionData();
 
-        productionDictionary[building].Enqueue(product);
+        productionDictionary[building].productQueue.Enqueue(product);
         commandPanelUI.DisplayProductionQueue(building);
 
         if (existingKey == false)
-            productionCoroutine = StartCoroutine(Production(building));
-
-        
+            productionDictionary[building].activeCoroutine = StartCoroutine(Production(building));
     }
 
     public Queue<Product> GetProductsFromThisBuilding(Building building)
     {
-        if (productionDictionary.TryGetValue(building, out var products))
-            return products;
+        if (productionDictionary.TryGetValue(building, out var productionData))
+            return productionData.productQueue;
         else
             return null;
     }
 
     IEnumerator Production(Building building)
     {
-        float productionTime = productionDictionary[building].Peek().productionTime;
-        StartCoroutine(commandPanelUI.UpdateCurrentProductionImageFill(productionTime));
+        // Start Production
+        float productionTime = productionDictionary[building].productQueue.Peek().productionTime;
+        UIproductionCoroutine = StartCoroutine(commandPanelUI.UpdateCurrentProductionImageFill(productionTime));
 
+        // Wait X Time
         yield return new WaitForSeconds(productionTime);
-        if (!productionDictionary.ContainsKey(building) || productionDictionary[building] == null || productionDictionary[building].Count == 0)
+        building.SpawnUnit(productionDictionary[building].productQueue.Dequeue().productId);
+
+        // Next producion if exist
+        if (productionDictionary[building].productQueue.Count > 0)
         {
-            productionDictionary.Remove(building);
-
-            yield break;
-
-        }
-        building.SpawnUnit(productionDictionary[building].Dequeue().productId);
-
-        if (productionDictionary[building].Count > 0)
-        {
-            productionCoroutine = StartCoroutine(Production(building));
+            productionDictionary[building].activeCoroutine = StartCoroutine(Production(building));
         }
         else
             productionDictionary.Remove(building);
@@ -71,7 +64,7 @@ public class BuildingProduction : MonoBehaviour
     public void RemoveProductFromProductionDictionary(Building building, Product product)
     {
 
-        var originalQueue = productionDictionary[building];
+        var originalQueue = productionDictionary[building].productQueue;
         var copyQueue = new Queue<Product>(originalQueue);
         var newQueue = new Queue<Product>();
 
@@ -83,11 +76,12 @@ public class BuildingProduction : MonoBehaviour
                 newQueue.Enqueue(p);
             }
         }
-        productionDictionary[building] = newQueue;
-        if (productionDictionary[building].Count <= 0)
+        productionDictionary[building].productQueue = newQueue;
+        if (productionDictionary[building].productQueue.Count <= 0)
         {
-            StopCoroutine(productionCoroutine);
-            productionCoroutine = null;
+            StopCoroutine(productionDictionary[building].activeCoroutine);
+            StopCoroutine(UIproductionCoroutine);
+            productionDictionary.Remove(building);
         }
         commandPanelUI.DisplayProductionQueue(building);
     }
