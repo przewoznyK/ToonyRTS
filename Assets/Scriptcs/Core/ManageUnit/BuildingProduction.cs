@@ -44,10 +44,12 @@ public class BuildingProduction : MonoBehaviour
     {
         // Start Production
         float productionTime = productionDictionary[building].productQueue.Peek().productionTime;
-        UIproductionCoroutine = StartCoroutine(commandPanelUI.UpdateCurrentProductionImageFill(productionTime));
-
+        productionDictionary[building].timeProduction = productionTime;
+        StartCoroutine(productionDictionary[building].StartProduction());
         // Wait X Time
-        yield return new WaitForSeconds(productionTime);
+        yield return new WaitUntil(() => productionDictionary[building].endProduction);
+      
+        productionDictionary[building].endProduction = false;
         building.SpawnUnit(productionDictionary[building].productQueue.Dequeue().productId);
 
         // Next producion if exist
@@ -58,7 +60,8 @@ public class BuildingProduction : MonoBehaviour
         else
             productionDictionary.Remove(building);
 
-        commandPanelUI.DisplayProductionQueue(building);
+        if(commandPanelUI.currentBuilding == building)
+            commandPanelUI.DisplayProductionQueue(building);
     }
 
     public void RemoveProductFromProductionDictionary(Building building, Product product)
@@ -80,9 +83,16 @@ public class BuildingProduction : MonoBehaviour
         if (productionDictionary[building].productQueue.Count <= 0)
         {
             StopCoroutine(productionDictionary[building].activeCoroutine);
-            StopCoroutine(UIproductionCoroutine);
             productionDictionary.Remove(building);
         }
         commandPanelUI.DisplayProductionQueue(building);
+    }
+
+    public BuildingProductionData GetProductingData(Building building)
+    {
+        if (productionDictionary.ContainsKey(building))
+            return productionDictionary[building];
+        else
+            return null;
     }
 }

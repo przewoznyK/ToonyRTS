@@ -15,13 +15,10 @@ public class Building : MonoBehaviour, IActiveClickable
 
     void IActiveClickable.ActiveObject()
     {
-        Debug.Log("ODPALAM");
-        //throw new System.NotImplementedException();
         meetingPoint.gameObject.SetActive(true);
     }
     public void DisableObject()
     {
-        Debug.Log("WYLACZAM");
         meetingPoint.gameObject.SetActive(false);
     }
     internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;

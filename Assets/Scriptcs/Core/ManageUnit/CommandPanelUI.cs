@@ -18,7 +18,8 @@ public class CommandPanelUI : MonoBehaviour
     [SerializeField] private GameObject productRepresentationPrefab;
     List<UnitNameEnum> unitCanBuyList;
     private Image currentProductionImageFill;
-    private Building currentBuilding;
+    public Building currentBuilding;
+    private BuildingProductionData buildingProductionData;
     public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager)
     {
         this.playerResources = playerResources;
@@ -74,20 +75,9 @@ public class CommandPanelUI : MonoBehaviour
                     // Set First Production Fill to Dicrease Overtime
                     var fillImageChild = productRepresentationInstantiate.transform.GetChild(2);
                     currentProductionImageFill = fillImageChild.GetComponent<Image>();
+                    buildingProductionData = buildingProduction.GetProductingData(currentBuilding);
                 }
             }
-        }
-    }
-
-    public IEnumerator UpdateCurrentProductionImageFill(float productionTime)
-    {
-        float timer = productionTime;
-        while (timer > 0f)
-        {
-            if (currentProductionImageFill == null) break;
-            timer -= Time.deltaTime;
-            currentProductionImageFill.fillAmount = timer / productionTime;
-            yield return null;
         }
     }
 
@@ -145,5 +135,13 @@ public class CommandPanelUI : MonoBehaviour
     {
         currentBuilding.DisableObject();
         rmbClickAction.performed -= SetMeetingPositionWithRightMouseButton;
+    }
+
+    private void Update()
+    {
+        if(currentProductionImageFill != null)
+        {
+            currentProductionImageFill.fillAmount = buildingProductionData.currentTimeProduction / buildingProductionData.timeProduction;
+        }
     }
 }
