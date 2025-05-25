@@ -8,7 +8,6 @@ public class ActiveUnits
     public void AddUnit(Unit unit)
     {
         unitsSelected.Add(unit);
-        Debug.Log(unitsSelected.Count);
     }
 
     public List<Unit> TakeUnitList()

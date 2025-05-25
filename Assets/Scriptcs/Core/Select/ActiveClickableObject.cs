@@ -12,9 +12,9 @@ public class ActiveClickableObject : MonoBehaviour
     CommandPanelUI commandPanelUI;
     #endregion
     #region Inputs
-    private InputAction lpmClickAction;
-    private InputAction lpmHoldAction;
-    private InputAction lpmDoubleClickAction;
+    private InputAction LMBClickAction;
+    private InputAction LMBHoldAction;
+    private InputAction LMBDoubleClickAction;
     private InputAction shiftAction;
     #endregion
     #region Flags
@@ -39,17 +39,17 @@ public class ActiveClickableObject : MonoBehaviour
         this.commandPanelUI = commandPanelUI;
         this.boxVisual = boxVisual;
 
-        lpmClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LPM_Click];
-        lpmHoldAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LPM_HOLD];
-        lpmDoubleClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LPM_Double_Click];
+        LMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
+        LMBHoldAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_HOLD];
+        LMBDoubleClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Double_Click];
         shiftAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_SHIFT];
         
 
-        lpmClickAction.performed += OnLpmClick;
-        lpmHoldAction.started += OnLpmHold;
-        lpmHoldAction.performed += OnLpmHold;
-        lpmHoldAction.canceled += OnLpmHold;
-        lpmDoubleClickAction.performed += OnLpmDoubleClick;
+        LMBClickAction.performed += OnLpmClick;
+        LMBHoldAction.started += OnLpmHold;
+        LMBHoldAction.performed += OnLpmHold;
+        LMBHoldAction.canceled += OnLpmHold;
+        LMBDoubleClickAction.performed += OnLpmDoubleClick;
 
         initialized = true;
     }
@@ -57,23 +57,24 @@ public class ActiveClickableObject : MonoBehaviour
     {
         if (initialized == false)
             return;
-        lpmClickAction.performed += OnLpmClick;
-        lpmHoldAction.started += OnLpmHold;
-        lpmHoldAction.performed += OnLpmHold;
-        lpmHoldAction.canceled += OnLpmHold;
-        lpmDoubleClickAction.performed += OnLpmDoubleClick;
+        LMBClickAction.performed += OnLpmClick;
+        LMBHoldAction.started += OnLpmHold;
+        LMBHoldAction.performed += OnLpmHold;
+        LMBHoldAction.canceled += OnLpmHold;
+        LMBDoubleClickAction.performed += OnLpmDoubleClick;
     }
 
     private void OnDisable()
     {
-        lpmClickAction.performed -= OnLpmClick;
-        lpmHoldAction.started -= OnLpmHold;
-        lpmHoldAction.performed -= OnLpmHold;
-        lpmHoldAction.canceled -= OnLpmHold;
-        lpmDoubleClickAction.performed -= OnLpmDoubleClick;
+        LMBClickAction.performed -= OnLpmClick;
+        LMBHoldAction.started -= OnLpmHold;
+        LMBHoldAction.performed -= OnLpmHold;
+        LMBHoldAction.canceled -= OnLpmHold;
+        LMBDoubleClickAction.performed -= OnLpmDoubleClick;
     }
     private void OnLpmClick(InputAction.CallbackContext ctx)
     {
+        // Active Clickable Object and CommandUI
         if(pointerOverUI == false)
         {
             commandPanelUI.gameObject.SetActive(false);
@@ -87,12 +88,19 @@ public class ActiveClickableObject : MonoBehaviour
                 var clickable = hit.collider.GetComponent<IActiveClickable>();
                 if (clickable != null)
                 {
+                    // Active Unit
                     if (clickable.CheckObjectType() == ObjectTypeEnum.unit)
                     {
                         clickable.ActiveObject();
-                        activeUnits.AddUnit(hit.collider.GetComponent<Unit>());
-                        selectionInfoUI.gameObject.SetActive(true);
+                        Unit unitToPrepare = hit.collider.GetComponent<Unit>();
+                        activeUnits.AddUnit(unitToPrepare);
+                        commandPanelUI.PrepareUnitUI(activeUnits.TakeUnitList());
+                        commandPanelUI.gameObject.SetActive(true);
+
+                        // Selection Info if more selected units than 1
+                        //selectionInfoUI
                     }
+                    // Active Building
                     else if (clickable.CheckObjectType() == ObjectTypeEnum.building)
                     {
                         clickable.ActiveObject();

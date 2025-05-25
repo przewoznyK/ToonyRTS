@@ -10,8 +10,9 @@ public class CommandPanelUI : MonoBehaviour
     ShopManager shopManager;
     BuildingProduction buildingProduction;
     InputManager inputManager;
+    ConstructionPreviewSystem previewSystem;
 
-    private InputAction rmbClickAction;
+    private InputAction RMBClickAction;
 
     [SerializeField] private Button[] buttons;
     [SerializeField] private Transform productionPanel;
@@ -20,18 +21,20 @@ public class CommandPanelUI : MonoBehaviour
     private Image currentProductionImageFill;
     public Building currentBuilding;
     private BuildingProductionData buildingProductionData;
-    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager)
+    public Unit currentUnit;
+    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem)
     {
         this.playerResources = playerResources;
         this.shopManager = shopManager;
         this.buildingProduction = buildingProduction;
         this.inputManager = inputManager;
-
-        rmbClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RPM_Click];
+        this.previewSystem = previewSystem;
+        RMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
     }
 
     public void PrepareBuildingUI(Building building)
     {
+        currentUnit = null;
         currentBuilding = building;
 
         unitCanBuyList = building.GetUnitsCanBuyList();
@@ -40,15 +43,29 @@ public class CommandPanelUI : MonoBehaviour
 
         for (int i = 0; i < unitCanBuyList.Count; i++)
         {
-            var currentUnit = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
+            var unitDataForButton = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
             var currentButton = buttons[i];
             currentButton.onClick.RemoveAllListeners();
-            currentButton.image.sprite = currentUnit.unitSprite;
-            SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
-            currentButton.onClick.AddListener(() => shopManager.BuyUnit(building, currentUnit.unitName));
+            currentButton.image.sprite = unitDataForButton.unitSprite;
+            SetButtonColorStatusByPrice(currentButton, unitDataForButton.objectPrices);
+            currentButton.onClick.AddListener(() => shopManager.BuyUnit(building, unitDataForButton.unitName));
         }
     }
+    public void PrepareUnitUI(List<Unit> unitsList)
+    {
+        currentBuilding = null;
+        var buildingList = BuildingDatabase.Instance.GetBuildingList();
+        for (int i = 0; i < buildingList.Count; i++)
+        {
+            var buildingDataForButton = buildingList[i];
+            var currentButton = buttons[i];
+            currentButton.onClick.RemoveAllListeners();
+            currentButton.image.sprite = buildingDataForButton.buildingSprite;
+            SetButtonColorStatusByPrice(currentButton, buildingDataForButton.objectPrices);
 
+            currentButton.onClick.AddListener(() => previewSystem.StartPreview(unitsList, buildingDataForButton));
+        }
+    }
     public void DisplayProductionQueue(Building building)
     {
         var productsList = buildingProduction.GetProductsFromThisBuilding(building);
@@ -129,12 +146,14 @@ public class CommandPanelUI : MonoBehaviour
     }
     private void OnEnable()
     {
-        rmbClickAction.performed += SetMeetingPositionWithRightMouseButton;
+
+        RMBClickAction.performed += SetMeetingPositionWithRightMouseButton;
     }
     private void OnDisable()
     {
-        currentBuilding.DisableObject();
-        rmbClickAction.performed -= SetMeetingPositionWithRightMouseButton;
+        if(currentBuilding != null)
+            currentBuilding.DisableObject();
+        RMBClickAction.performed -= SetMeetingPositionWithRightMouseButton;
     }
 
     private void Update()

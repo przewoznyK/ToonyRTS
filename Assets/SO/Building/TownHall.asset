@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a4ac8b1b190e24fac7463893398ee5, type: 3}
+  m_Name: TownHall
+  m_EditorClassIdentifier: 
+  buildingID: 0
+  buildingName: 0
+  health: 1000
+  buildingSprite: {fileID: -1216437428, guid: a03e9228371be9449a97a937850924ca, type: 3}
+  buildingPrefab: {fileID: 3275545278579393358, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
+  <size>k__BackingField: {x: 6, y: 6}
+  objectPrices:
+  - <priceType>k__BackingField: 0
+    <priceValue>k__BackingField: 100

@@ -23,4 +23,6 @@ public class ShopManager
 
         buildingProduction.CreateProductAndAddToProductionDictionary(building, unitData);
     }
+
+    
 }
