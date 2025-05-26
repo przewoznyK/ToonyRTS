@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
         var previewSystem = previewSystemTransform.GetComponent<ConstructionPreviewSystem>();
         var construcionPlacerSystemTransform = constructionSystemInstatiate.transform.GetChild(1);
         var constructionPlacerSystem = construcionPlacerSystemTransform.GetComponent<ConstructionPlacerSystem>();
+
         // PLAYER UI
         GameObject playerUIPrefabInstantiate = Instantiate(playerUIPrefab);
         var playerUIChild = playerUIPrefabInstantiate.transform.GetChild(0);

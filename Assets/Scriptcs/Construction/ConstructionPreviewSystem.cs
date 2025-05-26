@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class ConstructionPreviewSystem : MonoBehaviour
 {
@@ -13,7 +11,9 @@ public class ConstructionPreviewSystem : MonoBehaviour
     private InputAction LMBClickAction;
     private InputAction RMBClickAction;
 
+    [SerializeField] private Grid gridComponent;
     [SerializeField] private GameObject gridVisualization;
+    [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float previewYOffset = 0.06f;
     private GameObject previewConstruction;
 
@@ -24,6 +24,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
     ConstructionData currentConstructionData;
     public bool isOnPreview { get; private set; }
     bool canPlaceConstruction;
+    private float gridSize = 1f;
     internal void Init(InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData)
     {
         this.inputManager = inputManager;
@@ -52,14 +53,15 @@ public class ConstructionPreviewSystem : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
             {
                 Vector3 worldPosition = hitInfo.point;
-                Vector3Int snappedPosition = SnapToGrid(worldPosition);
-                previewConstruction.transform.position = snappedPosition;
+                Vector3Int cellPosition = gridComponent.WorldToCell(worldPosition);
+                Vector3 snappedWorldPosition = gridComponent.CellToWorld(cellPosition);
+                previewConstruction.transform.position = snappedWorldPosition;
 
-                if(gridData.CanPlaceObjectAt(snappedPosition, buildingData.size))
+                if(gridData.CanPlaceObjectAt(cellPosition, buildingData.size))
                 {
                     previewMaterial.color = Color.green;
                     canPlaceConstruction = true;
-                    currentConstructionData.SetPositionToOccupy(snappedPosition);
+                    currentConstructionData.SetPositionToOccupy(cellPosition);
 
                 }
                 else
@@ -68,7 +70,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
                     canPlaceConstruction = false;
 
                 }
-                DrawOutline(previewConstruction.transform.position, buildingData.size[0], buildingData.size[1], 2.5f);
+                DrawOutline(cellPosition, buildingData.size);
             }
         }
         
@@ -99,13 +101,6 @@ public class ConstructionPreviewSystem : MonoBehaviour
         isOnPreview = true;
     }
 
-    private void PreparePreview(GameObject previewObject)
-    {
-        var previewObjectMesh = previewObject.transform.GetChild(0);
-        var meshMaterial = previewObjectMesh.GetComponent<Material>();
-        meshMaterial = previewMaterial;
-    }
-
     private void AcceptConstructionPosition(InputAction.CallbackContext context)
     {
         if (canPlaceConstruction)
@@ -119,30 +114,30 @@ public class ConstructionPreviewSystem : MonoBehaviour
         Debug.Log("Cancel");
 
     }
-    public float gridSize = 0.5f;
 
-    public Vector3Int SnapToGrid(Vector3 originalPosition)
-    {
-        float x = Mathf.Round(originalPosition.x / gridSize) * gridSize;
-        float z = Mathf.Round(originalPosition.z / gridSize) * gridSize;
 
-        return new Vector3Int((int)x, 1, (int)z);
-    }
-    [SerializeField] private LineRenderer lineRenderer;
-
-    public void DrawOutline(Vector3 center, int width, int height, float gridSize)
+    public void DrawOutline(Vector3Int cellPosition, Vector2Int size)
     {
         lineRenderer.material = previewMaterial;
-        Vector3 bottomLeft = center - new Vector3(width / 2f, 0f, height / 2f) * gridSize;
+        Vector3 cellSize = gridComponent.cellSize;
+
+
+        Vector3 bottomLeft = gridComponent.CellToWorld(cellPosition);
 
         Vector3[] corners = new Vector3[5];
         corners[0] = bottomLeft;
-        corners[1] = bottomLeft + new Vector3(width * gridSize, 0, 0);
-        corners[2] = corners[1] + new Vector3(0, 0, height * gridSize);
-        corners[3] = bottomLeft + new Vector3(0, 0, height * gridSize);
-        corners[4] = corners[0];
+        corners[1] = bottomLeft + new Vector3(size.x * cellSize.x, 0, 0);
+        corners[2] = bottomLeft + new Vector3(size.x * cellSize.x, 0, size.y * cellSize.z);
+        corners[3] = bottomLeft + new Vector3(0, 0, size.y * cellSize.z);
+        corners[4] = corners[0]; 
+
+        for (int i = 0; i < corners.Length; i++)
+            corners[i].y += 0.05f;
 
         lineRenderer.positionCount = corners.Length;
         lineRenderer.SetPositions(corners);
+        lineRenderer.widthMultiplier = 0.05f;
     }
 }
+
+
