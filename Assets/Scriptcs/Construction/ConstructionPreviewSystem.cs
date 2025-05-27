@@ -18,6 +18,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
     private GameObject previewConstruction;
 
     [SerializeField] private Material previewMaterial;
+    [SerializeField] private GameObject previewBuildingTile;
     private Material previewMaterialInstance;
     MeshRenderer previewConstructionMeshRenderer;
     BuildingData buildingData;
@@ -49,13 +50,14 @@ public class ConstructionPreviewSystem : MonoBehaviour
         {
             Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
 
-            Ray ray = Camera.main.ScreenPointToRay(mouseScreenPosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
             {
                 Vector3 worldPosition = hitInfo.point;
                 Vector3Int cellPosition = gridComponent.WorldToCell(worldPosition);
+
                 Vector3 snappedWorldPosition = gridComponent.CellToWorld(cellPosition);
-                previewConstruction.transform.position = snappedWorldPosition;
+                previewConstruction.transform.position = new Vector3(snappedWorldPosition.x, previewYOffset, snappedWorldPosition.z);
 
                 if(gridData.CanPlaceObjectAt(cellPosition, buildingData.size))
                 {
@@ -70,7 +72,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
                     canPlaceConstruction = false;
 
                 }
-                DrawOutline(cellPosition, buildingData.size);
+             //   DrawOutline(cellPosition, buildingData.size);
             }
         }
         
@@ -93,7 +95,16 @@ public class ConstructionPreviewSystem : MonoBehaviour
 
         gridVisualization.SetActive(true);
         previewConstruction = Instantiate(buildingData.buildingPrefab);
-
+        for (int x = 0; x < buildingData.size.x; x++)
+        {
+            for (int y = 0; y < buildingData.size.y; y++)
+            {
+                Vector3 tilePosition = previewConstruction.transform.position + new Vector3(x, 0.5f, y);
+              GameObject tile =  Instantiate(previewBuildingTile, tilePosition, Quaternion.identity, previewConstruction.transform);
+                tile.transform.localScale = gridComponent.cellSize;
+                tile.transform.Rotate(90, 0, 0);
+            }
+        }
         var previewConstructionMesh = previewConstruction.transform.GetChild(0);
         previewConstructionMeshRenderer = previewConstructionMesh.GetComponent<MeshRenderer>();
         currentConstructionData = new ConstructionData(unit, buildingData, previewConstructionMeshRenderer, previewConstructionMeshRenderer.material);
