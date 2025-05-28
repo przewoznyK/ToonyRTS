@@ -72,7 +72,6 @@ public class ConstructionPreviewSystem : MonoBehaviour
                     canPlaceConstruction = false;
 
                 }
-             //   DrawOutline(cellPosition, buildingData.size);
             }
         }
         
@@ -95,16 +94,18 @@ public class ConstructionPreviewSystem : MonoBehaviour
 
         gridVisualization.SetActive(true);
         previewConstruction = Instantiate(buildingData.buildingPrefab);
+        Vector3 bottomLeft = previewConstruction.transform.position - new Vector3(buildingData.size.x / 2f, 0f, buildingData.size.y / 2f);
         for (int x = 0; x < buildingData.size.x; x++)
         {
             for (int y = 0; y < buildingData.size.y; y++)
             {
-                Vector3 tilePosition = previewConstruction.transform.position + new Vector3(x, 0.5f, y);
-              GameObject tile =  Instantiate(previewBuildingTile, tilePosition, Quaternion.identity, previewConstruction.transform);
+                Vector3 tilePosition = bottomLeft + new Vector3(x + 0.5f, 0.5f, y + 0.5f);
+                GameObject tile = Instantiate(previewBuildingTile, tilePosition, Quaternion.identity, previewConstruction.transform);
                 tile.transform.localScale = gridComponent.cellSize;
                 tile.transform.Rotate(90, 0, 0);
             }
         }
+
         var previewConstructionMesh = previewConstruction.transform.GetChild(0);
         previewConstructionMeshRenderer = previewConstructionMesh.GetComponent<MeshRenderer>();
         currentConstructionData = new ConstructionData(unit, buildingData, previewConstructionMeshRenderer, previewConstructionMeshRenderer.material);
@@ -124,30 +125,6 @@ public class ConstructionPreviewSystem : MonoBehaviour
     {
         Debug.Log("Cancel");
 
-    }
-
-
-    public void DrawOutline(Vector3Int cellPosition, Vector2Int size)
-    {
-        lineRenderer.material = previewMaterial;
-        Vector3 cellSize = gridComponent.cellSize;
-
-
-        Vector3 bottomLeft = gridComponent.CellToWorld(cellPosition);
-
-        Vector3[] corners = new Vector3[5];
-        corners[0] = bottomLeft;
-        corners[1] = bottomLeft + new Vector3(size.x * cellSize.x, 0, 0);
-        corners[2] = bottomLeft + new Vector3(size.x * cellSize.x, 0, size.y * cellSize.z);
-        corners[3] = bottomLeft + new Vector3(0, 0, size.y * cellSize.z);
-        corners[4] = corners[0]; 
-
-        for (int i = 0; i < corners.Length; i++)
-            corners[i].y += 0.05f;
-
-        lineRenderer.positionCount = corners.Length;
-        lineRenderer.SetPositions(corners);
-        lineRenderer.widthMultiplier = 0.05f;
     }
 }
 

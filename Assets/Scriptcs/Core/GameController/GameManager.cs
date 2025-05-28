@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject holdSelectionUnitCanvas;
     [SerializeField] private GameObject buildingProducionPrefab;
     [SerializeField] private GameObject constructionSystemPrefab;
-
+    [SerializeField] private GameObject playerStartGameSetupPrefab;
     
     private void Awake()
     {
@@ -68,5 +68,10 @@ public class GameManager : MonoBehaviour
         boxVisual);
         buildingProduction.Init(commandPanelUI);
         previewSystem.Init(inputManager, constructionPlacerSystem, gridData);
+
+        // Start Setup
+        var playerStartGameSetupInstantiate = Instantiate(playerStartGameSetupPrefab);
+        var playerStartGameSetup = GetComponent<PlayerStartGameSetup>();
+        playerStartGameSetup.Init(playerResources, constructionPlacerSystem);
     }
 }

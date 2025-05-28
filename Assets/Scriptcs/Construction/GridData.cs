@@ -18,13 +18,13 @@ public class GridData
             if (placedObjects.ContainsKey(pos))
                 throw new Exception($"Dictionary already contains this cell position {pos}");
             placedObjects[pos] = data;
+            Debug.Log(pos);
         }
     }
 
     private List<Vector3Int> CalculatePositions(Vector3Int cellPosition, Vector2Int objectSize)
     {
         List<Vector3Int> returnVal = new();
-        
         Vector3Int bottomLeft = cellPosition - new Vector3Int(Mathf.FloorToInt(objectSize.x / 2f), 0, Mathf.FloorToInt(objectSize.y / 2f));
         for (int x = 0; x < objectSize.x; x++)
         {

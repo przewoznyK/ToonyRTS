@@ -17,8 +17,6 @@ public class ManageSelectionUnits : MonoBehaviour
         this.activeUnits = activeUnits;
 
         RMPClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
-
-
         RMPClickAction.performed += OnRpmClick;
 
         initialized = true;
@@ -26,7 +24,13 @@ public class ManageSelectionUnits : MonoBehaviour
 
     private void OnRpmClick(InputAction.CallbackContext ctx)
     {
-        
-        Debug.Log(activeUnits);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            foreach (var unit in activeUnits.unitsSelected)
+            {
+                unit.PlayerRightMouseButtonCommand(hit);
+            }  
+        }   
     }
 }

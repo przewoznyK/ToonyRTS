@@ -1139,7 +1139,6 @@ GameObject:
   - component: {fileID: 2776049360055170139}
   - component: {fileID: 793748236513116628}
   - component: {fileID: 6696982181077969190}
-  - component: {fileID: 6267930736215583073}
   - component: {fileID: 8061633269365564604}
   m_Layer: 3
   m_Name: Gatherer
@@ -1233,7 +1232,7 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6267930736215583073
+--- !u!114 &8061633269365564604
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1242,22 +1241,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 661760135184120366}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73ea68dc81513814987ac1cdd9f50101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agent: {fileID: 793748236513116628}
---- !u!114 &8061633269365564604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 661760135184120366}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c160e52ce0841d4999fb13a32b3098c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agent: {fileID: 793748236513116628}
+  currentResourceTypeGathering: 0
   _maxCarried: 20
 --- !u!1 &710396800318377996
 GameObject:

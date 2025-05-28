@@ -4,6 +4,7 @@ using UnityEngine.AI;
 
 public class GatherableResource : MonoBehaviour
 {
+    public ResourceTypesEnum resourceType { get; private set; }
     [SerializeField] private int _totalAvailable = 20;
 
     private int _available;

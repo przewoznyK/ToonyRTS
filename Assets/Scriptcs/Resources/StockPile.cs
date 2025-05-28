@@ -17,7 +17,8 @@ public class StockPile : MonoBehaviour
     public void Add()
     {
         _gathered++;
-       // Debug.Log("TUTAJ BEDZIE PRZEKAZYWANIE ITEMOW BEZPOSRDENIO DO RESOURCE MANAGER");
+
+        Debug.Log("TUTAJ BEDZIE PRZEKAZYWANIE ITEMOW BEZPOSRDENIO DO RESOURCE MANAGER");
     }
 
 }
