@@ -11,7 +11,6 @@ public class Sleep : IState
     }
     public void Tick()
     {
-   
     }
 
     public void OnEnter() { }

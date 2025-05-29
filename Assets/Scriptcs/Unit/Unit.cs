@@ -5,7 +5,10 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour, IActiveClickable
 {
-    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] protected NavMeshAgent agent;
+    public Vector3 TargetPosition;
+    public bool isGoingToPosition;
+    public float TimeStuck;
     Transform activator;
     private void Start()
     {

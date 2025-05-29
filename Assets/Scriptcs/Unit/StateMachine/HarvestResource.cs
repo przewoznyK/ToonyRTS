@@ -17,7 +17,7 @@ internal class HarvestResource : IState
 
     public void Tick()
     {
-        if (_gatherer.Target != null)
+        if (_gatherer.TargetResource != null)
         {
             if (_nextTakeResourceTime <= Time.time)
             {

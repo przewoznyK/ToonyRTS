@@ -11,43 +11,57 @@ public class Gatherer : Unit
     private StateMachine _stateMachine;
     private int _gatheredResources;
 
-    public GatherableResource Target { get; set; }
+    public GatherableResource TargetResource { get; set; }
     public StockPile StockPile { get; set; }
+    IState sleep;
+    IState moveToSelectedPosition;
+
 
     private void Awake()
     {
         var navMeshAgent = GetComponent<NavMeshAgent>();
         var animator = GetComponent<Animator>();
 
-        var sleep = new Sleep(this);
+        sleep = new Sleep(this);
         var search = new SearchForResource(this);
-        var moveToSelected = new MoveToSelectedResource(this, navMeshAgent, animator);
+        moveToSelectedPosition = new MoveToSelectedPosition(this, navMeshAgent, animator);
+        var moveToSelectedResources = new MoveToSelectedResource(this, navMeshAgent, animator);
         var harvest = new HarvestResource(this, animator);
         var returnToStockpile = new ReturnToStockpile(this, navMeshAgent, animator);
         var placeResourcesInStockpile = new PlaceResourcesInStockpile(this);
-
+    
         _stateMachine = new StateMachine();
         void At(IState to, IState from, Func<bool> condition) => _stateMachine.AddTransition(to, from, condition);
-        
-        Func<bool> HasTarget() => () => Target != null;
-        Func<bool> StuckForOverASecond() => () => moveToSelected.TimeStuck > 1f;
-        Func<bool> ReachedResource() => () => Target != null &&
-                                              Vector3.Distance(transform.position, Target.transform.position) < 1.5f;
 
-        Func<bool> TargetIsDepletedAndICanCarryMore() => () => (Target == null || Target.IsDepleted) && !InventoryFull().Invoke();
+
+        Func<bool> HasTargetPosition() => () => isGoingToPosition == true;
+        Func<bool> NoHasTargetPosition() => () => isGoingToPosition == false;
+        Func<bool> HasTargetResource() => () => TargetResource != null && NoHasTargetPosition().Invoke();
+        Func<bool> NoHasTargetResource() => () => TargetResource == null;
+        Func<bool> StuckForOverASecondAndGoingToPosition() => () => TimeStuck > 1f && isGoingToPosition == true;
+        Func<bool> StuckForOverASecondAndGoingToResource() => () => TimeStuck > 1f && TargetResource == null;
+        Func<bool> ReachedResource() => () => TargetResource != null &&
+                                              Vector3.Distance(transform.position, TargetResource.transform.position) < 1.5f;
+
+        Func<bool> TargetIsDepletedAndICanCarryMore() => () => (TargetResource == null || TargetResource.IsDepleted) && !InventoryFull().Invoke();
         Func<bool> InventoryFull() => () => _gatheredResources >= _maxCarried;
         Func<bool> ReachedStockpile() => () => StockPile != null &&
                                                Vector3.Distance(transform.position, StockPile.transform.position) < 1f;
+        Func<bool> BackFromStockpileToSelectedResource() => () => _gatheredResources == 0 && HasTargetResource().Invoke();
+        Func<bool> BackFromStockpileToSearchTarget() => () => _gatheredResources == 0 && !HasTargetResource().Invoke();
 
-        At(sleep, moveToSelected, HasTarget());
-        At(search, moveToSelected, HasTarget());
-        At(moveToSelected, search, StuckForOverASecond());
-        At(moveToSelected, harvest, ReachedResource());
+        At(sleep, moveToSelectedPosition, HasTargetPosition());
+        At(sleep, moveToSelectedResources, HasTargetResource());
+        At(search, moveToSelectedResources, HasTargetResource());
+        At(moveToSelectedResources, search, StuckForOverASecondAndGoingToResource());
+        At(moveToSelectedPosition, sleep, StuckForOverASecondAndGoingToPosition());
+        At(moveToSelectedResources, harvest, ReachedResource());
         At(harvest, search, TargetIsDepletedAndICanCarryMore());
         At(harvest, returnToStockpile, InventoryFull());
         At(returnToStockpile, placeResourcesInStockpile, ReachedStockpile());
-        At(placeResourcesInStockpile, search, () => _gatheredResources == 0);
-
+        At(placeResourcesInStockpile, moveToSelectedResources, BackFromStockpileToSelectedResource());
+        At(placeResourcesInStockpile, search, BackFromStockpileToSearchTarget());
+        At(search, sleep, NoHasTargetResource());
         _stateMachine.SetState(sleep);
     }
 
@@ -55,7 +69,7 @@ public class Gatherer : Unit
 
     public void TakeFromTarget()
     {
-        if (Target.Take())
+        if (TargetResource.Take())
         {
             _gatheredResources++;
             OnGatheredChanged?.Invoke(_gatheredResources);
@@ -74,12 +88,17 @@ public class Gatherer : Unit
 
     public override void PlayerRightMouseButtonCommand(RaycastHit hit)
     {
-        Debug.Log("ODPALAM");
         if (hit.collider.CompareTag("Resource"))
         {
             GatherableResource resource = hit.collider.GetComponent<GatherableResource>();
             currentResourceTypeGathering = resource.resourceType;
-            Target = resource;
+            TargetResource = resource;
+        }
+        if (hit.collider.CompareTag("Ground"))
+        {
+            TargetPosition = hit.point;
+            isGoingToPosition = true;
+            _stateMachine.SetState(moveToSelectedPosition);
         }
 
     }

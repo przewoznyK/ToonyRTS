@@ -67,11 +67,12 @@ public class GameManager : MonoBehaviour
         activeClickableObject.Init(inputManager, controlledUnits, activeUnits, selectionInfoUI, commandPanelUI,
         boxVisual);
         buildingProduction.Init(commandPanelUI);
-        previewSystem.Init(inputManager, constructionPlacerSystem, gridData);
+        previewSystem.Init(inputManager, constructionPlacerSystem, gridData, activeClickableObject);
+        constructionPlacerSystem.Init(playerResources, activeClickableObject);
 
         // Start Setup
         var playerStartGameSetupInstantiate = Instantiate(playerStartGameSetupPrefab);
-        var playerStartGameSetup = GetComponent<PlayerStartGameSetup>();
-        playerStartGameSetup.Init(playerResources, constructionPlacerSystem);
+        var playerStartGameSetup = playerStartGameSetupInstantiate.GetComponent<PlayerStartGameSetup>();
+        playerStartGameSetup.Init(playerResources, constructionPlacerSystem, gridData);
     }
 }

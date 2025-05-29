@@ -60,7 +60,7 @@ public class BuildingProduction : MonoBehaviour
         else
             productionDictionary.Remove(building);
 
-        if(commandPanelUI.currentBuilding == building)
+        if(commandPanelUI.currentSelectedBuilding == building)
             commandPanelUI.DisplayProductionQueue(building);
     }
 

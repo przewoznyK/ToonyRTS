@@ -7,6 +7,8 @@ public class ConstructionPreviewSystem : MonoBehaviour
     InputManager inputManager;
     ConstructionPlacerSystem constructionPlacerSystem;
     GridData gridData;
+    ActiveClickableObject activeClickableObject;
+
     private InputAction mousePositionAction;
     private InputAction LMBClickAction;
     private InputAction RMBClickAction;
@@ -26,12 +28,12 @@ public class ConstructionPreviewSystem : MonoBehaviour
     public bool isOnPreview { get; private set; }
     bool canPlaceConstruction;
     private float gridSize = 1f;
-    internal void Init(InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData)
+    internal void Init(InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData, ActiveClickableObject activeClickableObject)
     {
         this.inputManager = inputManager;
         this.constructionPlacerSystem = constructionPlacerSystem;
         this.gridData = gridData;
-
+        this.activeClickableObject = activeClickableObject;
         mousePositionAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_MOUSE_POSITION];
         LMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
         RMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
@@ -40,7 +42,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        activeClickableObject.enabled = false;
         LMBClickAction.performed += AcceptConstructionPosition;
         RMBClickAction.performed += CancelPreview;
     }
@@ -70,11 +72,9 @@ public class ConstructionPreviewSystem : MonoBehaviour
                 {
                     previewMaterial.color = Color.red;
                     canPlaceConstruction = false;
-
                 }
             }
-        }
-        
+        } 
     }
     private void OnDisable()
     {
@@ -83,15 +83,15 @@ public class ConstructionPreviewSystem : MonoBehaviour
         currentConstructionData = null;
         canPlaceConstruction = false;
         isOnPreview = false;
-
         gridVisualization.SetActive(false);
+        currentConstructionData = null;
+        Destroy(previewConstruction);
+        activeClickableObject.enabled = true;
     }
     public void StartPreview(List<Unit> unit, BuildingData buildingData)
     {
         this.enabled = true;
         this.buildingData = buildingData;
-    
-
         gridVisualization.SetActive(true);
         previewConstruction = Instantiate(buildingData.buildingPrefab);
         Vector3 bottomLeft = previewConstruction.transform.position - new Vector3(buildingData.size.x / 2f, 0f, buildingData.size.y / 2f);
@@ -118,13 +118,13 @@ public class ConstructionPreviewSystem : MonoBehaviour
         if (canPlaceConstruction)
         {
             constructionPlacerSystem.PlaceConstruction(gridData, currentConstructionData);
+
             this.enabled = false;
         }
     }
     private void CancelPreview(InputAction.CallbackContext context)
     {
-        Debug.Log("Cancel");
-
+        this.enabled = false;
     }
 }
 

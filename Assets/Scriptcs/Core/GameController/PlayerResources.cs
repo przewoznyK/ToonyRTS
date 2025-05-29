@@ -50,6 +50,7 @@ public class PlayerResources
             }
         }
         commandPanelUI.RefreshButtonsStatus();
+
     }
     public void SpendResources(List<ObjectPrices> objectPrices)
     {

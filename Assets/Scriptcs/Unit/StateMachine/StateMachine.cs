@@ -36,7 +36,6 @@ public class StateMachine
 
         _currentState.OnEnter();
     }
-
     public void AddTransition(IState from, IState to, Func<bool> predicate)
     {
         if (_transitions.TryGetValue(from.GetType(), out var transitions) == false)

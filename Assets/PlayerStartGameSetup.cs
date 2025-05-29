@@ -3,20 +3,11 @@ using UnityEngine;
 
 public class PlayerStartGameSetup : MonoBehaviour
 {
-    internal void Init(PlayerResources playerResources, ConstructionPlacerSystem constructionPlacerSystem)
+    [SerializeField] private BuildingData buildingData;
+    internal void Init(PlayerResources playerResources, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData)
     {
-        throw new NotImplementedException();
+        ConstructionData currentConstructionData = new ConstructionData(buildingData, 0, 0);
+        constructionPlacerSystem.PlaceConstruction(gridData, currentConstructionData);
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

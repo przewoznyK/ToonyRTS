@@ -11,7 +11,7 @@ public class SearchForResource : IState
     }
     public void Tick()
     {
-        _gatherer.Target = ChooseOneOfTheNearestResources(5);
+        _gatherer.TargetResource = ChooseOneOfTheNearestResources(5);
     }
 
     private GatherableResource ChooseOneOfTheNearestResources(int pickFromNearest)

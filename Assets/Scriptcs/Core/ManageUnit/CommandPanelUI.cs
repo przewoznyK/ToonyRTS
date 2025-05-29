@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
 public class CommandPanelUI : MonoBehaviour
 {
     PlayerResources playerResources;
@@ -19,9 +18,9 @@ public class CommandPanelUI : MonoBehaviour
     [SerializeField] private GameObject productRepresentationPrefab;
     List<UnitNameEnum> unitCanBuyList;
     private Image currentProductionImageFill;
-    public Building currentBuilding;
+    public Building currentSelectedBuilding;
     private BuildingProductionData buildingProductionData;
-    public Unit currentUnit;
+    public List<Unit> currentSelectedUnits;
     public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem)
     {
         this.playerResources = playerResources;
@@ -34,8 +33,8 @@ public class CommandPanelUI : MonoBehaviour
 
     public void PrepareBuildingUI(Building building)
     {
-        currentUnit = null;
-        currentBuilding = building;
+        currentSelectedUnits = null;
+        currentSelectedBuilding = building;
 
         unitCanBuyList = building.GetUnitsCanBuyList();
 
@@ -53,8 +52,9 @@ public class CommandPanelUI : MonoBehaviour
     }
     public void PrepareUnitUI(List<Unit> unitsList)
     {
-        currentBuilding = null;
-        var buildingList = BuildingDatabase.Instance.GetBuildingList();
+        currentSelectedBuilding = null;
+        currentSelectedUnits = unitsList;
+               var buildingList = BuildingDatabase.Instance.GetBuildingList();
         for (int i = 0; i < buildingList.Count; i++)
         {
             var buildingDataForButton = buildingList[i];
@@ -63,7 +63,7 @@ public class CommandPanelUI : MonoBehaviour
             currentButton.image.sprite = buildingDataForButton.buildingSprite;
             SetButtonColorStatusByPrice(currentButton, buildingDataForButton.objectPrices);
 
-            currentButton.onClick.AddListener(() => previewSystem.StartPreview(unitsList, buildingDataForButton));
+            currentButton.onClick.AddListener(() => previewSystem.StartPreview(currentSelectedUnits, buildingDataForButton));
         }
     }
     public void DisplayProductionQueue(Building building)
@@ -83,7 +83,7 @@ public class CommandPanelUI : MonoBehaviour
                 // Prepare Cancel Button
                 var button = productRepresentationInstantiate.GetComponent<Button>();
                 var cancelProduction = productRepresentationInstantiate.GetComponent<CancelProductionButton>();
-                button.onClick.AddListener(() => cancelProduction.CancelProduction(playerResources, buildingProduction, currentBuilding, product));
+                button.onClick.AddListener(() => cancelProduction.CancelProduction(playerResources, buildingProduction, currentSelectedBuilding, product));
                 // Set Icon
                 var child = productRepresentationInstantiate.transform.GetChild(1);
                 child.GetComponent<Image>().sprite = product.productSprite;
@@ -92,7 +92,7 @@ public class CommandPanelUI : MonoBehaviour
                     // Set First Production Fill to Dicrease Overtime
                     var fillImageChild = productRepresentationInstantiate.transform.GetChild(2);
                     currentProductionImageFill = fillImageChild.GetComponent<Image>();
-                    buildingProductionData = buildingProduction.GetProductingData(currentBuilding);
+                    buildingProductionData = buildingProduction.GetProductingData(currentSelectedBuilding);
                 }
             }
         }
@@ -119,19 +119,15 @@ public class CommandPanelUI : MonoBehaviour
 
     public void RefreshButtonsStatus()
     {
-        for (int i = 0; i < unitCanBuyList.Count; i++)
-        {
-            var currentUnit = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
-            var currentButton = buttons[i];
-
-            currentButton.image.sprite = currentUnit.unitSprite;
-            SetButtonColorStatusByPrice(currentButton, currentUnit.objectPrices);
-        }
+        if (currentSelectedBuilding == null)
+            PrepareUnitUI(currentSelectedUnits);
+        else
+            PrepareBuildingUI(currentSelectedBuilding);
     }
 
     private void SetMeetingPositionWithRightMouseButton(InputAction.CallbackContext ctx)
     {
-        if (currentBuilding != false)
+        if (currentSelectedBuilding != false)
         {
             Vector3 mousePos = Input.mousePosition;
             mousePos.z = Camera.main.nearClipPlane;
@@ -139,7 +135,7 @@ public class CommandPanelUI : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100))
             {
-                currentBuilding.SetMeetingPoint(hit.point);
+                currentSelectedBuilding.SetMeetingPoint(hit.point);
 
             }
         }
@@ -151,8 +147,8 @@ public class CommandPanelUI : MonoBehaviour
     }
     private void OnDisable()
     {
-        if(currentBuilding != null)
-            currentBuilding.DisableObject();
+        if(currentSelectedBuilding != null)
+            currentSelectedBuilding.DisableObject();
         RMBClickAction.performed -= SetMeetingPositionWithRightMouseButton;
     }
 
