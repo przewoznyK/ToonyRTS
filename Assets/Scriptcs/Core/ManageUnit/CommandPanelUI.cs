@@ -119,6 +119,7 @@ public class CommandPanelUI : MonoBehaviour
 
     public void RefreshButtonsStatus()
     {
+        Debug.Log("1111");
         if (currentSelectedBuilding == null)
             PrepareUnitUI(currentSelectedUnits);
         else

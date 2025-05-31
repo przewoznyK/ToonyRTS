@@ -6,7 +6,7 @@ public class BuildingDatabase : MonoBehaviour
 {
     public static BuildingDatabase Instance;
     [SerializeField]
-    private List<BuildingData> buildingDataList = new List<BuildingData>();
+    private List<BuildingData> buildingDataList = new();
     private void Awake()
     {
         Instance = this;

@@ -10,5 +10,5 @@ public class BuildingData : ScriptableObject
     public Sprite buildingSprite;
     public GameObject buildingPrefab;
     [field: SerializeField] public Vector2Int size { get; private set; }
-    [field: SerializeField] public List<ObjectPrices> objectPrices = new List<ObjectPrices>();
+    [field: SerializeField] public List<ObjectPrices> objectPrices = new();
 }

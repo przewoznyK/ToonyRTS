@@ -21,7 +21,7 @@ public class SummaryPanelUI : MonoBehaviour
             case ResourceTypesEnum.gold:
                 goldText.text = value.ToString();
                 break;
-            case ResourceTypesEnum.rock:
+            case ResourceTypesEnum.stone:
                 rockText.text = value.ToString();
                 break;
             default:

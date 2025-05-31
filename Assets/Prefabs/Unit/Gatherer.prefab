@@ -1245,6 +1245,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 793748236513116628}
+  animator: {fileID: 2776049360055170139}
+  TargetPosition: {x: 0, y: 0, z: 0}
+  isGoingToPosition: 0
+  TimeStuck: 0
   currentResourceTypeGathering: 0
   _maxCarried: 20
 --- !u!1 &710396800318377996

@@ -1,7 +1,9 @@
 public enum ResourceTypesEnum
 {
-    food,
-    wood,
-    gold,
-    rock,
+    food = 1,
+    wood = 2,
+    gold = 4,
+    stone = 8,
+    allTypes = food | wood | gold | stone,
+    mine = gold | stone,
 }

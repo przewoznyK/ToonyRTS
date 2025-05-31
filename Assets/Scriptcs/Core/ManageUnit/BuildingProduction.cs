@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class BuildingProduction : MonoBehaviour
 {
+    TeamColorEnum teamColorEnum;
     CommandPanelUI commandPanelUI;
     Dictionary<Building, BuildingProductionData> productionDictionary = new();
     private Coroutine UIproductionCoroutine;
-    public void Init(CommandPanelUI commandPanelUI)
+    public void Init(CommandPanelUI commandPanelUI, TeamColorEnum teamColorEnum)
     {
         this.commandPanelUI = commandPanelUI;
+        this.teamColorEnum = teamColorEnum;
     }
     public void CreateProductAndAddToProductionDictionary(Building building, UnitData unitData)
     {
@@ -50,7 +52,7 @@ public class BuildingProduction : MonoBehaviour
         yield return new WaitUntil(() => productionDictionary[building].endProduction);
       
         productionDictionary[building].endProduction = false;
-        building.SpawnUnit(productionDictionary[building].productQueue.Dequeue().productId);
+        building.SpawnUnit(productionDictionary[building].productQueue.Dequeue().productId, teamColorEnum);
 
         // Next producion if exist
         if (productionDictionary[building].productQueue.Count > 0)

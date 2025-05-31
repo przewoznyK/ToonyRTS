@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 internal class PlaceResourcesInStockpile : IState
 {
     private readonly Gatherer _gatherer;
@@ -9,11 +11,16 @@ internal class PlaceResourcesInStockpile : IState
 
     public void Tick()
     {
-        if (_gatherer.Take())
-            _gatherer.StockPile.Add();
+   
+           
     }
 
-    public void OnEnter() { }
+    public void OnEnter() {
+        var returnObjectPrices = _gatherer.StockPile.Add(_gatherer.objectPrices);
+        _gatherer.SetNewObjectPricesList(returnObjectPrices);
+
+        _gatherer._gatheredResources = 0;
+    }
 
     public void OnExit() { }
 }

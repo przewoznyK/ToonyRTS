@@ -23,10 +23,13 @@ public class Building : MonoBehaviour, IActiveClickable
     }
     internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;
 
-    public void SpawnUnit(int unitID)
+    public void SpawnUnit(int unitID, TeamColorEnum teamColorEnum)
     {
         GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
         GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
-        unitInstantiate.GetComponent<Unit>().GoMeetingPosition(meetingPoint.transform.position);
+        
+        var unit = unitInstantiate.GetComponent<Unit>();
+        unit.GoMeetingPosition(meetingPoint.transform.position);
+        unit.teamColorEnum = teamColorEnum;
     }
 }

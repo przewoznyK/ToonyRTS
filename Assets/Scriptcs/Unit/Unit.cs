@@ -5,7 +5,9 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour, IActiveClickable
 {
+    public TeamColorEnum teamColorEnum;
     [SerializeField] protected NavMeshAgent agent;
+    [SerializeField] protected Animator animator;
     public Vector3 TargetPosition;
     public bool isGoingToPosition;
     public float TimeStuck;
@@ -32,9 +34,12 @@ public class Unit : MonoBehaviour, IActiveClickable
 
     public void GoMeetingPosition(Vector3 position) => agent.SetDestination(position);
 
+
     public virtual void PlayerRightMouseButtonCommand(RaycastHit hit)
     {
         Debug.Log("111");
         // Domyœlna logika (lub pusta jeœli tylko do nadpisania)
     }
+
+
 }

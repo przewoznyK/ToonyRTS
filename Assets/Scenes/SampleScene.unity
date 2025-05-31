@@ -593,6 +593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ebcb89e32b89d4ab2fa56a87668633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceType: 8
   _totalAvailable: 25
 --- !u!65 &724575554
 BoxCollider:
@@ -766,6 +767,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eb4776e0214f3041acd61e562a0fdd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teamColorEnum: 0
+  stockPileType: 0
 --- !u!1 &786843003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,6 +1194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ebcb89e32b89d4ab2fa56a87668633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resourceType: 8
   _totalAvailable: 25
 --- !u!65 &1552171196
 BoxCollider:
@@ -1333,6 +1337,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8061633269365564604, guid: 39b8341be33b5c74aade35adf4ccd162, type: 3}
+      propertyPath: currentResourceTypeGathering
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1432,6 +1440,7 @@ MonoBehaviour:
   buildingProducionPrefab: {fileID: 2184970409176214722, guid: 77cc6ecf268c0a2428893e2d61accb93, type: 3}
   constructionSystemPrefab: {fileID: 6186055460891491870, guid: cacc1c12be2006b4e86ee7a59002e0b5, type: 3}
   playerStartGameSetupPrefab: {fileID: 3167862710859587500, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
+  accessToClassByTeamColorPrefab: {fileID: 2524503503730023683, guid: 76168d69c4213b1478e39edd628f97e8, type: 3}
 --- !u!4 &1840628464
 Transform:
   m_ObjectHideFlags: 0
@@ -1561,6 +1570,10 @@ PrefabInstance:
     - target: {fileID: 2652571741192345122, guid: 39b8341be33b5c74aade35adf4ccd162, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8061633269365564604, guid: 39b8341be33b5c74aade35adf4ccd162, type: 3}
+      propertyPath: currentResourceTypeGathering
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

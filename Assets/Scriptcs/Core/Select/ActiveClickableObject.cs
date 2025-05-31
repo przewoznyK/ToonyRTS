@@ -165,7 +165,7 @@ public class ActiveClickableObject : MonoBehaviour
         Vector2 boxCenter = (boxStart + boxEnd) / 2;
         boxVisual.position = boxCenter;
 
-        Vector2 boxSize = new Vector2(Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
+        Vector2 boxSize = new (Mathf.Abs(boxStart.x - boxEnd.x), Mathf.Abs(boxStart.y - boxEnd.y));
 
         boxVisual.sizeDelta = boxSize;
     }

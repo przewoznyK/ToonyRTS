@@ -37,7 +37,6 @@ internal class MoveToSelectedResource : IState
 
     public void OnExit()
     {
-        _navMeshAgent.enabled = false;
         _animator.SetFloat(Speed, 0f);
     }
 }

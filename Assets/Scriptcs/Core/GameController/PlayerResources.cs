@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
 public class PlayerResources
 {
     SummaryPanelUI summaryPanelUI;
@@ -20,13 +22,14 @@ public class PlayerResources
         summaryPanelUI.UpdateResource(ResourceTypesEnum.food, currentFood);
         summaryPanelUI.UpdateResource(ResourceTypesEnum.wood, currentWood);
         summaryPanelUI.UpdateResource(ResourceTypesEnum.gold, currentGold);
-        summaryPanelUI.UpdateResource(ResourceTypesEnum.rock, currentRock);
+        summaryPanelUI.UpdateResource(ResourceTypesEnum.stone, currentRock);
     }
 
     public void AddResources(List<ObjectPrices> objectPrices)
     {
         foreach (var price in objectPrices)
         {
+            
             switch (price.priceType)
             {
                 case ResourceTypesEnum.food:
@@ -41,9 +44,9 @@ public class PlayerResources
                     currentGold += price.priceValue;
                     summaryPanelUI.UpdateResource(ResourceTypesEnum.gold, currentGold);
                     break;
-                case ResourceTypesEnum.rock:
+                case ResourceTypesEnum.stone:
                     currentRock += price.priceValue;
-                    summaryPanelUI.UpdateResource(ResourceTypesEnum.rock, currentRock);
+                    summaryPanelUI.UpdateResource(ResourceTypesEnum.stone, currentRock);
                     break;
                 default:
                     break;
@@ -51,6 +54,36 @@ public class PlayerResources
         }
         commandPanelUI.RefreshButtonsStatus();
 
+    }
+
+    public void AddSingleResource(ResourceTypesEnum resourceType, int value)
+    {
+        switch (resourceType)
+        {
+            case ResourceTypesEnum.food:
+                currentFood += value;
+                summaryPanelUI.UpdateResource(ResourceTypesEnum.food, currentFood);
+                break;
+            case ResourceTypesEnum.wood:
+                currentWood += value;
+                summaryPanelUI.UpdateResource(ResourceTypesEnum.wood, currentWood);
+                break;
+            case ResourceTypesEnum.gold:
+                currentGold += value;
+                summaryPanelUI.UpdateResource(ResourceTypesEnum.gold, currentGold);
+                break;
+            case ResourceTypesEnum.stone:
+                currentRock += value;
+                summaryPanelUI.UpdateResource(ResourceTypesEnum.stone, currentRock);
+                break;
+            default:
+                break;
+        }
+
+        currentWood += value;
+        summaryPanelUI.UpdateResource(ResourceTypesEnum.wood, currentWood);
+
+        commandPanelUI.RefreshButtonsStatus();
     }
     public void SpendResources(List<ObjectPrices> objectPrices)
     {
@@ -70,9 +103,9 @@ public class PlayerResources
                     currentGold -= price.priceValue;
                     summaryPanelUI.UpdateResource(ResourceTypesEnum.gold, currentGold);
                     break;
-                case ResourceTypesEnum.rock:
+                case ResourceTypesEnum.stone:
                     currentRock -= price.priceValue;
-                    summaryPanelUI.UpdateResource(ResourceTypesEnum.rock, currentRock);
+                    summaryPanelUI.UpdateResource(ResourceTypesEnum.stone, currentRock);
                     break;
                 default:
                     break;
@@ -95,7 +128,7 @@ public class PlayerResources
                 case ResourceTypesEnum.gold:
                     if (currentGold < price.priceValue) return false;
                     break;
-                case ResourceTypesEnum.rock:
+                case ResourceTypesEnum.stone:
                     if (currentRock < price.priceValue) return false;
                     break;
                 default:

@@ -10,10 +10,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject buildingProducionPrefab;
     [SerializeField] private GameObject constructionSystemPrefab;
     [SerializeField] private GameObject playerStartGameSetupPrefab;
-    
+    [SerializeField] private GameObject accessToClassByTeamColorPrefab;
     private void Awake()
     {
-        var blueTeam = new PlayerController(TeamColorEnum.Blue);
+        //  var blueTeam = new PlayerController(TeamColorEnum.Blue);
+        var blueTeam = TeamColorEnum.Blue;
         var controlledUnits = new ControlledUnits();
         var activeUnits = new ActiveUnits();
         var gridData = new GridData();
@@ -66,7 +67,7 @@ public class GameManager : MonoBehaviour
         selectionInfoUI.Init(activeUnits);
         activeClickableObject.Init(inputManager, controlledUnits, activeUnits, selectionInfoUI, commandPanelUI,
         boxVisual);
-        buildingProduction.Init(commandPanelUI);
+        buildingProduction.Init(commandPanelUI, TeamColorEnum.Blue);
         previewSystem.Init(inputManager, constructionPlacerSystem, gridData, activeClickableObject);
         constructionPlacerSystem.Init(playerResources, activeClickableObject);
 
@@ -74,5 +75,10 @@ public class GameManager : MonoBehaviour
         var playerStartGameSetupInstantiate = Instantiate(playerStartGameSetupPrefab);
         var playerStartGameSetup = playerStartGameSetupInstantiate.GetComponent<PlayerStartGameSetup>();
         playerStartGameSetup.Init(playerResources, constructionPlacerSystem, gridData);
+
+        // Global
+        var accessToClassByTeamColorInstantiate = Instantiate(accessToClassByTeamColorPrefab);
+        var accessToClassByTeamColor = accessToClassByTeamColorInstantiate.GetComponent<AccessToClassByTeamColor>();
+        accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(blueTeam, playerResources);
     }
 }

@@ -22,7 +22,7 @@ internal class HarvestResource : IState
             if (_nextTakeResourceTime <= Time.time)
             {
                 _nextTakeResourceTime = Time.time + (1f / _resourcesPerSecond);
-                _gatherer.TakeFromTarget();
+                _gatherer.AddResource(1);
                 _animator.SetTrigger(Harvest);
             }
         }
