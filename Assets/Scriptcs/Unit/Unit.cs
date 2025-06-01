@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour, IActiveClickable
 {
-    public TeamColorEnum teamColorEnum;
+    public TeamColorEnum teamColor;
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Animator animator;
     public Vector3 TargetPosition;

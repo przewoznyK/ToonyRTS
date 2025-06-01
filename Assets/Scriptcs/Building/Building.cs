@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Building : MonoBehaviour, IActiveClickable
 {
+    [SerializeField] private TeamColorEnum teamColor;
+    [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] private Transform meetingPoint;
     public ObjectTypeEnum CheckObjectType()
@@ -30,6 +32,11 @@ public class Building : MonoBehaviour, IActiveClickable
         
         var unit = unitInstantiate.GetComponent<Unit>();
         unit.GoMeetingPosition(meetingPoint.transform.position);
-        unit.teamColorEnum = teamColorEnum;
+        unit.teamColor = teamColorEnum;
+    }
+
+    public void SetTeamColor(TeamColorEnum teamColor)
+    {
+        this.teamColor = teamColor;
     }
 }

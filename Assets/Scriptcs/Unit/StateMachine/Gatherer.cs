@@ -15,11 +15,14 @@ public class Gatherer : Unit
     public int _gatheredResources;
 
     public GatherableResource TargetResource { get; set; }
+    public InConstructionBuildingRepresentation TargetConstructionToBuild { get; set; }
+
     public StockPile StockPile { get; set; }
     IState sleep;
     IState moveToSelectedPosition;
     IState moveToSelectedResource;
     private bool gatheringEnabled;
+    private bool buildingContructionEnabled;
     private static readonly int Speed = Animator.StringToHash("Speed");
 
     public List<ObjectPrices> objectPrices { get; private set; } = new ();
@@ -120,15 +123,36 @@ public class Gatherer : Unit
 
     public override void PlayerRightMouseButtonCommand(RaycastHit hit)
     {
-        if (hit.collider.CompareTag("Resource"))
+        if (hit.collider.TryGetComponent<IGetTeamAndProperties> (out IGetTeamAndProperties component))
         {
-            gatheringEnabled = true;
-            GatherableResource resource = hit.collider.GetComponent<GatherableResource>();
+            // CHECK TEAM COLOR
+            if((component.GetTeam() & teamColor) == teamColor)
+            {
+                // GO TO GATHERING RESOURCE
+                if (component.GetEntityType() == EntityTypeEnum.resource)
+                {
+                    gatheringEnabled = true;
+                    GatherableResource properties = component.GetProperties<GatherableResource>();
+                    currentResourceTypeGathering = properties.resourceType;
+                    TargetResource = properties;
+                    _stateMachine.SetState(moveToSelectedResource);
+                    GoMeetingPosition(hit.point);
+                }
+                // GO TO BUILDING CONTRUCTION
+                else if (component.GetEntityType() == EntityTypeEnum.contructionToBuild)
+                {
+                    gatheringEnabled = false;
+                    buildingContructionEnabled = true;
+                  
+                    InConstructionBuildingRepresentation properties = component.GetProperties<InConstructionBuildingRepresentation>();
+                    TargetConstructionToBuild = properties;
+                    GoMeetingPosition(hit.point);
 
-            currentResourceTypeGathering = resource.resourceType;
-            TargetResource = resource;
-            _stateMachine.SetState(moveToSelectedResource);
-            GoMeetingPosition(hit.point);
+                }
+            }
+
+          
+
         }
         if (hit.collider.CompareTag("Ground"))
         {
@@ -137,6 +161,7 @@ public class Gatherer : Unit
             isGoingToPosition = true;
             GoMeetingPosition(TargetPosition);
             animator.SetFloat(Speed, 1f);
+
 
         }
 
@@ -147,14 +172,13 @@ public class Gatherer : Unit
         if (obj != null)
         {
             obj.AddValue(value);
-        
-            Debug.Log($"Aktualna iloœæ {currentResourceTypeGathering}: {obj.priceValue}");
             _gatheredResources = obj.priceValue;
         }
     }
 
     public void SetNewObjectPricesList(List<ObjectPrices> newObjectPrices)
     {
-        
+        objectPrices = newObjectPrices;
     }
+
 }

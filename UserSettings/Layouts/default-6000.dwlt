@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2048
     height: 1068.8
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 382}
   m_MaxSize: {x: 10000, y: 10000}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 150}
   m_MaxSize: {x: 32384, y: 24288}
   vertical: 0
-  controlID: 166
+  controlID: 164
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 150}
   m_MaxSize: {x: 16192, y: 24288}
   vertical: 1
-  controlID: 18
+  controlID: 41
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -168,8 +168,8 @@ MonoBehaviour:
     y: 0
     width: 1288.8
     height: 431.2
-  m_MinSize: {x: 51, y: 76}
-  m_MaxSize: {x: 4001, y: 4026}
+  m_MinSize: {x: 50, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 17}
@@ -276,8 +276,8 @@ MonoBehaviour:
     y: 0
     width: 660.80005
     height: 384.00006
-  m_MinSize: {x: 102, y: 126}
-  m_MaxSize: {x: 4002, y: 4026}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
@@ -1384,10 +1384,10 @@ MonoBehaviour:
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 77.99994}
-    m_SelectedIDs: 32b20000
-    m_LastClickedID: 45618
-    m_ExpandedIDs: 0000000000b0000002b0000004b0000006b0000008b000000ab0000006b200000cb200001eb2000000ca9a3b
+    scrollPos: {x: 0, y: 29.999939}
+    m_SelectedIDs: 28b20000
+    m_LastClickedID: 45608
+    m_ExpandedIDs: 000000000cb000000eb0000010b0000012b0000014b0000016b0000018b2000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1416,7 +1416,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000000b0000002b0000004b0000006b0000008b000000ab00000
+    m_ExpandedIDs: 000000000cb000000eb0000010b0000012b0000014b0000016b00000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -2155,9 +2155,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -2.8095913, y: 5.8357124, z: -1.1188749}
+    m_Target: {x: 2.5738568, y: -0.16558132, z: -0.21610746}
     speed: 2
-    m_Value: {x: -2.8095913, y: 5.8357124, z: -1.1188749}
+    m_Value: {x: 2.5738568, y: -0.16558132, z: -0.21610746}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -2203,13 +2203,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.35948348, y: 0.62794435, z: -0.40249628, w: 0.5608256}
+    m_Target: {x: 0.42632332, y: 0.0027133261, z: -0.0012695154, w: 0.904607}
     speed: 2
-    m_Value: {x: 0.35947073, y: 0.62792206, z: -0.40248197, w: 0.5608057}
+    m_Value: {x: 0.42630747, y: 0.0027132253, z: -0.0012694681, w: 0.9045734}
   m_Size:
-    m_Target: 9.694183
+    m_Target: 0.70710677
     speed: 2
-    m_Value: 9.694183
+    m_Value: 0.70710677
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -2278,7 +2278,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 42540
+  m_LastSelectedObjectID: 42512
 --- !u!114 &21
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -2354,23 +2354,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 2ca60000
-      m_LastClickedID: 42540
-      m_ExpandedIDs: 20fbffff
+      m_SelectedIDs: 6aa60000
+      m_LastClickedID: 42602
+      m_ExpandedIDs: 20fbffff3ca60000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: EventSystem
+        m_OriginalName: EventSystem
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 42582
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
         m_ClientGUIView: {fileID: 12}

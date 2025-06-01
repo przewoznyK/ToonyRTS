@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InConstructionBuildingRepresentation : MonoBehaviour
+public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndProperties
 {
+    [SerializeField] private TeamColorEnum teamColor;
+    [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private GameObject finishBuilding;
-    private TeamColorEnum teamColorToSet;
+
     [SerializeField] private int timeToBuilt;
     List<Gatherer> unitGatheringResourcesList = new();
     public void SetFinishBuilding(GameObject builtToCreate)
@@ -15,7 +17,7 @@ public class InConstructionBuildingRepresentation : MonoBehaviour
     internal void EndProcess()
     {
         GameObject newBuilding = Instantiate(finishBuilding, transform.position, Quaternion.identity);
-      //  newBuilding.GetComponent<Building>().SetTeamColor(teamColorToSet);
+        newBuilding.GetComponent<Building>().SetTeamColor(teamColor);
         foreach (var unitGathering in unitGatheringResourcesList)
         {
 
@@ -34,6 +36,25 @@ public class InConstructionBuildingRepresentation : MonoBehaviour
         {
             EndProcess();
         }
+    }
+
+    public TeamColorEnum GetTeam()
+    {
+        return teamColor;
+    }
+
+    public EntityTypeEnum GetEntityType()
+    {
+        return entityType;
+    }
+
+    public T GetProperties<T>() where T : Component
+    {
+        if (typeof(T) == typeof(InConstructionBuildingRepresentation))
+            return this as T;
+        else
+            Debug.Log("You can only take InConstructionBuildingRepresentation from this");
+        return null;
     }
 
     //public void AddToActiveBuildersList(UnitBuilderBuildObject unitBuilderBuildObject)

@@ -1,46 +1,41 @@
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using TMPro;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class StockPile : MonoBehaviour
+public class StockPile : MonoBehaviour, IGetTeamAndProperties
 {
-    [SerializeField] private TeamColorEnum teamColorEnum;
+    [SerializeField] private TeamColorEnum teamColor;
+    [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private ResourceTypesEnum stockPileType;
-    private int _gathered;
-
-    private void OnEnable()
-    {
-       // _gathered = 0;
-
-    }
-
     public List<ObjectPrices> Add(List<ObjectPrices> objectPrices)
     {
-        var playerResource = AccessToClassByTeamColor.instance.GetPlayerResourcesManagerByTeamColor(teamColorEnum);
-        List<ObjectPrices> newObjectPrices = new();
+        var playerResource = AccessToClassByTeamColor.instance.GetPlayerResourcesManagerByTeamColor(teamColor);
         if (stockPileType == ResourceTypesEnum.allTypes)
         {
-            playerResource.AddResources(newObjectPrices);
-            var allowedTypes = new List<ResourceTypesEnum>
+            playerResource.AddResources(objectPrices);
+            foreach (var obj in objectPrices)
             {
-                ResourceTypesEnum.food,
-                ResourceTypesEnum.wood,
-                ResourceTypesEnum.gold,
-                ResourceTypesEnum.stone
-            };
-
-            foreach (ResourceTypesEnum type in allowedTypes)
-            {
-                newObjectPrices.Add(new ObjectPrices(type, 0));
+               obj.SetValue(0);
             }
-
         }
-
-        return newObjectPrices;
-
+        return objectPrices;
     }
+
+    public TeamColorEnum GetTeam()
+    {
+        return teamColor;
+    }
+    public EntityTypeEnum GetEntityType()
+    {
+        return entityType;
+    }
+    public T GetProperties<T>() where T : Component
+    {
+        if (typeof(T) == typeof(StockPile))
+            return this as T;
+        else
+            Debug.Log("You can only take StockPile from this");
+        return null;
+    }
+
 }

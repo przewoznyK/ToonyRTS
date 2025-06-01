@@ -2,8 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GatherableResource : MonoBehaviour
+public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
 {
+    [SerializeField] private TeamColorEnum teamColor;
+    [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] public ResourceTypesEnum resourceType;
     [SerializeField] private int _totalAvailable = 20;
 
@@ -52,4 +54,23 @@ public class GatherableResource : MonoBehaviour
     }
 
     public void SetAvailable(int amount) => _available = amount;
+
+    public TeamColorEnum GetTeam()
+    {
+        return teamColor;
+    }
+    public EntityTypeEnum GetEntityType()
+    {
+        return entityType;
+    }
+    public T GetProperties<T>() where T : Component
+    {
+        if (typeof(T) == typeof(GatherableResource))
+            return this as T;
+        else
+            Debug.Log("You can only get GatherableResource from this");
+        return null;
+    }
+
+
 }
