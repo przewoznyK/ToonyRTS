@@ -7,7 +7,7 @@ public class ActiveClickableObject : MonoBehaviour
     #region Constructor Variable
     InputManager inputManager;
     ControlledUnits controlledUnits;
-    ActiveUnits activeUnits;
+    public ActiveUnits activeUnits;
     SelectionInfoUI selectionInfoUI;
     CommandPanelUI commandPanelUI;
     #endregion

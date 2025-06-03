@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -24,7 +26,7 @@ public class Gatherer : Unit
     private bool gatheringEnabled;
     private bool buildingContructionEnabled;
     private static readonly int Speed = Animator.StringToHash("Speed");
-
+    private static readonly int Harvest = Animator.StringToHash("Harvest");
     public List<ObjectPrices> objectPrices { get; private set; } = new ();
 
     private void Awake()
@@ -98,6 +100,15 @@ public class Gatherer : Unit
                 TargetPosition = Vector3.zero;
             }
         }
+        if(buildingContructionEnabled)
+        {
+            if (Vector3.Distance(TargetConstructionToBuild.transform.position, transform.position) <= 3.5f)
+            {
+                buildingContructionEnabled = false;
+                animator.SetFloat(Speed, 0f);
+                StartCoroutine(BuildingCycle());
+            }
+        }
     }
    
 
@@ -132,6 +143,7 @@ public class Gatherer : Unit
                 if (component.GetEntityType() == EntityTypeEnum.resource)
                 {
                     gatheringEnabled = true;
+                    isGoingToPosition = false;
                     GatherableResource properties = component.GetProperties<GatherableResource>();
                     currentResourceTypeGathering = properties.resourceType;
                     TargetResource = properties;
@@ -141,13 +153,14 @@ public class Gatherer : Unit
                 // GO TO BUILDING CONTRUCTION
                 else if (component.GetEntityType() == EntityTypeEnum.contructionToBuild)
                 {
+                    Debug.Log("CONSTRUCTION");
                     gatheringEnabled = false;
                     buildingContructionEnabled = true;
-                  
+                    isGoingToPosition = false;
                     InConstructionBuildingRepresentation properties = component.GetProperties<InConstructionBuildingRepresentation>();
                     TargetConstructionToBuild = properties;
-                    GoMeetingPosition(hit.point);
-
+                    GoMeetingPosition(hit.transform.position);
+             
                 }
             }
 
@@ -180,5 +193,23 @@ public class Gatherer : Unit
     {
         objectPrices = newObjectPrices;
     }
+    IEnumerator BuildingCycle()
+    {
+        animator.SetTrigger(Harvest);
+        yield return new WaitForSeconds(1f);
+        if (!TargetConstructionToBuild)
+            yield break;
+        TargetConstructionToBuild.WorkOnBuilding(1);
+        Debug.Log("WORK");
+        StartCoroutine(BuildingCycle());
+    }
 
+    public void SetBuildingToBuild(InConstructionBuildingRepresentation properties)
+    {
+        gatheringEnabled = false;
+        buildingContructionEnabled = true;
+        isGoingToPosition = false;
+        TargetConstructionToBuild = properties;
+        GoMeetingPosition(properties.transform.position);
+    }
 }

@@ -422,3 +422,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bbf1a3db3ebb744f9faf8910ee254e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  constructionRepresentationPrefab: {fileID: 4185059133582313794, guid: 566c19c2432728f408d655d726e9ea01, type: 3}
+  constructionRepresentation: {fileID: 2110403577146983853, guid: 566c19c2432728f408d655d726e9ea01, type: 3}
