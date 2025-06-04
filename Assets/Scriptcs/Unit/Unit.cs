@@ -15,6 +15,9 @@ public class Unit : MonoBehaviour, IActiveClickable
     private void Start()
     {
         activator = transform.GetChild(0);
+        var commandUnits = AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor);
+        commandUnits.AddUnit(this);
+
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 

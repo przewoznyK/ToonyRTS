@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class ActiveClickableObject : MonoBehaviour
 {
@@ -129,6 +130,7 @@ public class ActiveClickableObject : MonoBehaviour
             startPosition = Vector2.zero;
             endPosition = Vector2.zero;
             DrawVisual();
+            SelectUnits();
         }
     }
     private void OnLpmDoubleClick(InputAction.CallbackContext ctx)
@@ -207,12 +209,17 @@ public class ActiveClickableObject : MonoBehaviour
         // lopp thru all the units
         foreach (var unit in controlledUnits.allUnits)
         {
+            Debug.Log(unit);
             // if unit is within the bounds ofthe selection rect
             if (selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
             {
                 // if any unit is within the selection add them to selection
+                Debug.Log(unit);
+                unit.ActiveObject();
                 activeUnits.AddUnit(unit);
-                selectionInfoUI.gameObject.SetActive(true);
+                commandPanelUI.PrepareUnitUI(activeUnits.TakeUnitList());
+                commandPanelUI.gameObject.SetActive(true);
+
             }
         }
     }

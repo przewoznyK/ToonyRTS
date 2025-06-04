@@ -1,8 +1,6 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -200,16 +198,15 @@ public class Gatherer : Unit
         if (!TargetConstructionToBuild)
             yield break;
         TargetConstructionToBuild.WorkOnBuilding(1);
-        Debug.Log("WORK");
         StartCoroutine(BuildingCycle());
     }
 
-    public void SetBuildingToBuild(InConstructionBuildingRepresentation properties)
+    public void SetBuildingToBuild(GameObject constructionInstantiate)
     {
         gatheringEnabled = false;
         buildingContructionEnabled = true;
         isGoingToPosition = false;
-        TargetConstructionToBuild = properties;
-        GoMeetingPosition(properties.transform.position);
+        TargetConstructionToBuild = constructionInstantiate.GetComponent<InConstructionBuildingRepresentation>();
+        GoMeetingPosition(constructionInstantiate.transform.position);
     }
 }

@@ -80,8 +80,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridComponent: {fileID: 7433814514141744081}
   gridVisualization: {fileID: 5202509558667931472}
-  lineRenderer: {fileID: 2838566243769328254}
   previewYOffset: 0.06
+  teamColor: 1
   previewMaterial: {fileID: 2100000, guid: efb892f9083770948b838c445ce540d8, type: 2}
   previewBuildingTile: {fileID: 8355141004787707907, guid: 0cef6ba9b97416c46b83b27e36090f0c, type: 3}
 --- !u!120 &2838566243769328254

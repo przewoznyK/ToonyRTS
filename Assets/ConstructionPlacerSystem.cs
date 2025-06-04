@@ -21,8 +21,11 @@ public class ConstructionPlacerSystem : MonoBehaviour
         {
             currentConstructionData.previewObjectToPlaceMeshRenderer.material = currentConstructionData.originalMaterial;
             playerResources.SpendResources(currentConstructionData.buildingData.objectPrices);
+
             constructionRepresentation.SetFinishBuilding(currentConstructionData.buildingData.buildingPrefab);
             GameObject constructionInstantiate = Instantiate(constructionRepresentationPrefab, currentConstructionData.positionToOccupy, Quaternion.identity);
+          //  constructionInstantiate.GetComponent<Building>().SetTeamColor(currentConstructionData.teamColor);
+
             constructionInstantiate.transform.rotation = Quaternion.Euler(90, 0, 0);
             constructionInstantiate.transform.localScale = new Vector3(currentConstructionData.buildingData.size.x, currentConstructionData.buildingData.size.y, 1);
             constructionInstantiate.transform.localScale = new Vector3(currentConstructionData.buildingData.size.x, currentConstructionData.buildingData.size.y, 1);
@@ -33,13 +36,14 @@ public class ConstructionPlacerSystem : MonoBehaviour
                 if(unit is Gatherer)
                 {
                     Gatherer gatherer = unit as Gatherer;
-                    gatherer.SetBuildingToBuild(constructionRepresentation);
+                    gatherer.SetBuildingToBuild(constructionInstantiate);
                 }
             }
         }
         else
         {
-            Instantiate(currentConstructionData.buildingData.buildingPrefab, currentConstructionData.positionToOccupy, Quaternion.identity);
+            GameObject constructionInstantiate = Instantiate(currentConstructionData.buildingData.buildingPrefab, currentConstructionData.positionToOccupy, Quaternion.identity);
+            constructionInstantiate.GetComponent<Building>().SetTeamColor(currentConstructionData.teamColor);
         }
     }
 }

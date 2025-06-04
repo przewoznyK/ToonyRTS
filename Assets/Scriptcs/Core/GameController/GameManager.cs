@@ -74,11 +74,12 @@ public class GameManager : MonoBehaviour
         // Start Setup
         var playerStartGameSetupInstantiate = Instantiate(playerStartGameSetupPrefab);
         var playerStartGameSetup = playerStartGameSetupInstantiate.GetComponent<PlayerStartGameSetup>();
-        playerStartGameSetup.Init(playerResources, constructionPlacerSystem, gridData);
+        playerStartGameSetup.Init(playerResources, constructionPlacerSystem, gridData, TeamColorEnum.Blue);
 
         // Global
         var accessToClassByTeamColorInstantiate = Instantiate(accessToClassByTeamColorPrefab);
         var accessToClassByTeamColor = accessToClassByTeamColorInstantiate.GetComponent<AccessToClassByTeamColor>();
         accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(blueTeam, playerResources);
+        accessToClassByTeamColor.AddControlledUnitsManagerToGlobalList(blueTeam, controlledUnits);
     }
 }

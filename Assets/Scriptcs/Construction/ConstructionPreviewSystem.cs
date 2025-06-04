@@ -15,8 +15,8 @@ public class ConstructionPreviewSystem : MonoBehaviour
 
     [SerializeField] private Grid gridComponent;
     [SerializeField] private GameObject gridVisualization;
-    [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float previewYOffset = 0.06f;
+    [SerializeField] private TeamColorEnum teamColor;
     private GameObject previewConstruction;
 
     [SerializeField] private Material previewMaterial;
@@ -108,7 +108,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
 
         var previewConstructionMesh = previewConstruction.transform.GetChild(0);
         previewConstructionMeshRenderer = previewConstructionMesh.GetComponent<MeshRenderer>();
-        currentConstructionData = new ConstructionData(unit, buildingData, previewConstructionMeshRenderer, previewConstructionMeshRenderer.material);
+        currentConstructionData = new ConstructionData(unit, buildingData, previewConstructionMeshRenderer, previewConstructionMeshRenderer.material, teamColor);
         previewConstructionMeshRenderer.material = previewMaterial;
         isOnPreview = true;
     }
