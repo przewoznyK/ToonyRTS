@@ -18,11 +18,6 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
     {
         GameObject newBuilding = Instantiate(finishBuilding, transform.position, Quaternion.identity);
         newBuilding.GetComponent<Building>().SetTeamColor(teamColor);
-        //foreach (var unitGathering in unitGatheringResourcesList)
-        //{
-
-        //    unitGathering.enabled = false;
-        //}
         Destroy(gameObject);
     }
 
@@ -57,8 +52,4 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
         return null;
     }
 
-    //public void AddToActiveBuildersList(UnitBuilderBuildObject unitBuilderBuildObject)
-    //{
-    //    unitGatheringResourcesList.Add(unitBuilderBuildObject);
-    //}
 }

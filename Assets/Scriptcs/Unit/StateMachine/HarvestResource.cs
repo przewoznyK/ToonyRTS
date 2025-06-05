@@ -1,18 +1,21 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 internal class HarvestResource : IState
 {
     private readonly Gatherer _gatherer;
     private readonly Animator _animator;
+    private readonly NavMeshAgent agent;
     private float _resourcesPerSecond = 3;
 
     private float _nextTakeResourceTime;
     private static readonly int Harvest = Animator.StringToHash("Harvest");
 
-    public HarvestResource(Gatherer gatherer, Animator animator)
+    public HarvestResource(Gatherer gatherer, Animator animator, NavMeshAgent agent)
     {
         _gatherer = gatherer;
         _animator = animator;
+        this.agent = agent;
     }
 
     public void Tick()
@@ -22,7 +25,7 @@ internal class HarvestResource : IState
             if (_nextTakeResourceTime <= Time.time)
             {
                 _nextTakeResourceTime = Time.time + (1f / _resourcesPerSecond);
-                _gatherer.AddResource(1);
+                _gatherer.AddResource(_gatherer.reachedPerSecond);
                 _animator.SetTrigger(Harvest);
             }
         }
@@ -30,9 +33,11 @@ internal class HarvestResource : IState
 
     public void OnEnter()
     {
+        agent.isStopped = true;
     }
 
     public void OnExit()
     {
+        agent.isStopped = false;
     }
 }

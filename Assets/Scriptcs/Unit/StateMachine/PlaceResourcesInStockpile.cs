@@ -16,7 +16,7 @@ internal class PlaceResourcesInStockpile : IState
     }
 
     public void OnEnter() {
-        var returnObjectPrices = _gatherer.StockPile.Add(_gatherer.objectPrices);
+        var returnObjectPrices = _gatherer.StockPile.AddResourcesToStockPile(_gatherer.objectPrices);
         _gatherer.SetNewObjectPricesList(returnObjectPrices);
 
         _gatherer._gatheredResources = 0;

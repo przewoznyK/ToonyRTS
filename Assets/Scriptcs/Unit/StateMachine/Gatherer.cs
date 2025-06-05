@@ -11,13 +11,13 @@ public class Gatherer : Unit
     public ResourceTypesEnum currentResourceTypeGathering;
     [SerializeField] private int _maxCarried = 20;
 
-    private StateMachine _stateMachine;
+    StateMachine _stateMachine;
     public int _gatheredResources;
 
     public GatherableResource TargetResource { get; set; }
     public InConstructionBuildingRepresentation TargetConstructionToBuild { get; set; }
 
-    public StockPile StockPile { get; set; }
+    public IStockPile StockPile { get; set; }
     IState sleep;
     IState moveToSelectedPosition;
     IState moveToSelectedResource;
@@ -25,6 +25,10 @@ public class Gatherer : Unit
     private bool buildingContructionEnabled;
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int Harvest = Animator.StringToHash("Harvest");
+
+    [SerializeField] private float reachedResourceDistance;
+    [SerializeField] private float reachedStockpileDistance;
+    public int reachedPerSecond;
     public List<ObjectPrices> objectPrices { get; private set; } = new ();
 
     private void Awake()
@@ -36,7 +40,7 @@ public class Gatherer : Unit
         var search = new SearchForResource(this);
         moveToSelectedPosition = new MoveToSelectedPosition(this, navMeshAgent, animator);
         moveToSelectedResource = new MoveToSelectedResource(this, navMeshAgent, animator);
-        var harvest = new HarvestResource(this, animator);
+        var harvest = new HarvestResource(this, animator, agent);
         var returnToStockpile = new ReturnToStockpile(this, navMeshAgent, animator);
         var placeResourcesInStockpile = new PlaceResourcesInStockpile(this);
     
@@ -49,12 +53,12 @@ public class Gatherer : Unit
         Func<bool> NoHasTargetResource() => () => TargetResource == null;
         Func<bool> StuckForOverASecondAndGoingToResource() => () => TimeStuck > 1f && TargetResource == null;
         Func<bool> ReachedResource() => () => TargetResource != null &&
-                                              Vector3.Distance(transform.position, TargetResource.transform.position) < 1.5f;
+                                              Vector3.Distance(transform.position, TargetResource.transform.position) < reachedResourceDistance;
 
         Func<bool> TargetIsDepletedAndICanCarryMore() => () => (TargetResource == null || TargetResource.IsDepleted) && !InventoryFull().Invoke();
         Func<bool> InventoryFull() => () => _gatheredResources >= _maxCarried;
         Func<bool> ReachedStockpile() => () => StockPile != null &&
-                                               Vector3.Distance(transform.position, StockPile.transform.position) < 1f;
+                                               Vector3.Distance(transform.position, StockPile.stockPilePosition.transform.position) < reachedStockpileDistance;
         Func<bool> BackFromStockpileToSelectedResource() => () => _gatheredResources == 0 && HasTargetResource().Invoke();
         Func<bool> BackFromStockpileToSearchTarget() => () => _gatheredResources == 0 && !HasTargetResource().Invoke();
 
@@ -86,13 +90,15 @@ public class Gatherer : Unit
 
     private void Update()
     {
-        if(gatheringEnabled)
+        if (gatheringEnabled)
             _stateMachine.Tick();
 
         if (isGoingToPosition)
         {
             if(Vector3.Distance(TargetPosition, transform.position) <= 1f)
             {
+                agent.isStopped = false;
+
                 isGoingToPosition = false; 
                 animator.SetFloat(Speed, 0f);
                 TargetPosition = Vector3.zero;
@@ -102,6 +108,8 @@ public class Gatherer : Unit
         {
             if (Vector3.Distance(TargetConstructionToBuild.transform.position, transform.position) <= 3.5f)
             {
+                agent.isStopped = false;
+
                 buildingContructionEnabled = false;
                 animator.SetFloat(Speed, 0f);
                 StartCoroutine(BuildingCycle());
@@ -132,10 +140,10 @@ public class Gatherer : Unit
 
     public override void PlayerRightMouseButtonCommand(RaycastHit hit)
     {
-        if (hit.collider.TryGetComponent<IGetTeamAndProperties> (out IGetTeamAndProperties component))
+        if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {
             // CHECK TEAM COLOR
-            if((component.GetTeam() & teamColor) == teamColor)
+            if ((component.GetTeam() & teamColor) == teamColor || (component.GetTeam() == TeamColorEnum.Neutral))
             {
                 // GO TO GATHERING RESOURCE
                 if (component.GetEntityType() == EntityTypeEnum.resource)
@@ -161,9 +169,6 @@ public class Gatherer : Unit
              
                 }
             }
-
-          
-
         }
         if (hit.collider.CompareTag("Ground"))
         {
@@ -172,11 +177,9 @@ public class Gatherer : Unit
             isGoingToPosition = true;
             GoMeetingPosition(TargetPosition);
             animator.SetFloat(Speed, 1f);
-
-
         }
-
     }
+
     public void AddResource(int value)
     {
         var obj = objectPrices.FirstOrDefault(p => p.priceType == currentResourceTypeGathering);
@@ -208,5 +211,10 @@ public class Gatherer : Unit
         isGoingToPosition = false;
         TargetConstructionToBuild = constructionInstantiate.GetComponent<InConstructionBuildingRepresentation>();
         GoMeetingPosition(constructionInstantiate.transform.position);
+    }
+
+    public void SetSleepState()
+    {
+        _stateMachine.SetState(sleep);
     }
 }

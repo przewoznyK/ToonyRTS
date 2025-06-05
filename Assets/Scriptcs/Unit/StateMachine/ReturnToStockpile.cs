@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,6 +7,7 @@ internal class ReturnToStockpile : IState
     private readonly Gatherer _gatherer;
     private readonly NavMeshAgent _navMeshAgent;
     private readonly Animator _animator;
+
     private static readonly int Speed = Animator.StringToHash("Speed");
 
     public ReturnToStockpile(Gatherer gatherer, NavMeshAgent navMeshAgent, Animator animator)
@@ -21,15 +23,22 @@ internal class ReturnToStockpile : IState
 
     public void OnEnter()
     {
-        _gatherer.StockPile = Object.FindObjectOfType<StockPile>();
-        _navMeshAgent.enabled = true;
-        _navMeshAgent.SetDestination(_gatherer.StockPile.transform.position);
-        _animator.SetFloat(Speed, 1f);
+        IStockPile stockPile = AccessToClassByTeamColor.instance.GetClosestStockPileByTeamColor(_gatherer.teamColor, _gatherer.transform.position);
+        Debug.Log(stockPile);
+        if (stockPile != null)
+        {
+            _gatherer.StockPile = stockPile;
+            _navMeshAgent.SetDestination(stockPile.stockPilePosition.transform.position);
+            _animator.SetFloat(Speed, 1f);
+
+        }
+        else
+            _gatherer.SetSleepState();
+
     }
 
     public void OnExit()
     {
-        _navMeshAgent.enabled = false;
         _animator.SetFloat(Speed, 0f);
     }
 }

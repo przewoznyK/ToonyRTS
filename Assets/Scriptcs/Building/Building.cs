@@ -2,12 +2,22 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour, IActiveClickable
+public class Building : MonoBehaviour, IActiveClickable, IStockPile
 {
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
+    [SerializeField] private ResourceTypesEnum stockPileType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] private Transform meetingPoint;
+    [SerializeField] private bool isStockPile;
+
+    public Transform stockPilePosition => transform;
+
+    private void Start()
+    {
+        if (isStockPile)
+            AccessToClassByTeamColor.instance.AddStockPileToGlobalList(teamColor, this);
+    }
     public ObjectTypeEnum CheckObjectType()
     {
         return ObjectTypeEnum.building;
@@ -38,5 +48,19 @@ public class Building : MonoBehaviour, IActiveClickable
     public void SetTeamColor(TeamColorEnum teamColor)
     {
         this.teamColor = teamColor;
+    }
+
+    public List<ObjectPrices> AddResourcesToStockPile(List<ObjectPrices> objectPrices)
+    {
+        var playerResource = AccessToClassByTeamColor.instance.GetPlayerResourcesManagerByTeamColor(teamColor);
+        if (stockPileType == ResourceTypesEnum.allTypes)
+        {
+            playerResource.AddResources(objectPrices);
+            foreach (var obj in objectPrices)
+            {
+                obj.SetValue(0);
+            }
+        }
+        return objectPrices;
     }
 }

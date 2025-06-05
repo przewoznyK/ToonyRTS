@@ -209,12 +209,10 @@ public class ActiveClickableObject : MonoBehaviour
         // lopp thru all the units
         foreach (var unit in controlledUnits.allUnits)
         {
-            Debug.Log(unit);
             // if unit is within the bounds ofthe selection rect
             if (selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
             {
                 // if any unit is within the selection add them to selection
-                Debug.Log(unit);
                 unit.ActiveObject();
                 activeUnits.AddUnit(unit);
                 commandPanelUI.PrepareUnitUI(activeUnits.TakeUnitList());

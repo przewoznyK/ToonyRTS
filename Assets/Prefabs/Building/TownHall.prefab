@@ -155,9 +155,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamColor: 0
-  entityType: 0
+  entityType: 1
+  stockPileType: 15
   unitsToBuy: 00000000
   meetingPoint: {fileID: 8464184700496729079}
+  isStockPile: 1
 --- !u!1001 &9133594983320868738
 PrefabInstance:
   m_ObjectHideFlags: 0

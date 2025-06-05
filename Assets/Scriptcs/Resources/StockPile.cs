@@ -7,6 +7,12 @@ public class StockPile : MonoBehaviour, IGetTeamAndProperties
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private ResourceTypesEnum stockPileType;
+
+    private void Start()
+    {
+      //  AccessToClassByTeamColor.instance.AddStockPileToGlobalList(teamColor, this);    
+    }
+
     public List<ObjectPrices> Add(List<ObjectPrices> objectPrices)
     {
         var playerResource = AccessToClassByTeamColor.instance.GetPlayerResourcesManagerByTeamColor(teamColor);
