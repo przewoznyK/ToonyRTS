@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 5181580682808110580}
   - component: {fileID: 2110403577146983853}
   - component: {fileID: 4468714141356304364}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InConstructionBuildingRepresentation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamColor: 1
-  entityType: 2
+  entityType: 3
   finishBuilding: {fileID: 3275545278579393358, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
   timeToBuilt: 5
 --- !u!65 &4468714141356304364

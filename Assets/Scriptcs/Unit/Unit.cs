@@ -15,9 +15,7 @@ public class Unit : MonoBehaviour, IActiveClickable
     private void Start()
     {
         activator = transform.GetChild(0);
-        var commandUnits = AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor);
-        commandUnits.AddUnit(this);
-
+        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
@@ -44,5 +42,9 @@ public class Unit : MonoBehaviour, IActiveClickable
         // Domyœlna logika (lub pusta jeœli tylko do nadpisania)
     }
 
-
+    public void RemoveUnit()
+    {
+        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
+        Destroy(gameObject);
+    }
 }

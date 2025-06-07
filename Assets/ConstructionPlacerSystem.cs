@@ -30,8 +30,8 @@ public class ConstructionPlacerSystem : MonoBehaviour
             constructionInstantiate.transform.localScale = new Vector3(currentConstructionData.buildingData.size.x, currentConstructionData.buildingData.size.y, 1);
             constructionInstantiate.transform.localScale = new Vector3(currentConstructionData.buildingData.size.x, currentConstructionData.buildingData.size.y, 1);
 
-            List<Unit> unitsSelected = activeClickableObject.activeUnits.TakeUnitList();
-            foreach (var unit in unitsSelected)
+            List<Unit> selectedUnits = activeClickableObject.controlledUnits.TakeSelectedUnitList();
+            foreach (var unit in selectedUnits)
             {
                 if(unit is Gatherer)
                 {

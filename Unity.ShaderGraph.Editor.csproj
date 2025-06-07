@@ -470,8 +470,8 @@
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Data\Interfaces\IGraphDataAction.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Data\Graphs\ColorShaderProperty.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Generation\Targets\Canvas\CanvasData.cs" />
-    <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\ShaderGraphAnalytics.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Generation\Collections\DefineCollection.cs" />
+    <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\ShaderGraphAnalytics.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Util\Documentation.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Data\Nodes\Artistic\Adjustment\ContrastNode.cs" />
     <Compile Include="Library\PackageCache\com.unity.shadergraph\Editor\Generation\Data\FieldCondition.cs" />

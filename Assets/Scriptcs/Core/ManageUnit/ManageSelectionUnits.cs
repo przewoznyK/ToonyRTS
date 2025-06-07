@@ -4,15 +4,15 @@ using UnityEngine.InputSystem;
 public class ManageSelectionUnits : MonoBehaviour
 {
     InputManager inputManager;
-    ActiveUnits activeUnits;
+    ControlledUnits controlledUnits;
 
     private InputAction RMPClickAction;
 
     private bool initialized = false;
-    internal void Init(InputManager inputManager, ActiveUnits activeUnits)
+    internal void Init(InputManager inputManager, ControlledUnits controlledUnits)
     {
         this.inputManager = inputManager;
-        this.activeUnits = activeUnits;
+        this.controlledUnits = controlledUnits;
 
         RMPClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
         RMPClickAction.performed += OnRpmClick;
@@ -25,7 +25,7 @@ public class ManageSelectionUnits : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
-            foreach (var unit in activeUnits.unitsSelected)
+            foreach (var unit in controlledUnits.selectedUnits)
             {
                 unit.PlayerRightMouseButtonCommand(hit);
             }  

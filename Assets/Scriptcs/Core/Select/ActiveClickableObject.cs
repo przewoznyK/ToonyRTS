@@ -7,8 +7,7 @@ public class ActiveClickableObject : MonoBehaviour
 {
     #region Constructor Variable
     InputManager inputManager;
-    ControlledUnits controlledUnits;
-    public ActiveUnits activeUnits;
+    public ControlledUnits controlledUnits;
     SelectionInfoUI selectionInfoUI;
     CommandPanelUI commandPanelUI;
     #endregion
@@ -31,11 +30,10 @@ public class ActiveClickableObject : MonoBehaviour
     Vector2 endPosition;
     #endregion
     [SerializeField] private LayerMask clickableLayer;
-    public void Init(InputManager inputManager, ControlledUnits controlledUnits, ActiveUnits activeUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI ,RectTransform boxVisual)
+    public void Init(InputManager inputManager, ControlledUnits controlledUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI ,RectTransform boxVisual)
     {
         this.inputManager = inputManager;
         this.controlledUnits = controlledUnits;
-        this.activeUnits = activeUnits;
         this.selectionInfoUI = selectionInfoUI;
         this.commandPanelUI = commandPanelUI;
         this.boxVisual = boxVisual;
@@ -94,8 +92,8 @@ public class ActiveClickableObject : MonoBehaviour
                     {
                         clickable.ActiveObject();
                         Unit unitToPrepare = hit.collider.GetComponent<Unit>();
-                        activeUnits.AddUnit(unitToPrepare);
-                        commandPanelUI.PrepareUnitUI(activeUnits.TakeUnitList());
+                        controlledUnits.AddToSelectedUnits(unitToPrepare);
+                        commandPanelUI.PrepareUnitUI(controlledUnits.TakeSelectedUnitList());
                         commandPanelUI.gameObject.SetActive(true);
 
                         // Selection Info if more selected units than 1
@@ -151,12 +149,12 @@ public class ActiveClickableObject : MonoBehaviour
     }
     private void ResetSelection()
     {
-        foreach (var unit in activeUnits.unitsSelected)
+        foreach (var unit in controlledUnits.selectedUnits)
         {
             unit.DeActiveObject();
         }
 
-        activeUnits.ClearUnitsList();
+        controlledUnits.ClearSelectedUnitsList();
     }
 
     void DrawVisual()
@@ -214,8 +212,8 @@ public class ActiveClickableObject : MonoBehaviour
             {
                 // if any unit is within the selection add them to selection
                 unit.ActiveObject();
-                activeUnits.AddUnit(unit);
-                commandPanelUI.PrepareUnitUI(activeUnits.TakeUnitList());
+                controlledUnits.AddToSelectedUnits(unit);
+                commandPanelUI.PrepareUnitUI(controlledUnits.TakeSelectedUnitList());
                 commandPanelUI.gameObject.SetActive(true);
 
             }

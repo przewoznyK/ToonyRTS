@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SelectionInfoUI : MonoBehaviour
 {
-    ActiveUnits activeUnits;
+    ControlledUnits controlledUnits;
     TextMeshProUGUI unitCountInfo;
 
     private bool initialized = false;
-    internal void Init(ActiveUnits activeUnits)
+    internal void Init(ControlledUnits controlledUnits)
     {
-        this.activeUnits = activeUnits;
+        this.controlledUnits = controlledUnits;
         unitCountInfo = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         initialized = true;
         this.gameObject.SetActive(false);
@@ -21,6 +21,6 @@ public class SelectionInfoUI : MonoBehaviour
     {
         if (initialized == false)
             return;
-        unitCountInfo.text = activeUnits.GetUnitsCount().ToString();
+        unitCountInfo.text = controlledUnits.GetUnitsSelectedCount().ToString();
     }
 }

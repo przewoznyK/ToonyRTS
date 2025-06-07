@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
         //  var blueTeam = new PlayerController(TeamColorEnum.Blue);
         var blueTeam = TeamColorEnum.Blue;
         var controlledUnits = new ControlledUnits();
-        var activeUnits = new ActiveUnits();
         var gridData = new GridData();
+        var playerRemoveUnit = new PlayerRemoveEntity();
 
         // Input Manager
         GameObject inputManagerInstatiate = Instantiate(inputManagerPrefab);
@@ -62,10 +62,10 @@ public class GameManager : MonoBehaviour
 
 
         // Init 
-        manageSelectionUnits.Init(inputManager, activeUnits);
-        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem);
-        selectionInfoUI.Init(activeUnits);
-        activeClickableObject.Init(inputManager, controlledUnits, activeUnits, selectionInfoUI, commandPanelUI,
+        manageSelectionUnits.Init(inputManager, controlledUnits);
+        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem, playerRemoveUnit);
+        selectionInfoUI.Init(controlledUnits);
+        activeClickableObject.Init(inputManager, controlledUnits, selectionInfoUI, commandPanelUI,
         boxVisual);
         buildingProduction.Init(commandPanelUI, TeamColorEnum.Blue);
         previewSystem.Init(inputManager, constructionPlacerSystem, gridData, activeClickableObject);
