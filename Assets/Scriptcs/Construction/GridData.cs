@@ -9,7 +9,7 @@ public class GridData
     public void AddObjectAt(Vector3Int cellPosition,
                             Vector2Int objectSize,
                             int ID,
-                            int placedObjectIndex)
+                            int placedObjectIndex, ConstructionData constructionData)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(cellPosition, objectSize);
         PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
@@ -18,7 +18,9 @@ public class GridData
             if (placedObjects.ContainsKey(pos))
                 throw new Exception($"Dictionary already contains this cell position {pos}");
             placedObjects[pos] = data;
+           
         }
+        constructionData.buildingData.positionToOccupy = positionToOccupy;
     }
 
     private List<Vector3Int> CalculatePositions(Vector3Int cellPosition, Vector2Int objectSize)
@@ -46,4 +48,13 @@ public class GridData
         }
         return true;
     }
+
+    internal void RemoveObjectAt(Vector3Int gridPosition)
+    {
+        foreach (var pos in placedObjects[gridPosition].occupiedPositions)
+        {
+            placedObjects.Remove(pos);
+        }
+    }
+
 }

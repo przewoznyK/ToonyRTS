@@ -11,13 +11,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject constructionSystemPrefab;
     [SerializeField] private GameObject playerStartGameSetupPrefab;
     [SerializeField] private GameObject accessToClassByTeamColorPrefab;
+    [SerializeField] private GameObject playerRemoveEntityPrefab;
     private void Awake()
     {
         //  var blueTeam = new PlayerController(TeamColorEnum.Blue);
         var blueTeam = TeamColorEnum.Blue;
         var controlledUnits = new ControlledUnits();
         var gridData = new GridData();
-        var playerRemoveUnit = new PlayerRemoveEntity();
+    
 
         // Input Manager
         GameObject inputManagerInstatiate = Instantiate(inputManagerPrefab);
@@ -59,11 +60,14 @@ public class GameManager : MonoBehaviour
         var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,300, 30, 20, 10);
         // Shop Manager
         var shopManager = new ShopManager(playerResources, buildingProduction);
-
+        // Player Remove Entity
+        var playerRemoveEntityInstantiate = Instantiate(playerRemoveEntityPrefab);
+        var playerRemoveEntity = playerRemoveEntityInstantiate.GetComponent<PlayerRemoveEntity>();
 
         // Init 
         manageSelectionUnits.Init(inputManager, controlledUnits);
-        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem, playerRemoveUnit);
+        playerRemoveEntity.Init(blueTeam, gridData);
+        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem, playerRemoveEntity);
         selectionInfoUI.Init(controlledUnits);
         activeClickableObject.Init(inputManager, controlledUnits, selectionInfoUI, commandPanelUI,
         boxVisual);

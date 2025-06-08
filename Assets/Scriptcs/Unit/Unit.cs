@@ -41,10 +41,4 @@ public class Unit : MonoBehaviour, IActiveClickable
         Debug.Log("111");
         // Domyœlna logika (lub pusta jeœli tylko do nadpisania)
     }
-
-    public void RemoveUnit()
-    {
-        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
-        Destroy(gameObject);
-    }
 }

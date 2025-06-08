@@ -5,8 +5,8 @@ public class AccessToClassByTeamColor : MonoBehaviour
 {
     public static AccessToClassByTeamColor instance;
     Dictionary<TeamColorEnum, PlayerResources> PlayersResourcesManagerGlobalList = new();
-    Dictionary<TeamColorEnum, ControlledUnits> ControlledUnitsManagerGlobalList = new();
-    Dictionary<TeamColorEnum, List<IStockPile>> StockPileGlobalList = new();
+    Dictionary<TeamColorEnum, ControlledUnits> PlayerControlledUnitsManagerGlobalList = new();
+    Dictionary<TeamColorEnum, List<IStockPile>> PlayerStockPileGlobalList = new();
 
     private void Awake()
     {
@@ -30,28 +30,33 @@ public class AccessToClassByTeamColor : MonoBehaviour
     // Controlled Units List
     public void AddControlledUnitsManagerToGlobalList(TeamColorEnum teamColorEnum, ControlledUnits controlledUnits)
     {
-        ControlledUnitsManagerGlobalList.Add(teamColorEnum, controlledUnits);
+        PlayerControlledUnitsManagerGlobalList.Add(teamColorEnum, controlledUnits);
     }
 
     public ControlledUnits GetControlledUnitsByTeamColor(TeamColorEnum teamColorEnum)
     {
-        return ControlledUnitsManagerGlobalList[teamColorEnum];
+        return PlayerControlledUnitsManagerGlobalList[teamColorEnum];
     }
 
     // StockPile List
     public void AddStockPileToGlobalList(TeamColorEnum teamColorEnum, IStockPile stockPile)
     {
-        if (!StockPileGlobalList.ContainsKey(teamColorEnum))
+        if (!PlayerStockPileGlobalList.ContainsKey(teamColorEnum))
         {
-            StockPileGlobalList[teamColorEnum] = new List<IStockPile>();
+            PlayerStockPileGlobalList[teamColorEnum] = new List<IStockPile>();
         }
 
-        StockPileGlobalList[teamColorEnum].Add(stockPile);
+        PlayerStockPileGlobalList[teamColorEnum].Add(stockPile);
+    }
+
+    public void RemoveStockPileFromGlobalList(TeamColorEnum teamColorEnum, IStockPile stockPile)
+    {
+        PlayerStockPileGlobalList[teamColorEnum].Remove(stockPile);
     }
 
     public IStockPile GetClosestStockPileByTeamColor(TeamColorEnum teamColorEnum, Vector3 fromPosition)
     {
-        if (!StockPileGlobalList.TryGetValue(teamColorEnum, out var stockPiles) || stockPiles.Count == 0)
+        if (!PlayerStockPileGlobalList.TryGetValue(teamColorEnum, out var stockPiles) || stockPiles.Count == 0)
             return null;
 
         IStockPile closest = null;

@@ -39,7 +39,7 @@ public class CommandPanelUI : MonoBehaviour
     {
         currentSelectedUnits = null;
         currentSelectedBuilding = building;
-
+        productionPanel.gameObject.SetActive(true);
         unitCanBuyList = building.GetUnitsCanBuyList();
 
         DisplayProductionQueue(building);
@@ -54,13 +54,14 @@ public class CommandPanelUI : MonoBehaviour
             currentButton.onClick.AddListener(() => shopManager.BuyUnit(building, unitDataForButton.unitName));
         }
 
-      //  deleteEntityButton.onClick.AddListener(
+        removeEntityButton.onClick.RemoveAllListeners();
+        removeEntityButton.onClick.AddListener(() => RemoveEntity(building));
     }
     public void PrepareUnitUI(List<Unit> unitsList)
     {
         currentSelectedBuilding = null;
         currentSelectedUnits = unitsList;
-
+        productionPanel.gameObject.SetActive(false);
         var buildingList = BuildingDatabase.Instance.GetBuildingList();
         for (int i = 0; i < buildingList.Count; i++)
         {
@@ -73,18 +74,14 @@ public class CommandPanelUI : MonoBehaviour
             currentButton.onClick.AddListener(() => previewSystem.StartPreview(currentSelectedUnits, buildingDataForButton));
         }
 
+        removeEntityButton.onClick.RemoveAllListeners();
         foreach (var unit in unitsList)
         {
-            removeEntityButton.onClick.RemoveAllListeners();
             removeEntityButton.onClick.AddListener(() => RemoveEntity(unit));
         }
   
     }
 
-    public void Test()
-    {
-        Debug.Log("DZIAL:A");
-    }
     public void DisplayProductionQueue(Building building)
     {
         var productsList = buildingProduction.GetProductsFromThisBuilding(building);
@@ -178,10 +175,16 @@ public class CommandPanelUI : MonoBehaviour
             currentProductionImageFill.fillAmount = buildingProductionData.currentTimeProduction / buildingProductionData.timeProduction;
         }
     }
-
+    public void RemoveEntity(Building building)
+    {
+        playerRemoveEntity.RemoveEntity(building);
+        gameObject.SetActive(false);
+    }
     public void RemoveEntity(Unit unit)
     {
         playerRemoveEntity.RemoveEntity(unit);
         gameObject.SetActive(false);
     }
+
+
 }

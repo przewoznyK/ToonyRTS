@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public class HoverObjectUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image hoverImage;
-    private void Start()
+    private void OnEnable()
     {
         SetAlpha(0f);
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        SetAlpha(1f);
+        SetAlpha(0.5f);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -24,11 +24,6 @@ public class HoverObjectUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Color color = hoverImage.color;
         color.a = alpha;
         hoverImage.color = color;
-    }
-
-    private void OnEnable()
-    {
-        SetAlpha(0f);
     }
 }
 

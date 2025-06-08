@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3856024157543344251}
   - component: {fileID: 8015213180926944140}
+  - component: {fileID: 3233430277558589759}
   - component: {fileID: 6043672676245623956}
   m_Layer: 5
   m_Name: ProductionButton
@@ -85,6 +86,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3233430277558589759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173883605872834914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0b199dd85e9104390def3db763941f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverImage: {fileID: 5363839027298017232}
 --- !u!114 &6043672676245623956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,7 +111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806366c7a0c26a346a0c3fcd17d73303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoverImage: {fileID: 5363839027298017232}
 --- !u!1 &2764073928040266492
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,14 +169,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0684e1a8dd3a99040acd54dde2a32a0a, type: 3}
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

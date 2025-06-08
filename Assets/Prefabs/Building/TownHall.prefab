@@ -140,7 +140,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 8, z: 10}
+  m_Size: {x: 5, y: 8, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6242064628670292108
 MonoBehaviour:
@@ -155,11 +155,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teamColor: 0
-  entityType: 1
+  entityType: 2
   stockPileType: 15
   unitsToBuy: 00000000
   meetingPoint: {fileID: 8464184700496729079}
-  isStockPile: 1
+  <isStockPile>k__BackingField: 1
 --- !u!1001 &9133594983320868738
 PrefabInstance:
   m_ObjectHideFlags: 0

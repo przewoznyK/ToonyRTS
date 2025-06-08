@@ -9,7 +9,7 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile
     [SerializeField] private ResourceTypesEnum stockPileType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] private Transform meetingPoint;
-    [SerializeField] private bool isStockPile;
+    [field:SerializeField] public bool isStockPile { get; private set; }
 
     public Transform stockPilePosition => transform;
 

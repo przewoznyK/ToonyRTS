@@ -21,5 +21,5 @@ MonoBehaviour:
   unitPrefab: {fileID: 661760135184120366, guid: 39b8341be33b5c74aade35adf4ccd162, type: 3}
   productionTime: 5
   objectPrices:
-  - <priceType>k__BackingField: 0
+  - <priceType>k__BackingField: 1
     <priceValue>k__BackingField: 50
