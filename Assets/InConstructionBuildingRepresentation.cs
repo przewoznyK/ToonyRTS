@@ -6,18 +6,24 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private GameObject finishBuilding;
+    public List<Vector3Int> positionToOccupy;
 
-    [SerializeField] private int timeToBuilt;
+[SerializeField] private int timeToBuilt;
     List<Gatherer> unitGatheringResourcesList = new();
-    public void SetFinishBuilding(GameObject builtToCreate)
+    public void SetFinishBuilding(GameObject builtToCreate, List<Vector3Int> positionOccupied)
     {
         finishBuilding = builtToCreate;
+        this.positionToOccupy = positionOccupied;
     }
 
     internal void EndProcess()
     {
         GameObject newBuilding = Instantiate(finishBuilding, transform.position, Quaternion.identity);
-        newBuilding.GetComponent<Building>().SetTeamColor(teamColor);
+        Building building = newBuilding.GetComponent<Building>();
+
+        building.SetTeamColor(teamColor);
+        building.SetPositionToOccupy(positionToOccupy);
+
         Destroy(gameObject);
     }
 

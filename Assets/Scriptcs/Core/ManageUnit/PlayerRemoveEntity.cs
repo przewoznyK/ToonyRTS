@@ -18,6 +18,7 @@ public class PlayerRemoveEntity : MonoBehaviour
         {
             IStockPile stockPile = building.GetComponent<IStockPile>();
             AccessToClassByTeamColor.instance.RemoveStockPileFromGlobalList(teamColor, stockPile);
+            gridData.RemoveObjectAt(building.positionToOccupy);
         }
     }
 

@@ -19,10 +19,12 @@ public class ConstructionPlacerSystem : MonoBehaviour
         gridData.AddObjectAt(currentConstructionData.positionToOccupy, currentConstructionData.buildingData.size, 1 ,1, currentConstructionData);
         if(currentConstructionData.createFromPreviewSystem == true)
         {
+            // Set Material
             currentConstructionData.previewObjectToPlaceMeshRenderer.material = currentConstructionData.originalMaterial;
+            // Pay Cost
             playerResources.SpendResources(currentConstructionData.buildingData.objectPrices);
 
-            constructionRepresentation.SetFinishBuilding(currentConstructionData.buildingData.buildingPrefab);
+            constructionRepresentation.SetFinishBuilding(currentConstructionData.buildingData.buildingPrefab, currentConstructionData.buildingData.positionToOccupy);
             GameObject constructionInstantiate = Instantiate(constructionRepresentationPrefab, currentConstructionData.positionToOccupy, Quaternion.identity);
 
             constructionInstantiate.transform.rotation = Quaternion.Euler(90, 0, 0);
@@ -37,12 +39,6 @@ public class ConstructionPlacerSystem : MonoBehaviour
                     Gatherer gatherer = unit as Gatherer;
                     gatherer.SetBuildingToBuild(constructionInstantiate);
                 }
-            }
-
-            Debug.Log(currentConstructionData.buildingData.positionToOccupy);
-            foreach (var item in currentConstructionData.buildingData.positionToOccupy)
-            {
-                Debug.Log(item);
             }
         }
         else

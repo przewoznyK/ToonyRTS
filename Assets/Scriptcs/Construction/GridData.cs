@@ -12,6 +12,7 @@ public class GridData
                             int placedObjectIndex, ConstructionData constructionData)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(cellPosition, objectSize);
+  
         PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
         foreach (var pos in positionToOccupy)
         {
@@ -27,6 +28,7 @@ public class GridData
     {
         List<Vector3Int> returnVal = new();
         Vector3Int bottomLeft = cellPosition - new Vector3Int(Mathf.FloorToInt(objectSize.x / 2f), 0, Mathf.FloorToInt(objectSize.y / 2f));
+        bottomLeft.y = 0;
         for (int x = 0; x < objectSize.x; x++)
         {
             for (int y = 0; y < objectSize.y; y++)
@@ -41,6 +43,7 @@ public class GridData
     public bool CanPlaceObjectAt(Vector3Int cellPosition, Vector2Int objectSize)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(cellPosition, objectSize);
+  
         foreach (var pos in positionToOccupy)
         {
             if (placedObjects.ContainsKey(pos))
@@ -49,9 +52,9 @@ public class GridData
         return true;
     }
 
-    internal void RemoveObjectAt(Vector3Int gridPosition)
+    internal void RemoveObjectAt(List<Vector3Int> positionToRemove)
     {
-        foreach (var pos in placedObjects[gridPosition].occupiedPositions)
+        foreach (var pos in positionToRemove)
         {
             placedObjects.Remove(pos);
         }

@@ -178,7 +178,7 @@ public class CommandPanelUI : MonoBehaviour
     public void RemoveEntity(Building building)
     {
         playerRemoveEntity.RemoveEntity(building);
-        gameObject.SetActive(false);
+        building.gameObject.SetActive(false);
     }
     public void RemoveEntity(Unit unit)
     {

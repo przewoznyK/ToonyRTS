@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Building : MonoBehaviour, IActiveClickable, IStockPile
 {
+    [SerializeField] public List<Vector3Int> positionToOccupy;
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private ResourceTypesEnum stockPileType;
@@ -49,6 +50,8 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile
     {
         this.teamColor = teamColor;
     }
+
+    public void SetPositionToOccupy(List<Vector3Int> positionToOccupy) => this.positionToOccupy = positionToOccupy;
 
     public List<ObjectPrices> AddResourcesToStockPile(List<ObjectPrices> objectPrices)
     {
