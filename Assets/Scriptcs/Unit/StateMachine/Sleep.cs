@@ -3,11 +3,9 @@ using UnityEngine;
 
 public class Sleep : IState
 {
-    private readonly Gatherer _gatherer;
-
-    public Sleep(Gatherer gatherer)
+    public Sleep()
     {
-        _gatherer = gatherer;
+
     }
     public void Tick()
     {

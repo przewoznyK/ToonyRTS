@@ -23,7 +23,7 @@ public class Gatherer : Unit
     IState moveToSelectedResource;
     private bool gatheringEnabled;
     private bool buildingContructionEnabled;
-    private static readonly int Speed = Animator.StringToHash("Speed");
+
     private static readonly int Harvest = Animator.StringToHash("Harvest");
 
     [SerializeField] private float reachedResourceDistance;
@@ -36,7 +36,7 @@ public class Gatherer : Unit
         var navMeshAgent = GetComponent<NavMeshAgent>();
       
 
-        sleep = new Sleep(this);
+        sleep = new Sleep();
         var search = new SearchForResource(this);
         moveToSelectedPosition = new MoveToSelectedPosition(this, navMeshAgent, animator);
         moveToSelectedResource = new MoveToSelectedResource(this, navMeshAgent, animator);
