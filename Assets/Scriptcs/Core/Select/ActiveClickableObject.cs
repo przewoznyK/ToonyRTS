@@ -85,7 +85,8 @@ public class ActiveClickableObject : MonoBehaviour
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, clickableLayer))
             {
                 var clickable = hit.collider.GetComponent<IActiveClickable>();
-                if (clickable != null)
+                var teamColor = hit.collider.GetComponent<IGetTeamAndProperties>().GetTeam();
+                if (clickable != null && teamColor == TeamColorEnum.Blue)
                 {
                     // Active Unit
                     if (clickable.CheckObjectType() == ObjectTypeEnum.unit)

@@ -11,7 +11,8 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public Vector3 TargetPosition;
     public bool isGoingToPosition;
     public float TimeStuck;
-    Transform activator;
+    protected Transform activator;
+    [SerializeField] protected GameObject taskFlagPrefab;
 
     protected static readonly int Speed = Animator.StringToHash("Speed");
     private void Start()
@@ -22,27 +23,15 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
-    public void ActiveObject()
-    {
-        activator.gameObject.SetActive(true);
-    }
-    public void DeActiveObject()
-    {
-        activator.gameObject.SetActive(false);
-    }
+    public void ActiveObject() => activator.gameObject.SetActive(true);
 
-    public List<UnitNameEnum> GetUnitsCanBuyList()
-    {
-        throw new System.NotImplementedException();
-    }
+    public void DeActiveObject() => activator.gameObject.SetActive(false);
+
+    public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
 
     public void GoMeetingPosition(Vector3 position) => agent.SetDestination(position);
 
-
-    public virtual void PlayerRightMouseButtonCommand(RaycastHit hit)
-    {
-        Debug.Log("Override this method");
-    }
+    public virtual void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed) => Debug.Log("Override this method");
 
     public TeamColorEnum GetTeam()
     {

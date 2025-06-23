@@ -138,7 +138,7 @@ public class Gatherer : Unit
         return true;
     }
 
-    public override void PlayerRightMouseButtonCommand(RaycastHit hit)
+    public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
         if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {

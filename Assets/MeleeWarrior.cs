@@ -15,9 +15,13 @@ public class MeleeWarrior : Unit
     [SerializeField] private float attackRange;
     [SerializeField] private float attackCooldown;
 
-    public override void PlayerRightMouseButtonCommand(RaycastHit hit)
+    public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
-        if(hit.collider.CompareTag("Ground"))
+        if (isShiftPressed == false)
+            ResetTasks();  
+        //else
+        //    Instantiate(taskFlagPrefab, hit.point, Quaternion.identity);
+        if (hit.collider.CompareTag("Ground"))
         {
             GoToPositionTask newTask = new(hit.point);
             requestedTasks.AddLast(newTask);
@@ -29,6 +33,8 @@ public class MeleeWarrior : Unit
                 Transform targetTransform = component.GetProperties<Transform>();
                 AttackTargetTask newTask = new(targetTransform);
                 requestedTasks.AddLast(newTask);
+                    
+
             }
         }
      
@@ -65,31 +71,38 @@ public class MeleeWarrior : Unit
         {
             currentTask = requestedTasks.First.Value;
             requestedTasks.RemoveFirst();
-
             if (currentTask is GoToPositionTask goToPositionTask)
             {
                 Vector3 pos = goToPositionTask.destinatedPosition;
-                animator.SetFloat(Speed, 1f);
+
                 agent.SetDestination(pos);
                 taskVector = pos;
             }
             else if (currentTask is AttackTargetTask attackTarget)
-            {
-               
+            {   
                 taskTransform = attackTarget.targetTransform;
-                animator.SetFloat(Speed, 1f);
             }
+            animator.SetFloat(Speed, 1f);
             isOnTask = true;
         }
+
     }
 
     void GoToNextTask()
     {
         isOnTask = false;
-        DoTask();
         animator.SetFloat(Speed, 0f);
+        DoTask();
+     
     }
     
+    void ResetTasks()
+    {
+        requestedTasks.Clear();
+        isOnTask = false;
+        currentTask = null;
+        StopAllCoroutines();
+    }
     IEnumerator AttackCycle()
     {
         animator.SetFloat(Speed, 0f);
