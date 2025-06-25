@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(EntityHealth))]
 public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 {
+    protected UnitTaskManager unitTaskManager;
+    protected UnitAttack unitAttack;
     public TeamColorEnum teamColor;
     [SerializeField] protected NavMeshAgent agent;
     [SerializeField] protected Animator animator;
@@ -14,12 +17,24 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     protected Transform activator;
     [SerializeField] protected GameObject taskFlagPrefab;
 
-    protected static readonly int Speed = Animator.StringToHash("Speed");
+    public float attackRange;
+    public float attackCooldown;
+
+    public static readonly int Speed = Animator.StringToHash("Speed");
+    public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
+
+    
     private void Start()
     {
+        unitTaskManager = GetComponent<UnitTaskManager>();
+        unitAttack = GetComponent<UnitAttack>();
+
         activator = transform.GetChild(0);
         if(teamColor == TeamColorEnum.Blue)
             AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
+
+        EntityHealth entityHealth = GetComponent<EntityHealth>();
+        entityHealth.onDeathActiom += () => DeleteUnit();
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
@@ -51,4 +66,12 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
             Debug.Log("You can only take Transform from this");
         return null;
     }
+
+    public void DeleteUnit()
+    {
+        //  AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
+        unitTaskManager.enabled = false;
+        //Destroy(gameObject);
+    }
+
 }

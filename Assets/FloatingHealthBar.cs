@@ -5,7 +5,7 @@ public class FloatingHealthBar : MonoBehaviour
 {
     [SerializeField] private Slider healthBar;
     [SerializeField] private Transform targetPosition;
-    [SerializeField] private Vector3 targetOffSet;
+    [SerializeField] private Vector3 targetOffSet = new Vector3(0, 2.6f, 0);
     private void Update()
     {
         transform.rotation = Camera.main.transform.rotation;
@@ -13,6 +13,8 @@ public class FloatingHealthBar : MonoBehaviour
     }
     public void UpdateHealthBar(int currentHealth, int maxHealth)
     {
-        healthBar.value = currentHealth / maxHealth;
+        gameObject.SetActive(true);
+        healthBar.maxValue = maxHealth;
+        healthBar.value = currentHealth;
     }
 }

@@ -1,38 +1,34 @@
+using System;
 using UnityEngine;
 
 public class EntityHealth : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private Unit unit;
     [SerializeField] private FloatingHealthBar floatingHealthBsr;
+    public TeamColorEnum teamColor { get; private set; }
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth;
 
+    public Action onDeathActiom;
     private void Start()
     {
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
+        onDeathActiom += () => animator.SetTrigger("Death");
     }
     public bool TakeDamage(int damage)
     {
-        //  unit.GetUnitStats().SubstractHealth(damage);
-  
         currentHealth -= damage;
-        Debug.Log("ZADALEMM " + damage + " JEST TERAZ " + currentHealth);
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
-            Debug.Log("DEATH");
-            //animator.SetTrigger("Death");
-            //unit.Death();
+            onDeathActiom?.Invoke();
             return true;
         }
         return false;
     }
 
-    private void Update()
+    public void SetTeamColor(TeamColorEnum teamColor)
     {
-        if (Input.GetKeyDown(KeyCode.E))
-            TakeDamage(2);
+        this.teamColor = teamColor;
     }
-
 }
