@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
         var blueTeam = TeamColorEnum.Blue;
         var controlledUnits = new ControlledUnits();
         var gridData = new GridData();
-    
+        
+       
 
         // Input Manager
         GameObject inputManagerInstatiate = Instantiate(inputManagerPrefab);
@@ -85,5 +86,9 @@ public class GameManager : MonoBehaviour
         var accessToClassByTeamColor = accessToClassByTeamColorInstantiate.GetComponent<AccessToClassByTeamColor>();
         accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(blueTeam, playerResources);
         accessToClassByTeamColor.AddControlledUnitsManagerToGlobalList(blueTeam, controlledUnits);
+
+
+        var redTeam = new PlayerController(TeamColorEnum.Red, accessToClassByTeamColor);
+
     }
 }

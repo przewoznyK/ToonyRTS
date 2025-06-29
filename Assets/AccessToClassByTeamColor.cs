@@ -17,20 +17,20 @@ public class AccessToClassByTeamColor : MonoBehaviour
     }
 
     // Player Resource Manager List
-    public void AddPlayerResourceManagerToGlobalList(TeamColorEnum teamColorEnum,PlayerResources playerResources)
+    public void AddPlayerResourceManagerToGlobalList(TeamColorEnum teamColor, PlayerResources playerResources)
     {
-        PlayersResourcesManagerGlobalList.Add(teamColorEnum, playerResources);
+        PlayersResourcesManagerGlobalList.Add(teamColor, playerResources);
     }
 
-    public PlayerResources GetPlayerResourcesManagerByTeamColor(TeamColorEnum teamColorEnum)
+    public PlayerResources GetPlayerResourcesManagerByTeamColor(TeamColorEnum teamColor)
     {
-        return PlayersResourcesManagerGlobalList[teamColorEnum];
+        return PlayersResourcesManagerGlobalList[teamColor];
     }
 
     // Controlled Units List
-    public void AddControlledUnitsManagerToGlobalList(TeamColorEnum teamColorEnum, ControlledUnits controlledUnits)
+    public void AddControlledUnitsManagerToGlobalList(TeamColorEnum teamColor, ControlledUnits controlledUnits)
     {
-        PlayerControlledUnitsManagerGlobalList.Add(teamColorEnum, controlledUnits);
+        PlayerControlledUnitsManagerGlobalList.Add(teamColor, controlledUnits);
     }
 
     public ControlledUnits GetControlledUnitsByTeamColor(TeamColorEnum teamColorEnum)
@@ -39,24 +39,24 @@ public class AccessToClassByTeamColor : MonoBehaviour
     }
 
     // StockPile List
-    public void AddStockPileToGlobalList(TeamColorEnum teamColorEnum, IStockPile stockPile)
+    public void AddStockPileToGlobalList(TeamColorEnum teamColor, IStockPile stockPile)
     {
-        if (!PlayerStockPileGlobalList.ContainsKey(teamColorEnum))
+        if (!PlayerStockPileGlobalList.ContainsKey(teamColor))
         {
-            PlayerStockPileGlobalList[teamColorEnum] = new List<IStockPile>();
+            PlayerStockPileGlobalList[teamColor] = new List<IStockPile>();
         }
 
-        PlayerStockPileGlobalList[teamColorEnum].Add(stockPile);
+        PlayerStockPileGlobalList[teamColor].Add(stockPile);
     }
 
-    public void RemoveStockPileFromGlobalList(TeamColorEnum teamColorEnum, IStockPile stockPile)
+    public void RemoveStockPileFromGlobalList(TeamColorEnum teamColor, IStockPile stockPile)
     {
-        PlayerStockPileGlobalList[teamColorEnum].Remove(stockPile);
+        PlayerStockPileGlobalList[teamColor].Remove(stockPile);
     }
 
-    public IStockPile GetClosestStockPileByTeamColor(TeamColorEnum teamColorEnum, Vector3 fromPosition)
+    public IStockPile GetClosestStockPileByTeamColor(TeamColorEnum teamColor, Vector3 fromPosition)
     {
-        if (!PlayerStockPileGlobalList.TryGetValue(teamColorEnum, out var stockPiles) || stockPiles.Count == 0)
+        if (!PlayerStockPileGlobalList.TryGetValue(teamColor, out var stockPiles) || stockPiles.Count == 0)
             return null;
 
         IStockPile closest = null;
@@ -74,4 +74,27 @@ public class AccessToClassByTeamColor : MonoBehaviour
         return closest;
     }
 
+    public Transform GetClosestTransformEnemyByTeamColor(TeamColorEnum teamColor, Vector3 fromPosition, float maxSearchingDistance)
+    {
+        ControlledUnits controlledUnits = GetControlledUnitsByTeamColor(teamColor);
+        List<Unit> unitList = controlledUnits.GetAllUnitList();
+
+        if (unitList.Count == 0)
+            return null;
+
+        Transform closest = null;
+        float minDistance = float.MaxValue;
+
+        foreach (var enemy in unitList)
+        {
+            float distance = Vector3.Distance(fromPosition, enemy.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closest = enemy.transform;
+            }
+        }
+        return closest;
+
+    }
 }

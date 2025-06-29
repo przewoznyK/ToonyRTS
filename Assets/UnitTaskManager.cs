@@ -7,9 +7,6 @@ using UnityEngine.AI;
 public class UnitTaskManager : MonoBehaviour
 {
     Unit unit;
-    NavMeshAgent agent;
-    Animator animator;
-    UnitAttack unitAttack;
     public GameObject attackArea;
 
     bool isOnTask;
@@ -21,9 +18,6 @@ public class UnitTaskManager : MonoBehaviour
     private void Start()
     {
         unit = GetComponent<Unit>();
-        agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
-        unitAttack = GetComponent<UnitAttack>();
     }
 
     private void Update()
@@ -40,7 +34,7 @@ public class UnitTaskManager : MonoBehaviour
 
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
-                agent.SetDestination(taskTransform.position);
+                unit.agent.SetDestination(taskTransform.position);
                 if (Vector3.Distance(taskTransform.position, transform.position) <= unit.attackRange)
                 {
                     StartCoroutine(AttackCycle());
@@ -73,14 +67,14 @@ public class UnitTaskManager : MonoBehaviour
             {
                 Vector3 pos = goToPositionTask.destinatedPosition;
 
-                agent.SetDestination(pos);
+                unit.agent.SetDestination(pos);
                 taskVector = pos;
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
                 taskTransform = attackTarget.targetTransform;
             }
-            animator.SetFloat(Unit.Speed, 1f);
+            unit.animator.SetFloat(Unit.Speed, 1f);
             isOnTask = true;
         }
     }
@@ -90,7 +84,7 @@ public class UnitTaskManager : MonoBehaviour
     void GoToNextTask()
     {
         isOnTask = false;
-        animator.SetFloat(Unit.Speed, 0f);
+        unit.animator.SetFloat(Unit.Speed, 0f);
         DoTask();
 
     }
@@ -105,11 +99,11 @@ public class UnitTaskManager : MonoBehaviour
 
     IEnumerator AttackCycle()
     {
-        animator.SetFloat(Unit.Speed, 0f);
-        animator.SetTrigger(Unit.AttackAnimationTrigger);
+        unit.animator.SetFloat(Unit.Speed, 0f);
+        unit.animator.SetTrigger(Unit.AttackAnimationTrigger);
       
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         attackArea.gameObject.SetActive(true);
 
      
@@ -117,7 +111,14 @@ public class UnitTaskManager : MonoBehaviour
         attackArea.gameObject.SetActive(false);
         yield return new WaitForSeconds(1f);
      
-        if (taskTransform == null) yield break;
+        if (taskTransform == null)
+        {
+            Transform nearestEnemy = FindNearestEnemy(TeamColorEnum.Red);
+            if (nearestEnemy != null)
+                taskTransform = nearestEnemy;
+            else
+                yield break;
+        }
 
         if (Vector3.Distance(taskTransform.position, transform.position) > unit.attackRange)
         {
@@ -128,5 +129,12 @@ public class UnitTaskManager : MonoBehaviour
         }
         yield return new WaitForSeconds(unit.attackCooldown);
         StartCoroutine(AttackCycle());
+    }
+
+    public Transform FindNearestEnemy(TeamColorEnum teamColor)
+    {
+        ControlledUnits enemies = AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor);
+        Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
+        return nearestEnemy;
     }
 }

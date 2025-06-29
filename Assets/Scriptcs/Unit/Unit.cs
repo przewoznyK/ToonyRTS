@@ -7,10 +7,9 @@ using UnityEngine.AI;
 public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 {
     protected UnitTaskManager unitTaskManager;
-    protected UnitAttack unitAttack;
     public TeamColorEnum teamColor;
-    [SerializeField] protected NavMeshAgent agent;
-    [SerializeField] protected Animator animator;
+    [SerializeField] public NavMeshAgent agent;
+    [SerializeField] public Animator animator;
     public Vector3 TargetPosition;
     public bool isGoingToPosition;
     public float TimeStuck;
@@ -19,7 +18,8 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public float attackRange;
     public float attackCooldown;
-
+    public float maxEnemySearchingDistance;
+    [SerializeField] protected Transform bodyToDrop;
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
@@ -27,11 +27,9 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     private void Start()
     {
         unitTaskManager = GetComponent<UnitTaskManager>();
-        unitAttack = GetComponent<UnitAttack>();
 
         activator = transform.GetChild(0);
-        if(teamColor == TeamColorEnum.Blue)
-            AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
+        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
 
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onDeathActiom += () => DeleteUnit();
@@ -69,9 +67,11 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public void DeleteUnit()
     {
-        //  AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
+        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
         unitTaskManager.enabled = false;
-        //Destroy(gameObject);
-    }
+        animator.SetTrigger("Death");
+        bodyToDrop.SetParent(null, true);
+        Destroy(gameObject);
 
+    }
 }

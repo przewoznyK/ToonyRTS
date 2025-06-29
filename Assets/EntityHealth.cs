@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class EntityHealth : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
     [SerializeField] private FloatingHealthBar floatingHealthBsr;
     public TeamColorEnum teamColor { get; private set; }
     [SerializeField] private int currentHealth;
@@ -13,7 +12,6 @@ public class EntityHealth : MonoBehaviour
     private void Start()
     {
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
-        onDeathActiom += () => animator.SetTrigger("Death");
     }
     public bool TakeDamage(int damage)
     {

@@ -17,7 +17,7 @@ public class ControlledUnits
 
         allUnits.Remove(unit);
     }
-    public List<Unit> TakeAllUnitList()
+    public List<Unit> GetAllUnitList()
     {
         return allUnits;
     }

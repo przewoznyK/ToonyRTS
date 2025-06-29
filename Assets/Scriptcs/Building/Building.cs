@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour, IActiveClickable, IStockPile
+public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAndProperties
 {
     [SerializeField] public List<Vector3Int> positionToOccupy;
     [SerializeField] private TeamColorEnum teamColor;
@@ -65,5 +65,20 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile
             }
         }
         return objectPrices;
+    }
+
+    public TeamColorEnum GetTeam()
+    {
+        return teamColor;
+    }
+
+    public EntityTypeEnum GetEntityType()
+    {
+        return entityType;
+    }
+
+    public T GetProperties<T>() where T : Component
+    {
+        throw new NotImplementedException();
     }
 }

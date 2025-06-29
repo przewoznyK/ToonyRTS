@@ -16,7 +16,6 @@ public class AttackArea : MonoBehaviour
         {
             if (entityHealth.teamColor != teamColor)
             {
-                Debug.Log("DODAC DAMAGE");
                 entityHealth.TakeDamage(3);
             }
         }

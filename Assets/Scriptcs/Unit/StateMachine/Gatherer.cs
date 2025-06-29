@@ -154,6 +154,7 @@ public class Gatherer : Unit
                     currentResourceTypeGathering = properties.resourceType;
                     TargetResource = properties;
                     _stateMachine.SetState(moveToSelectedResource);
+                    animator.SetFloat(Speed, 1f);
                     GoMeetingPosition(hit.point);
                 }
                 // GO TO BUILDING CONTRUCTION
