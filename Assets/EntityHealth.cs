@@ -8,21 +8,23 @@ public class EntityHealth : MonoBehaviour
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth;
 
+    public Action<Unit> onHurtAction;
     public Action onDeathActiom;
     private void Start()
     {
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
     }
-    public bool TakeDamage(int damage)
+    public void TakeDamage(Unit fromUnit, int damage)
     {
         currentHealth -= damage;
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
             onDeathActiom?.Invoke();
-            return true;
+            return;
         }
-        return false;
+        onHurtAction.Invoke(fromUnit);
+        
     }
 
     public void SetTeamColor(TeamColorEnum teamColor)

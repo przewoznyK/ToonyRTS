@@ -19,6 +19,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float attackRange;
     public float attackCooldown;
     public float maxEnemySearchingDistance;
+    public float rotationSpeed;
     [SerializeField] protected Transform bodyToDrop;
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
@@ -32,6 +33,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
 
         EntityHealth entityHealth = GetComponent<EntityHealth>();
+        entityHealth.onHurtAction += HurtUnit;
         entityHealth.onDeathActiom += () => DeleteUnit();
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
@@ -65,6 +67,11 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         return null;
     }
 
+    public void HurtUnit(Unit fromUnit)
+    {
+        animator.SetTrigger("Hurt");
+        unitTaskManager.DefenseFromAttack(fromUnit);
+    }
     public void DeleteUnit()
     {
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
@@ -72,6 +79,5 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         animator.SetTrigger("Death");
         bodyToDrop.SetParent(null, true);
         Destroy(gameObject);
-
     }
 }

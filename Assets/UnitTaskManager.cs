@@ -10,6 +10,7 @@ public class UnitTaskManager : MonoBehaviour
     public GameObject attackArea;
 
     bool isOnTask;
+    bool rotateToTaskTransform;
     public LinkedList<UnitTask> requestedTasks = new();
     UnitTask currentTask;
     Transform taskTransform;
@@ -35,12 +36,29 @@ public class UnitTaskManager : MonoBehaviour
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
                 unit.agent.SetDestination(taskTransform.position);
+                unit.animator.SetFloat(Unit.Speed, 1f);
+
                 if (Vector3.Distance(taskTransform.position, transform.position) <= unit.attackRange)
                 {
                     StartCoroutine(AttackCycle());
                     isOnTask = false;
                 }
+
             }
+        }
+
+        if(rotateToTaskTransform)
+        {
+            if (taskTransform != null)
+            {
+                var direction = taskTransform.position - transform.position;
+                var targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * Time.deltaTime);
+                if (Quaternion.Angle(transform.rotation, targetRotation) < 1f)
+                    rotateToTaskTransform = false;
+            }
+            else
+                rotateToTaskTransform = false;
         }
     }
 
@@ -48,13 +66,14 @@ public class UnitTaskManager : MonoBehaviour
     {
         GoToPositionTask newTask = new(point);
         requestedTasks.AddLast(newTask);
+        DoTask();
     }
 
     internal void AttackTarget(Transform transform)
     {
         AttackTargetTask newTask = new(transform);
         requestedTasks.AddLast(newTask);
-
+        DoTask();
     }
 
     public void DoTask()
@@ -114,17 +133,19 @@ public class UnitTaskManager : MonoBehaviour
         if (taskTransform == null)
         {
             Transform nearestEnemy = FindNearestEnemy(TeamColorEnum.Red);
+            Debug.Log(nearestEnemy);
             if (nearestEnemy != null)
                 taskTransform = nearestEnemy;
             else
                 yield break;
         }
-
+        Debug.Log(Vector3.Distance(taskTransform.position, transform.position));
         if (Vector3.Distance(taskTransform.position, transform.position) > unit.attackRange)
         {
-            AttackTargetTask newTask = new(taskTransform);
-            requestedTasks.AddFirst(newTask);
-            DoTask();
+            AttackTarget(taskTransform);
+            //AttackTargetTask newTask = new(taskTransform);
+            //requestedTasks.AddFirst(newTask);
+            //DoTask();
             yield break;
         }
         yield return new WaitForSeconds(unit.attackCooldown);
@@ -133,8 +154,20 @@ public class UnitTaskManager : MonoBehaviour
 
     public Transform FindNearestEnemy(TeamColorEnum teamColor)
     {
-        ControlledUnits enemies = AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor);
         Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;
+    }
+
+    public void DefenseFromAttack(Unit fromUnit)
+    {
+        if (fromUnit == null) return;
+        if(isOnTask == false && taskTransform == null)
+        {
+            AttackTargetTask newTask = new(fromUnit.transform);
+            rotateToTaskTransform = true;
+            requestedTasks.AddFirst(newTask);
+            unit.animator.SetFloat(Unit.Speed, 1f);
+            DoTask();
+        }
     }
 }

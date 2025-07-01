@@ -4,10 +4,11 @@ using UnityEngine;
 public class AttackArea : MonoBehaviour
 {
     private TeamColorEnum teamColor;
-
-    internal void SetTeamColor(TeamColorEnum teamColor)
+    Unit unit;
+    internal void SetTeamColor(Unit unit)
     {
-        this.teamColor = teamColor;
+        this.unit = unit;
+        teamColor = unit.teamColor;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -16,7 +17,7 @@ public class AttackArea : MonoBehaviour
         {
             if (entityHealth.teamColor != teamColor)
             {
-                entityHealth.TakeDamage(3);
+                entityHealth.TakeDamage(unit, 3);
             }
         }
     }

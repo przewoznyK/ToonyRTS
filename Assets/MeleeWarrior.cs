@@ -19,6 +19,6 @@ public class MeleeWarrior : Unit
                 unitTaskManager.AttackTarget(component.GetProperties<Transform>());
             }
         }
-        unitTaskManager.DoTask();
+       
     }
 }

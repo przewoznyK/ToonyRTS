@@ -16,6 +16,6 @@ public class UnitSetPropertiesByTeamColor : MonoBehaviour
         activator.material = TeamColorDatabase.Instance.GetTeamMaterial(unit.teamColor);
         floatingHealthBarFillColor.color = TeamColorDatabase.Instance.GetTeamMaterial(unit.teamColor).color;
         entityHealth.SetTeamColor(unit.teamColor);
-        attackArea.SetTeamColor(unit.teamColor);
+        attackArea.SetTeamColor(unit);
     }
 }
