@@ -3653,10 +3653,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d89369f91e50d94b8b5930b8a2c5d14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttons:
+  commandButtons:
   - {fileID: 1147347902784927525}
   - {fileID: 4361963231241096625}
   - {fileID: 980930978786750965}
+  - {fileID: 1840814978588010019}
+  - {fileID: 1141175736614924740}
+  - {fileID: 181259502252596425}
+  - {fileID: 1859516541165217820}
+  - {fileID: 2286991749948058808}
   productionPanel: {fileID: 3798860581851987160}
   productRepresentationPrefab: {fileID: 1173883605872834914, guid: d5322178c35b04742af44086b9414636, type: 3}
   currentSelectedBuilding: {fileID: 0}

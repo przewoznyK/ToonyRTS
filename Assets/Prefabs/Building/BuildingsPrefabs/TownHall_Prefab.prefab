@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 4894685715816293689}
   - component: {fileID: 6242064628670292108}
   m_Layer: 3
-  m_Name: TownHall
+  m_Name: TownHall_Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,11 +154,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b68a118fae412e4ca6e87fdeb642575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  positionToOccupy: []
   teamColor: 0
   entityType: 2
-  stockPileType: 15
   unitsToBuy: 00000000
   meetingPoint: {fileID: 8464184700496729079}
+  stockPileType: 15
   <isStockPile>k__BackingField: 1
 --- !u!1001 &9133594983320868738
 PrefabInstance:

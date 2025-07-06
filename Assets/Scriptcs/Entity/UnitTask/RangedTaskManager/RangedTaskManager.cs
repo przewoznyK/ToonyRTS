@@ -1,25 +1,11 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitTaskManager : MonoBehaviour
+public class RangedTaskManager : UnitTaskManager
 {
-    Unit unit;
-    public GameObject attackArea;
-
-    bool isOnTask;
-    bool rotateToTaskTransform;
-    public LinkedList<UnitTask> requestedTasks = new();
-    UnitTask currentTask;
-    Transform taskTransform;
-    Vector3 taskVector;
-    TeamColorEnum enemyTeamTarget;
-    private void Start()
-    {
-        unit = GetComponent<Unit>();
-    }
-
+    [SerializeField] protected GameObject bulletPrefab;
+    [SerializeField] protected Transform shootPoint;
+    [SerializeField] protected float bulletForce;
     private void Update()
     {
         if (isOnTask)
@@ -34,6 +20,7 @@ public class UnitTaskManager : MonoBehaviour
 
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
+                rotateToTaskTransform = true;
                 unit.agent.SetDestination(taskTransform.position);
                 unit.animator.SetFloat(Unit.Speed, 1f);
 
@@ -46,37 +33,22 @@ public class UnitTaskManager : MonoBehaviour
             }
         }
 
-        if(rotateToTaskTransform)
+        if (rotateToTaskTransform)
         {
             if (taskTransform != null)
             {
                 var direction = taskTransform.position - transform.position;
                 var targetRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * Time.deltaTime);
-                if (Quaternion.Angle(transform.rotation, targetRotation) < 1f)
-                    rotateToTaskTransform = false;
             }
             else
                 rotateToTaskTransform = false;
         }
     }
 
-    internal void GoToPosition(Vector3 point)
-    {
-        GoToPositionTask newTask = new(point);
-        requestedTasks.AddLast(newTask);
-        DoTask();
-    }
 
-    internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
-    {
-        AttackTargetTask newTask = new(target);
-        enemyTeamTarget = targetTeam;
-        requestedTasks.AddLast(newTask);
-        DoTask();
-    }
 
-    public void DoTask()
+    public override void DoTask()
     {
         if (requestedTasks.Count > 0 && isOnTask == false)
         {
@@ -92,8 +64,8 @@ public class UnitTaskManager : MonoBehaviour
             else if (currentTask is AttackTargetTask attackTarget)
             {
                 taskTransform = attackTarget.targetTransform;
+
             }
-            unit.animator.SetFloat(Unit.Speed, 1f);
             isOnTask = true;
         }
     }
@@ -105,28 +77,20 @@ public class UnitTaskManager : MonoBehaviour
 
     }
 
-    public void ResetTasks()
-    {
-        requestedTasks.Clear();
-        isOnTask = false;
-        currentTask = null;
-        StopAllCoroutines();
-    }
-
     IEnumerator AttackCycle()
     {
         unit.animator.SetFloat(Unit.Speed, 0f);
-        unit.animator.SetTrigger(Unit.AttackAnimationTrigger);
-      
-
+        unit.animator.SetTrigger("Shoot");
         yield return new WaitForSeconds(0.2f);
-        attackArea.gameObject.SetActive(true);
+        CreateBullet();
+        //yield return new WaitForSeconds(0.2f);
+        //attackArea.gameObject.SetActive(true);
 
-     
-        yield return new WaitForSeconds(0.25f);
-        attackArea.gameObject.SetActive(false);
+
+        //yield return new WaitForSeconds(0.25f);
+        //attackArea.gameObject.SetActive(false);
         yield return new WaitForSeconds(1f);
-     
+
         if (taskTransform == null)
         {
             Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
@@ -152,19 +116,24 @@ public class UnitTaskManager : MonoBehaviour
         return nearestEnemy;
     }
 
-    public void DefenseFromAttack(Unit fromUnit)
+    public override void DefenseFromAttack(Unit fromUnit)
     {
         if (fromUnit == null) return;
-        if(isOnTask == false && taskTransform == null)
+        if (isOnTask == false && taskTransform == null)
         {
             AttackTargetTask newTask = new(fromUnit.transform);
             enemyTeamTarget = fromUnit.GetTeam();
             rotateToTaskTransform = true;
             requestedTasks.AddFirst(newTask);
-            unit.animator.SetFloat(Unit.Speed, 1f);
+        //    unit.animator.SetFloat(Unit.Speed, 1f);
             DoTask();
         }
     }
 
-
+    void CreateBullet()
+    {
+        GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        bulletRb.AddForce(shootPoint.forward * bulletForce, ForceMode.Impulse);
+    }
 }

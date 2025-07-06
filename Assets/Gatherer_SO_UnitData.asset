@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75f71fdcc0c0e594fa8369974a551722, type: 3}
-  m_Name: Gatherer
+  m_Name: Gatherer_SO_UnitData
   m_EditorClassIdentifier: 
   unitID: 0
   unitName: 0

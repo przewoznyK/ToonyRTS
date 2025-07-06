@@ -3,6 +3,7 @@ using UnityEngine;
 public enum BuildingNameEnum
 {
     TownHall,
-    Lumberjack
+    Lumberjack,
+    Barrack
 }
 

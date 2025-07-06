@@ -1142,7 +1142,7 @@ GameObject:
   - component: {fileID: 8061633269365564604}
   - component: {fileID: 6355563916545347019}
   m_Layer: 3
-  m_Name: Blie_Gatherer
+  m_Name: Blue_Gatherer
   m_TagString: Blue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

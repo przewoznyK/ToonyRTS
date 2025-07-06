@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a4ac8b1b190e24fac7463893398ee5, type: 3}
+  m_Name: Barrack
+  m_EditorClassIdentifier: 
+  buildingID: 0
+  buildingName: 2
+  health: 1000
+  buildingSprite: {fileID: 21300000, guid: 7b511e2eae6a6fd4d945e79394bc76c2, type: 3}
+  buildingPrefab: {fileID: 256414972649936468, guid: 3812dabafe4ce854aa80daf9448093de, type: 3}
+  <size>k__BackingField: {x: 5, y: 5}
+  objectPrices:
+  - <priceType>k__BackingField: 1
+    <priceValue>k__BackingField: 100
+  positionToOccupy: []

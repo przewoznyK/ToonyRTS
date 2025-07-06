@@ -8,8 +8,8 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 {
     protected UnitTaskManager unitTaskManager;
     public TeamColorEnum teamColor;
-    [SerializeField] public NavMeshAgent agent;
-    [SerializeField] public Animator animator;
+    public NavMeshAgent agent;
+    public Animator animator;
     public Vector3 TargetPosition;
     public bool isGoingToPosition;
     public float TimeStuck;
@@ -28,6 +28,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     private void Start()
     {
         unitTaskManager = GetComponent<UnitTaskManager>();
+        agent = GetComponent<NavMeshAgent>();
 
         activator = transform.GetChild(0);
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
@@ -35,6 +36,8 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onHurtAction += HurtUnit;
         entityHealth.onDeathActiom += () => DeleteUnit();
+
+        agent.stoppingDistance = attackRange;
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
@@ -44,8 +47,12 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
 
-    public void GoMeetingPosition(Vector3 position) => agent.SetDestination(position);
+    public void GoMeetingPosition(Vector3 position)
+    {
+       // animator.SetFloat(Unit.Speed, 1f);
+        agent.SetDestination(position);
 
+    }
     public virtual void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed) => Debug.Log("Override this method");
 
     public TeamColorEnum GetTeam()

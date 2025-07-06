@@ -7,11 +7,12 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
     [SerializeField] public List<Vector3Int> positionToOccupy;
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
-    [SerializeField] private ResourceTypesEnum stockPileType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] private Transform meetingPoint;
-    [field:SerializeField] public bool isStockPile { get; private set; }
 
+    [Header("OPTIONAL STOCKPILE")]
+    [SerializeField] private ResourceTypesEnum stockPileType;
+    [field: SerializeField] public bool isStockPile { get; private set; }
     public Transform stockPilePosition => transform;
 
     private void Start()
