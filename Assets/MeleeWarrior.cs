@@ -16,7 +16,7 @@ public class MeleeWarrior : Unit
         {
             if ((component.GetTeam() & teamColor) != teamColor)
             {
-                unitTaskManager.AttackTarget(component.GetProperties<Transform>());
+                unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
             }
         }
        

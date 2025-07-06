@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class UnitTaskManager : MonoBehaviour
 {
@@ -15,7 +14,7 @@ public class UnitTaskManager : MonoBehaviour
     UnitTask currentTask;
     Transform taskTransform;
     Vector3 taskVector;
-
+    TeamColorEnum enemyTeamTarget;
     private void Start()
     {
         unit = GetComponent<Unit>();
@@ -69,9 +68,10 @@ public class UnitTaskManager : MonoBehaviour
         DoTask();
     }
 
-    internal void AttackTarget(Transform transform)
+    internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
     {
-        AttackTargetTask newTask = new(transform);
+        AttackTargetTask newTask = new(target);
+        enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);
         DoTask();
     }
@@ -97,9 +97,6 @@ public class UnitTaskManager : MonoBehaviour
             isOnTask = true;
         }
     }
-
-
-
     void GoToNextTask()
     {
         isOnTask = false;
@@ -132,20 +129,17 @@ public class UnitTaskManager : MonoBehaviour
      
         if (taskTransform == null)
         {
-            Transform nearestEnemy = FindNearestEnemy(TeamColorEnum.Red);
-            Debug.Log(nearestEnemy);
+            Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
             if (nearestEnemy != null)
                 taskTransform = nearestEnemy;
             else
                 yield break;
         }
-        Debug.Log(Vector3.Distance(taskTransform.position, transform.position));
         if (Vector3.Distance(taskTransform.position, transform.position) > unit.attackRange)
         {
-            AttackTarget(taskTransform);
-            //AttackTargetTask newTask = new(taskTransform);
-            //requestedTasks.AddFirst(newTask);
-            //DoTask();
+            AttackTargetTask newTask = new(taskTransform);
+            requestedTasks.AddFirst(newTask);
+            DoTask();
             yield break;
         }
         yield return new WaitForSeconds(unit.attackCooldown);
@@ -164,10 +158,13 @@ public class UnitTaskManager : MonoBehaviour
         if(isOnTask == false && taskTransform == null)
         {
             AttackTargetTask newTask = new(fromUnit.transform);
+            enemyTeamTarget = fromUnit.GetTeam();
             rotateToTaskTransform = true;
             requestedTasks.AddFirst(newTask);
             unit.animator.SetFloat(Unit.Speed, 1f);
             DoTask();
         }
     }
+
+
 }
