@@ -1,10 +1,21 @@
+using System;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    private Unit unit;
+    private int damage;
+    internal void SetStartProperties(Unit unit)
+    {
+        this.unit = unit;
+        damage = this.unit.damage;
+    }
+    
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
+        EntityHealth entity = other.GetComponent<EntityHealth>();
+        if (entity)
+            entity.TakeDamage(unit, damage);
         Destroy(gameObject);
     }
 }

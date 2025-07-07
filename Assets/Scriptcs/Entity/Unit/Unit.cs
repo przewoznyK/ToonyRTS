@@ -15,7 +15,9 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float TimeStuck;
     protected Transform activator;
     [SerializeField] protected GameObject taskFlagPrefab;
+    public GameObject attackArea;
 
+    public int damage;
     public float attackRange;
     public float attackCooldown;
     public float maxEnemySearchingDistance;
@@ -26,6 +28,10 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     
     private void Start()
+    {
+        InitUniversalFunction();
+    }
+    public void InitUniversalFunction()
     {
         unitTaskManager = GetComponent<UnitTaskManager>();
         agent = GetComponent<NavMeshAgent>();

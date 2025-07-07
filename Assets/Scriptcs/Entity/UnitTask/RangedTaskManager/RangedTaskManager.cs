@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class RangedTaskManager : UnitTaskManager
 {
-    [SerializeField] protected GameObject bulletPrefab;
-    [SerializeField] protected Transform shootPoint;
-    [SerializeField] protected float bulletForce;
+    RangedArchery rangedArchery;
+    private void Start()
+    {
+        rangedArchery = GetComponent<RangedArchery>();
+    }
     private void Update()
     {
         if (isOnTask)
@@ -21,10 +23,10 @@ public class RangedTaskManager : UnitTaskManager
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
                 rotateToTaskTransform = true;
-                unit.agent.SetDestination(taskTransform.position);
-                unit.animator.SetFloat(Unit.Speed, 1f);
+                rangedArchery.agent.SetDestination(taskTransform.position);
+                rangedArchery.animator.SetFloat(Unit.Speed, 1f);
 
-                if (Vector3.Distance(taskTransform.position, transform.position) <= unit.attackRange)
+                if (Vector3.Distance(taskTransform.position, transform.position) <= rangedArchery.attackRange)
                 {
                     StartCoroutine(AttackCycle());
                     isOnTask = false;
@@ -39,7 +41,7 @@ public class RangedTaskManager : UnitTaskManager
             {
                 var direction = taskTransform.position - transform.position;
                 var targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rangedArchery.rotationSpeed * Time.deltaTime);
             }
             else
                 rotateToTaskTransform = false;
@@ -57,9 +59,9 @@ public class RangedTaskManager : UnitTaskManager
             if (currentTask is GoToPositionTask goToPositionTask)
             {
                 Vector3 pos = goToPositionTask.destinatedPosition;
-
-                unit.agent.SetDestination(pos);
+                rangedArchery.agent.SetDestination(pos);
                 taskVector = pos;
+                rangedArchery.animator.SetFloat(Unit.Speed, 1f);
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
@@ -72,17 +74,15 @@ public class RangedTaskManager : UnitTaskManager
     void GoToNextTask()
     {
         isOnTask = false;
-        unit.animator.SetFloat(Unit.Speed, 0f);
+        rangedArchery.animator.SetFloat(Unit.Speed, 0f);
         DoTask();
 
     }
 
     IEnumerator AttackCycle()
     {
-        unit.animator.SetFloat(Unit.Speed, 0f);
-        unit.animator.SetTrigger("Shoot");
-        yield return new WaitForSeconds(0.2f);
-        CreateBullet();
+        rangedArchery.animator.SetFloat(Unit.Speed, 0f);
+        rangedArchery.animator.SetTrigger("Shoot");
         //yield return new WaitForSeconds(0.2f);
         //attackArea.gameObject.SetActive(true);
 
@@ -95,25 +95,23 @@ public class RangedTaskManager : UnitTaskManager
         {
             Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
             if (nearestEnemy != null)
+            {
                 taskTransform = nearestEnemy;
+                rotateToTaskTransform = true;
+            }
+                
             else
                 yield break;
         }
-        if (Vector3.Distance(taskTransform.position, transform.position) > unit.attackRange)
+        if (Vector3.Distance(taskTransform.position, transform.position) > rangedArchery.attackRange)
         {
             AttackTargetTask newTask = new(taskTransform);
             requestedTasks.AddFirst(newTask);
             DoTask();
             yield break;
         }
-        yield return new WaitForSeconds(unit.attackCooldown);
+        yield return new WaitForSeconds(rangedArchery.attackCooldown);
         StartCoroutine(AttackCycle());
-    }
-
-    public Transform FindNearestEnemy(TeamColorEnum teamColor)
-    {
-        Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
-        return nearestEnemy;
     }
 
     public override void DefenseFromAttack(Unit fromUnit)
@@ -130,10 +128,17 @@ public class RangedTaskManager : UnitTaskManager
         }
     }
 
-    void CreateBullet()
+    public void ShootBullet()
     {
-        GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
+        GameObject bullet = Instantiate(rangedArchery.bulletPrefab, rangedArchery.shootPoint.position, Quaternion.identity);
+        bullet.GetComponent<Projectile>().SetStartProperties((Unit)rangedArchery);
         Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-        bulletRb.AddForce(shootPoint.forward * bulletForce, ForceMode.Impulse);
+        bulletRb.AddForce(rangedArchery.shootPoint.forward * rangedArchery.bulletForce, ForceMode.Impulse);
+    }
+
+    public override Transform FindNearestEnemy(TeamColorEnum teamColor)
+    {
+        Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, rangedArchery.maxEnemySearchingDistance);
+        return nearestEnemy;
     }
 }

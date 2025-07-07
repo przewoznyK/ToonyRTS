@@ -5417,9 +5417,11 @@ MonoBehaviour:
   isGoingToPosition: 0
   TimeStuck: 0
   taskFlagPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
+  attackArea: {fileID: 933391799721454546}
   attackRange: 2
   attackCooldown: 0.5
-  maxEnemySearchingDistance: 0
+  maxEnemySearchingDistance: 60
+  rotationSpeed: 360
   bodyToDrop: {fileID: 5900771534562422698}
 --- !u!114 &7278415154498229938
 MonoBehaviour:
@@ -5463,7 +5465,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bf9b6f5c6d7ad43b08f5cfd08e5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackArea: {fileID: 933391799721454546}
 --- !u!54 &1435303158900560461
 Rigidbody:
   m_ObjectHideFlags: 0

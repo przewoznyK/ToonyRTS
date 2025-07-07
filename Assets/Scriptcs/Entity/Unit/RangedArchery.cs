@@ -2,6 +2,15 @@ using UnityEngine;
 
 public class RangedArchery : Unit
 {
+    [Header("Ranged Properties")]
+    public GameObject bulletPrefab;
+    public Transform shootPoint;
+    public float bulletForce;
+    private void Start()
+    {
+        InitUniversalFunction();
+    }
+
     public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
         if (isShiftPressed == false)
@@ -10,8 +19,6 @@ public class RangedArchery : Unit
         if (hit.collider.CompareTag("Ground"))
         {
             unitTaskManager.GoToPosition(hit.point);
-            Debug.Log("GROUND");
-
         }
         else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {

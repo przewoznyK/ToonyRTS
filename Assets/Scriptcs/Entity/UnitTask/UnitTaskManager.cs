@@ -6,7 +6,6 @@ using UnityEngine;
 public class UnitTaskManager : MonoBehaviour
 {
     protected Unit unit;
-    public GameObject attackArea;
 
     protected bool isOnTask;
     protected bool rotateToTaskTransform;
@@ -71,6 +70,7 @@ public class UnitTaskManager : MonoBehaviour
             requestedTasks.RemoveFirst();
             if (currentTask is GoToPositionTask goToPositionTask)
             {
+              
                 Vector3 pos = goToPositionTask.destinatedPosition;
 
                 unit.agent.SetDestination(pos);
@@ -107,11 +107,11 @@ public class UnitTaskManager : MonoBehaviour
       
 
         yield return new WaitForSeconds(0.2f);
-        attackArea.gameObject.SetActive(true);
+        unit.attackArea.gameObject.SetActive(true);
 
      
         yield return new WaitForSeconds(0.25f);
-        attackArea.gameObject.SetActive(false);
+        unit.attackArea.gameObject.SetActive(false);
         yield return new WaitForSeconds(1f);
      
         if (taskTransform == null)
@@ -133,7 +133,7 @@ public class UnitTaskManager : MonoBehaviour
         StartCoroutine(AttackCycle());
     }
 
-    public Transform FindNearestEnemy(TeamColorEnum teamColor)
+    public virtual Transform FindNearestEnemy(TeamColorEnum teamColor)
     {
         Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;
