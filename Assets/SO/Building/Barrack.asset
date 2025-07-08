@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9a4ac8b1b190e24fac7463893398ee5, type: 3}
   m_Name: Barrack
   m_EditorClassIdentifier: 
-  buildingID: 0
+  buildingID: 1
   buildingName: 2
   health: 1000
   buildingSprite: {fileID: 21300000, guid: 7b511e2eae6a6fd4d945e79394bc76c2, type: 3}

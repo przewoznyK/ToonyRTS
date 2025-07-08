@@ -1,5 +1,6 @@
 public enum UnitNameEnum
 {
     gatherer,
-    infantry
+    infantry,
+    archer
 }

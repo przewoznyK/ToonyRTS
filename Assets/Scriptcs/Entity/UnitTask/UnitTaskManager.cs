@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +5,7 @@ using UnityEngine;
 public class UnitTaskManager : MonoBehaviour
 {
     protected Unit unit;
-
+    protected MeleeWarrior meleeWarrior;
     protected bool isOnTask;
     protected bool rotateToTaskTransform;
     public LinkedList<UnitTask> requestedTasks = new();
@@ -17,6 +16,7 @@ public class UnitTaskManager : MonoBehaviour
     private void Start()
     {
         unit = GetComponent<Unit>();
+        meleeWarrior = GetComponent<MeleeWarrior>();
     }
 
     private void Update()
@@ -33,12 +33,17 @@ public class UnitTaskManager : MonoBehaviour
 
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
+                rotateToTaskTransform = true;
+                unit.agent.stoppingDistance = unit.attackRange;
                 unit.agent.SetDestination(taskTransform.position);
                 unit.animator.SetFloat(Unit.Speed, 1f);
-
-                if (Vector3.Distance(taskTransform.position, transform.position) <= unit.attackRange)
+              
+                if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
                 {
-                    StartCoroutine(AttackCycle());
+                    if(meleeWarrior.isRanged)
+                        StartCoroutine(RangeAttackCycle());
+                    else
+                        StartCoroutine(MeleeAttackCycle());
                     isOnTask = false;
                 }
 
@@ -51,9 +56,7 @@ public class UnitTaskManager : MonoBehaviour
             {
                 var direction = taskTransform.position - transform.position;
                 var targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * Time.deltaTime);
-                if (Quaternion.Angle(transform.rotation, targetRotation) < 1f)
-                    rotateToTaskTransform = false;
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, meleeWarrior.rotationSpeed * Time.deltaTime);
             }
             else
                 rotateToTaskTransform = false;
@@ -70,21 +73,25 @@ public class UnitTaskManager : MonoBehaviour
             requestedTasks.RemoveFirst();
             if (currentTask is GoToPositionTask goToPositionTask)
             {
-              
+                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                taskTransform = null;
                 Vector3 pos = goToPositionTask.destinatedPosition;
 
                 unit.agent.SetDestination(pos);
                 taskVector = pos;
+                unit.animator.SetFloat(Unit.Speed, 1f);
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
+                unit.agent.stoppingDistance = unit.attackRange;
                 taskTransform = attackTarget.targetTransform;
+                unit.animator.SetFloat(Unit.Speed, 1f);
             }
-         //   unit.animator.SetFloat(Unit.Speed, 1f);
+      
             isOnTask = true;
         }
     }
-    void GoToNextTask()
+    public void GoToNextTask()
     {
         isOnTask = false;
         unit.animator.SetFloat(Unit.Speed, 0f);
@@ -94,13 +101,14 @@ public class UnitTaskManager : MonoBehaviour
 
     public void ResetTasks()
     {
+ 
         requestedTasks.Clear();
         isOnTask = false;
         currentTask = null;
         StopAllCoroutines();
     }
 
-    IEnumerator AttackCycle()
+    IEnumerator MeleeAttackCycle()
     {
         unit.animator.SetFloat(Unit.Speed, 0f);
         unit.animator.SetTrigger(Unit.AttackAnimationTrigger);
@@ -130,7 +138,37 @@ public class UnitTaskManager : MonoBehaviour
             yield break;
         }
         yield return new WaitForSeconds(unit.attackCooldown);
-        StartCoroutine(AttackCycle());
+        StartCoroutine(MeleeAttackCycle());
+    }
+
+    IEnumerator RangeAttackCycle()
+    {
+        meleeWarrior.animator.SetFloat(Unit.Speed, 0f);
+        meleeWarrior.animator.SetTrigger("Shoot");
+
+        yield return new WaitForSeconds(1f);
+
+        if (taskTransform == null && requestedTasks.Count == 0)
+        {
+            Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
+            if (nearestEnemy != null)
+            {
+                taskTransform = nearestEnemy;
+                rotateToTaskTransform = true;
+            }
+
+            else
+                yield break;
+        }
+        if (Vector3.Distance(taskTransform.position, transform.position) > meleeWarrior.attackRange)
+        {
+            AttackTargetTask newTask = new(taskTransform);
+            requestedTasks.AddFirst(newTask);
+            DoTask();
+            yield break;
+        }
+        yield return new WaitForSeconds(meleeWarrior.attackCooldown);
+        StartCoroutine(RangeAttackCycle());
     }
 
     public virtual Transform FindNearestEnemy(TeamColorEnum teamColor)
@@ -153,7 +191,13 @@ public class UnitTaskManager : MonoBehaviour
         }
     }
 
-
+    public void ShootBullet()
+    {
+        GameObject bullet = Instantiate(meleeWarrior.bulletPrefab, meleeWarrior.shootPoint.position, Quaternion.identity);
+        bullet.GetComponent<Projectile>().SetStartProperties((Unit)meleeWarrior);
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        bulletRb.AddForce(meleeWarrior.shootPoint.forward * meleeWarrior.bulletForce, ForceMode.Impulse);
+    }
 
     internal void GoToPosition(Vector3 point)
     {
@@ -164,6 +208,7 @@ public class UnitTaskManager : MonoBehaviour
 
     internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
     {
+  
         AttackTargetTask newTask = new(target);
         enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);

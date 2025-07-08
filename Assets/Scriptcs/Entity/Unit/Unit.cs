@@ -22,6 +22,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float attackCooldown;
     public float maxEnemySearchingDistance;
     public float rotationSpeed;
+    public float defaultStoppingDistance;
     [SerializeField] protected Transform bodyToDrop;
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
@@ -29,6 +30,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     
     private void Start()
     {
+        agent.stoppingDistance = defaultStoppingDistance;
         InitUniversalFunction();
     }
     public void InitUniversalFunction()
@@ -43,7 +45,6 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         entityHealth.onHurtAction += HurtUnit;
         entityHealth.onDeathActiom += () => DeleteUnit();
 
-        agent.stoppingDistance = attackRange;
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 

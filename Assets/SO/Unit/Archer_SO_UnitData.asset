@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75f71fdcc0c0e594fa8369974a551722, type: 3}
+  m_Name: Archer_SO_UnitData
+  m_EditorClassIdentifier: 
+  unitID: 2
+  unitName: 2
+  health: 50
+  attack: 5
+  speed: 5
+  unitSprite: {fileID: 1564897286, guid: a03e9228371be9449a97a937850924ca, type: 3}
+  unitPrefab: {fileID: 1783693182986691752, guid: 684f6980de547d84db3429e640a47f10, type: 3}
+  productionTime: 5
+  objectPrices:
+  - <priceType>k__BackingField: 1
+    <priceValue>k__BackingField: 50

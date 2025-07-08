@@ -4,12 +4,14 @@ using UnityEngine;
 public class RangedTaskManager : UnitTaskManager
 {
     RangedArchery rangedArchery;
+
     private void Start()
     {
         rangedArchery = GetComponent<RangedArchery>();
     }
     private void Update()
     {
+        Debug.Log($"Agent velocity: {rangedArchery.agent.velocity}");
         if (isOnTask)
         {
             if (currentTask.unitTaskType == UnitTaskTypeEnum.GoToPosition)
@@ -58,10 +60,17 @@ public class RangedTaskManager : UnitTaskManager
             requestedTasks.RemoveFirst();
             if (currentTask is GoToPositionTask goToPositionTask)
             {
+                rangedArchery.agent.updatePosition = true;
+                rangedArchery.agent.updateRotation = true;
+
                 Vector3 pos = goToPositionTask.destinatedPosition;
+
                 rangedArchery.agent.SetDestination(pos);
                 taskVector = pos;
                 rangedArchery.animator.SetFloat(Unit.Speed, 1f);
+
+
+
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
@@ -99,7 +108,7 @@ public class RangedTaskManager : UnitTaskManager
                 taskTransform = nearestEnemy;
                 rotateToTaskTransform = true;
             }
-                
+
             else
                 yield break;
         }
@@ -123,7 +132,7 @@ public class RangedTaskManager : UnitTaskManager
             enemyTeamTarget = fromUnit.GetTeam();
             rotateToTaskTransform = true;
             requestedTasks.AddFirst(newTask);
-        //    unit.animator.SetFloat(Unit.Speed, 1f);
+            //    unit.animator.SetFloat(Unit.Speed, 1f);
             DoTask();
         }
     }

@@ -5322,12 +5322,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1204251639418209129}
   - component: {fileID: 4699426963384245160}
+  - component: {fileID: 1435303158900560461}
   - component: {fileID: 3080467061977362710}
-  - component: {fileID: 3965409867535687248}
   - component: {fileID: 7278415154498229938}
   - component: {fileID: 4650262322768825046}
+  - component: {fileID: 3965409867535687248}
   - component: {fileID: 3782305305380401795}
-  - component: {fileID: 1435303158900560461}
   m_Layer: 3
   m_Name: Blue_TT_Heavy_Infantry
   m_TagString: Untagged
@@ -5376,6 +5376,33 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!54 &1435303158900560461
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4273567407666661049}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!195 &3080467061977362710
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -5398,31 +5425,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &3965409867535687248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4273567407666661049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b0bf60bc0669e047945ec103d063849, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  teamColor: 1
-  agent: {fileID: 3080467061977362710}
-  animator: {fileID: 3002082014375845868}
-  TargetPosition: {x: 0, y: 0, z: 0}
-  isGoingToPosition: 0
-  TimeStuck: 0
-  taskFlagPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
-  attackArea: {fileID: 933391799721454546}
-  attackRange: 2
-  attackCooldown: 0.5
-  maxEnemySearchingDistance: 60
-  rotationSpeed: 360
-  bodyToDrop: {fileID: 5900771534562422698}
 --- !u!114 &7278415154498229938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5453,6 +5455,32 @@ MonoBehaviour:
   attackArea: {fileID: 5630710097859228269}
   activator: {fileID: 4521041504663720543}
   floatingHealthBarFillColor: {fileID: 5989335956744516265}
+--- !u!114 &3965409867535687248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4273567407666661049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b0bf60bc0669e047945ec103d063849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  teamColor: 1
+  agent: {fileID: 3080467061977362710}
+  animator: {fileID: 3002082014375845868}
+  TargetPosition: {x: 0, y: 0, z: 0}
+  isGoingToPosition: 0
+  TimeStuck: 0
+  taskFlagPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
+  attackArea: {fileID: 933391799721454546}
+  damage: 0
+  attackRange: 2
+  attackCooldown: 0.5
+  maxEnemySearchingDistance: 60
+  rotationSpeed: 360
+  bodyToDrop: {fileID: 5900771534562422698}
 --- !u!114 &3782305305380401795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5465,33 +5493,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bf9b6f5c6d7ad43b08f5cfd08e5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &1435303158900560461
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4273567407666661049}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &4295149294135991718
 GameObject:
   m_ObjectHideFlags: 0
