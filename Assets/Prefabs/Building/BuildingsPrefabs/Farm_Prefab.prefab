@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4931532885985634554}
   - component: {fileID: 8376227118915533415}
-  - component: {fileID: 4240929469523014203}
   - component: {fileID: 1328018414837704350}
   m_Layer: 0
-  m_Name: Farm
+  m_Name: Farm_Prefab
   m_TagString: Resource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,25 +55,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4240929469523014203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4974017246394439791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b68a118fae412e4ca6e87fdeb642575, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  positionToOccupy: []
-  teamColor: 0
-  entityType: 0
-  unitsToBuy: 
-  meetingPoint: {fileID: 0}
-  stockPileType: 0
-  <isStockPile>k__BackingField: 0
 --- !u!114 &1328018414837704350
 MonoBehaviour:
   m_ObjectHideFlags: 0

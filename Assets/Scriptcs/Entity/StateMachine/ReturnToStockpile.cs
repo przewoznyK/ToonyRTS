@@ -24,7 +24,7 @@ internal class ReturnToStockpile : IState
     public void OnEnter()
     {
         IStockPile stockPile = AccessToClassByTeamColor.instance.GetClosestStockPileByTeamColor(_gatherer.teamColor, _gatherer.transform.position);
-        Debug.Log(stockPile);
+        //Debug.Log(stockPile);
         if (stockPile != null)
         {
             _gatherer.StockPile = stockPile;

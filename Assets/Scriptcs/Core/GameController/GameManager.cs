@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         var holdSelectionUnitCanbasChild = holdSelectionUnitCanbasInstantiate.transform.GetChild(0);
         var boxVisual = holdSelectionUnitCanbasChild.GetComponent<RectTransform>();
         // Player Resources
-        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,300, 30, 20, 10);
+        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,3000, 3000, 2000, 1000);
         // Shop Manager
         var shopManager = new ShopManager(playerResources, buildingProduction);
         // Player Remove Entity

@@ -145,9 +145,9 @@ public class RangedTaskManager : UnitTaskManager
         bulletRb.AddForce(rangedArchery.shootPoint.forward * rangedArchery.bulletForce, ForceMode.Impulse);
     }
 
-    public override Transform FindNearestEnemy(TeamColorEnum teamColor)
-    {
-        Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, rangedArchery.maxEnemySearchingDistance);
-        return nearestEnemy;
-    }
+    //public override Transform FindNearestEnemy(TeamColorEnum teamColor)
+    //{
+    //    Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, rangedArchery.maxEnemySearchingDistance);
+    //    return nearestEnemy;
+    //}
 }

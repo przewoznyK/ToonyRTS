@@ -35,8 +35,12 @@ public class UnitTaskManager : MonoBehaviour
             {
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
-                unit.agent.SetDestination(taskTransform.position);
-                unit.animator.SetFloat(Unit.Speed, 1f);
+                if(taskTransform.position != null)
+                {
+                    unit.agent.SetDestination(taskTransform.position);
+                    unit.animator.SetFloat(Unit.Speed, 1f);
+                }
+            
               
                 if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
                 {
@@ -171,7 +175,7 @@ public class UnitTaskManager : MonoBehaviour
         StartCoroutine(RangeAttackCycle());
     }
 
-    public virtual Transform FindNearestEnemy(TeamColorEnum teamColor)
+    public Transform FindNearestEnemy(TeamColorEnum teamColor)
     {
         Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;

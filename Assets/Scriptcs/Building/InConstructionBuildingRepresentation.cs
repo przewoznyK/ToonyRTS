@@ -20,9 +20,12 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
     {
         GameObject newBuilding = Instantiate(finishBuilding, transform.position, Quaternion.identity);
         Building building = newBuilding.GetComponent<Building>();
-
-        building.SetTeamColor(teamColor);
-        building.SetPositionToOccupy(positionToOccupy);
+        if(building)
+        {
+            building.SetTeamColor(teamColor);
+            building.SetPositionToOccupy(positionToOccupy);
+        }
+      
 
         Destroy(gameObject);
     }

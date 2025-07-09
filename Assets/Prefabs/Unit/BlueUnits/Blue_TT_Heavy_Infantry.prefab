@@ -5480,7 +5480,13 @@ MonoBehaviour:
   attackCooldown: 0.5
   maxEnemySearchingDistance: 60
   rotationSpeed: 360
+  defaultStoppingDistance: 0
+  defaultMovementSpeed: 3
   bodyToDrop: {fileID: 5900771534562422698}
+  isRanged: 0
+  bulletPrefab: {fileID: 0}
+  shootPoint: {fileID: 0}
+  bulletForce: 0
 --- !u!114 &3782305305380401795
 MonoBehaviour:
   m_ObjectHideFlags: 0

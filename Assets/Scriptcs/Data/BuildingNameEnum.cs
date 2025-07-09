@@ -5,6 +5,7 @@ public enum BuildingNameEnum
     TownHall,
     Barrack,
     Archery,
-    Farm
+    Farm,
+    Stable
 }
 

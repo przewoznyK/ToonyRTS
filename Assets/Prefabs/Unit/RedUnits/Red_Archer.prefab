@@ -3633,7 +3633,7 @@ GameObject:
   - component: {fileID: 6204745860638352109}
   - component: {fileID: 4435775315355158605}
   m_Layer: 3
-  m_Name: Blue_Archer
+  m_Name: Red_Archer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3866,7 +3866,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0bf60bc0669e047945ec103d063849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teamColor: 1
+  teamColor: 2
   agent: {fileID: 3684535056669647017}
   animator: {fileID: 6567658362429307301}
   TargetPosition: {x: 0, y: 0, z: 0}
@@ -11024,7 +11024,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dccf8e44ede71db42b49378af93c5fb7, type: 2}
+  - {fileID: 2100000, guid: a2085ab309c94a143a706621cd42e213, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11587,7 +11587,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dccf8e44ede71db42b49378af93c5fb7, type: 2}
+  - {fileID: 2100000, guid: 98a7fdcb4ebb44344b4afe0424d44b82, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -23,6 +23,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float maxEnemySearchingDistance;
     public float rotationSpeed;
     public float defaultStoppingDistance;
+    public float defaultMovementSpeed;
     [SerializeField] protected Transform bodyToDrop;
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
@@ -31,6 +32,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     private void Start()
     {
         agent.stoppingDistance = defaultStoppingDistance;
+        agent.speed = defaultMovementSpeed;
         InitUniversalFunction();
     }
     public void InitUniversalFunction()
@@ -56,9 +58,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public void GoMeetingPosition(Vector3 position)
     {
-       // animator.SetFloat(Unit.Speed, 1f);
         agent.SetDestination(position);
-
     }
     public virtual void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed) => Debug.Log("Override this method");
 

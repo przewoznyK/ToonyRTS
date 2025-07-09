@@ -1,13 +1,14 @@
+using System;
 using UnityEngine;
 
 public class MeleeWarrior : Unit
 {
+
     [Header("Ranged Properties")]
     public bool isRanged;
     public GameObject bulletPrefab;
     public Transform shootPoint;
     public float bulletForce;
-
     public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
         if (isShiftPressed == false)
@@ -26,5 +27,10 @@ public class MeleeWarrior : Unit
             }
         }
        
+    }
+
+    internal void AttackDetectionTarget(IGetTeamAndProperties component)
+    {
+        unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
     }
 }
