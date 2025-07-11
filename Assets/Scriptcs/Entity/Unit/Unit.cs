@@ -8,12 +8,14 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 {
     protected UnitTaskManager unitTaskManager;
     public TeamColorEnum teamColor;
+    public EntityTypeEnum entityType;
     public NavMeshAgent agent;
     public Animator animator;
     public Vector3 TargetPosition;
     public bool isGoingToPosition;
     public float TimeStuck;
     protected Transform activator;
+    protected SphereCollider enemyDecetorCollider;
     [SerializeField] protected GameObject taskFlagPrefab;
     public GameObject attackArea;
 
@@ -24,6 +26,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float rotationSpeed;
     public float defaultStoppingDistance;
     public float defaultMovementSpeed;
+    public float enemyDetectionRadius;
     [SerializeField] protected Transform bodyToDrop;
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
@@ -41,6 +44,8 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         agent = GetComponent<NavMeshAgent>();
 
         activator = transform.GetChild(0);
+        enemyDecetorCollider = transform.GetChild(1).GetComponent<SphereCollider>();
+        enemyDecetorCollider.radius = enemyDetectionRadius;
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
 
         EntityHealth entityHealth = GetComponent<EntityHealth>();
@@ -69,9 +74,12 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public EntityTypeEnum GetEntityType()
     {
+        return entityType;
+    }
+    public BuildingTypeEnum GetBuildingType()
+    {
         throw new NotImplementedException();
     }
-
     public T GetProperties<T>() where T : Component
     {
         if (typeof(T) == typeof(Transform))
@@ -94,4 +102,11 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         bodyToDrop.SetParent(null, true);
         Destroy(gameObject);
     }
+
+    public void SetActiveEnemyDetector(bool value)
+    {
+        enemyDecetorCollider.enabled = value;
+    }
+
+
 }

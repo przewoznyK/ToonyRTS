@@ -26,11 +26,11 @@ public class MeleeWarrior : Unit
                 unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
             }
         }
-       
     }
 
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
         unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
+        SetActiveEnemyDetector(false);
     }
 }

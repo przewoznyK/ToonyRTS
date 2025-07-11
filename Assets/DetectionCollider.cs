@@ -8,7 +8,7 @@ public class DetectionCollider : MonoBehaviour
     {
         if (other.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {
-            if ((component.GetTeam() != meleeWarrior.teamColor))
+            if ((component.GetTeam() != meleeWarrior.teamColor) && (component.GetEntityType() == EntityTypeEnum.unit))
             {
                 meleeWarrior.AttackDetectionTarget(component);
             }

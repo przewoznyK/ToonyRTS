@@ -8,14 +8,30 @@ public class UnitSetPropertiesByTeamColor : MonoBehaviour
     [SerializeField] private AttackArea attackArea;
     [SerializeField] private MeshRenderer activator;
     [SerializeField] private Image floatingHealthBarFillColor;
-
+    [SerializeField] private MeshRenderer[] meshsToChangeMaterial;
+    [SerializeField] private SkinnedMeshRenderer[] skinnedMeshToChangeMaterial;
     private void Start()
     {
         unit = GetComponent<Unit>();
         entityHealth = GetComponent<EntityHealth>();
-        activator.material = TeamColorDatabase.Instance.GetTeamMaterial(unit.teamColor);
-        floatingHealthBarFillColor.color = TeamColorDatabase.Instance.GetTeamMaterial(unit.teamColor).color;
+
         entityHealth.SetTeamColor(unit.teamColor);
         attackArea.SetTeamColor(unit);
+
+        Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(unit.teamColor);
+        activator.material = teamMaterialColor;
+        floatingHealthBarFillColor.color = teamMaterialColor.color;
+
+        Material teamMaterialUnit = TeamColorDatabase.Instance.GetTeamMaterialUnit(unit.teamColor);
+        foreach (var mesh in meshsToChangeMaterial)
+        {
+            mesh.material = teamMaterialUnit;
+        }
+        foreach (var mesh in skinnedMeshToChangeMaterial)
+        {
+            mesh.material = teamMaterialUnit;
+        }
+
+
     }
 }

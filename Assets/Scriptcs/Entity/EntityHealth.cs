@@ -5,13 +5,14 @@ public class EntityHealth : MonoBehaviour
 {
     [SerializeField] private FloatingHealthBar floatingHealthBsr;
     public TeamColorEnum teamColor { get; private set; }
-    [SerializeField] private int currentHealth;
+    private int currentHealth;
     [SerializeField] private int maxHealth;
 
     public Action<Unit> onHurtAction;
     public Action onDeathActiom;
     private void Start()
     {
+        currentHealth = maxHealth;
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
     }
     public void TakeDamage(Unit fromUnit, int damage)

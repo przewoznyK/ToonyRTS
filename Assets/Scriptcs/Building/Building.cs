@@ -7,6 +7,7 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
     [SerializeField] public List<Vector3Int> positionToOccupy;
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
+    [SerializeField] private BuildingTypeEnum buildingType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] private Transform meetingPoint;
 
@@ -77,7 +78,10 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
     {
         return entityType;
     }
-
+    public BuildingTypeEnum GetBuildingType()
+    {
+        return buildingType;
+    }
     public T GetProperties<T>() where T : Component
     {
         throw new NotImplementedException();

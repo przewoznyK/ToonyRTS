@@ -17,7 +17,24 @@ MonoBehaviour:
   health: 1000
   buildingSprite: {fileID: -1216437428, guid: a03e9228371be9449a97a937850924ca, type: 3}
   buildingPrefab: {fileID: 3275545278579393358, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
-  <size>k__BackingField: {x: 5, y: 5}
+  <size>k__BackingField: {x: 4, y: 4}
   objectPrices:
   - <priceType>k__BackingField: 0
     <priceValue>k__BackingField: 100
+  positionToOccupy:
+  - {x: -2, y: 0, z: -2}
+  - {x: -2, y: 0, z: -1}
+  - {x: -2, y: 0, z: 0}
+  - {x: -2, y: 0, z: 1}
+  - {x: -1, y: 0, z: -2}
+  - {x: -1, y: 0, z: -1}
+  - {x: -1, y: 0, z: 0}
+  - {x: -1, y: 0, z: 1}
+  - {x: 0, y: 0, z: -2}
+  - {x: 0, y: 0, z: -1}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  - {x: 1, y: 0, z: -2}
+  - {x: 1, y: 0, z: -1}
+  - {x: 1, y: 0, z: 0}
+  - {x: 1, y: 0, z: 1}

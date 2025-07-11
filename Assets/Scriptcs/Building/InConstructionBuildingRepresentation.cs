@@ -5,6 +5,7 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
 {
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
+    [SerializeField] private BuildingTypeEnum buildingTypeEnum;
     [SerializeField] private GameObject finishBuilding;
     public List<Vector3Int> positionToOccupy;
 
@@ -51,6 +52,10 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
     {
         return entityType;
     }
+    public BuildingTypeEnum GetBuildingType()
+    {
+        return buildingTypeEnum;
+    }
 
     public T GetProperties<T>() where T : Component
     {
@@ -60,5 +65,6 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
             Debug.Log("You can only take InConstructionBuildingRepresentation from this");
         return null;
     }
+
 
 }

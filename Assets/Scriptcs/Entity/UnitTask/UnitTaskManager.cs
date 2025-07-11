@@ -35,22 +35,26 @@ public class UnitTaskManager : MonoBehaviour
             {
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
-                if(taskTransform.position != null)
+                if (taskTransform != null)
                 {
                     unit.agent.SetDestination(taskTransform.position);
-                    unit.animator.SetFloat(Unit.Speed, 1f);
-                }
-            
-              
-                if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
-                {
-                    if(meleeWarrior.isRanged)
-                        StartCoroutine(RangeAttackCycle());
-                    else
-                        StartCoroutine(MeleeAttackCycle());
-                    isOnTask = false;
-                }
 
+                    if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
+                    {
+                        if (meleeWarrior.isRanged)
+                            StartCoroutine(RangeAttackCycle());
+                        else
+                            StartCoroutine(MeleeAttackCycle());
+                        isOnTask = false;
+                    }
+                }
+                else
+                {
+                    unit.agent.ResetPath();
+                    unit.animator.SetFloat(Unit.Speed, 0f);
+                    isOnTask = false;
+
+                }
             }
         }
 
@@ -115,32 +119,11 @@ public class UnitTaskManager : MonoBehaviour
     IEnumerator MeleeAttackCycle()
     {
         unit.animator.SetFloat(Unit.Speed, 0f);
+
+        yield return new WaitForSeconds(0.5f);
         unit.animator.SetTrigger(Unit.AttackAnimationTrigger);
       
-
-        yield return new WaitForSeconds(0.2f);
-        unit.attackArea.gameObject.SetActive(true);
-
-     
-        yield return new WaitForSeconds(0.25f);
-        unit.attackArea.gameObject.SetActive(false);
-        yield return new WaitForSeconds(1f);
-     
-        if (taskTransform == null)
-        {
-            Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
-            if (nearestEnemy != null)
-                taskTransform = nearestEnemy;
-            else
-                yield break;
-        }
-        if (Vector3.Distance(taskTransform.position, transform.position) > unit.attackRange)
-        {
-            AttackTargetTask newTask = new(taskTransform);
-            requestedTasks.AddFirst(newTask);
-            DoTask();
-            yield break;
-        }
+        if (CanUnitContinueAttackTheSameTarget() == false) yield break;
         yield return new WaitForSeconds(unit.attackCooldown);
         StartCoroutine(MeleeAttackCycle());
     }
@@ -148,10 +131,16 @@ public class UnitTaskManager : MonoBehaviour
     IEnumerator RangeAttackCycle()
     {
         meleeWarrior.animator.SetFloat(Unit.Speed, 0f);
+        yield return new WaitForSeconds(0.5f);
         meleeWarrior.animator.SetTrigger("Shoot");
 
-        yield return new WaitForSeconds(1f);
+        if (CanUnitContinueAttackTheSameTarget() == false) yield break;
+        yield return new WaitForSeconds(meleeWarrior.attackCooldown);
+        StartCoroutine(RangeAttackCycle());
+    }
 
+    bool CanUnitContinueAttackTheSameTarget()
+    {
         if (taskTransform == null && requestedTasks.Count == 0)
         {
             Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
@@ -160,21 +149,18 @@ public class UnitTaskManager : MonoBehaviour
                 taskTransform = nearestEnemy;
                 rotateToTaskTransform = true;
             }
+            else return false;
 
-            else
-                yield break;
+            if (Vector3.Distance(taskTransform.position, transform.position) > meleeWarrior.attackRange)
+            {
+                AttackTargetTask newTask = new(taskTransform);
+                requestedTasks.AddFirst(newTask);
+                DoTask();
+                return false;
+            }
         }
-        if (Vector3.Distance(taskTransform.position, transform.position) > meleeWarrior.attackRange)
-        {
-            AttackTargetTask newTask = new(taskTransform);
-            requestedTasks.AddFirst(newTask);
-            DoTask();
-            yield break;
-        }
-        yield return new WaitForSeconds(meleeWarrior.attackCooldown);
-        StartCoroutine(RangeAttackCycle());
+        return true;
     }
-
     public Transform FindNearestEnemy(TeamColorEnum teamColor)
     {
         Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
@@ -197,7 +183,7 @@ public class UnitTaskManager : MonoBehaviour
 
     public void ShootBullet()
     {
-        GameObject bullet = Instantiate(meleeWarrior.bulletPrefab, meleeWarrior.shootPoint.position, Quaternion.identity);
+        GameObject bullet = Instantiate(meleeWarrior.bulletPrefab, meleeWarrior.shootPoint.position, meleeWarrior.shootPoint.rotation);
         bullet.GetComponent<Projectile>().SetStartProperties((Unit)meleeWarrior);
         Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
         bulletRb.AddForce(meleeWarrior.shootPoint.forward * meleeWarrior.bulletForce, ForceMode.Impulse);
@@ -217,5 +203,17 @@ public class UnitTaskManager : MonoBehaviour
         enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);
         DoTask();
+    }
+
+    public void AttackFunctionInAnimation(float duration)
+    {
+        StartCoroutine(ActiveAttackArea(duration));
+    }
+
+    IEnumerator ActiveAttackArea(float duration)
+    {
+        unit.attackArea.gameObject.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        unit.attackArea.gameObject.SetActive(false);
     }
 }

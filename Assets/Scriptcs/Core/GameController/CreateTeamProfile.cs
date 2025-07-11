@@ -7,7 +7,7 @@ public class CreateTeamProfile
     public CreateTeamProfile(TeamColorEnum teamColorEnum)
     {
         tagName = teamColorEnum.ToString();
-        teamMaterial = TeamColorDatabase.Instance.GetTeamMaterial(teamColorEnum);     
+        teamMaterial = TeamColorDatabase.Instance.GetTeamMaterialColor(teamColorEnum);     
         
     }
 }

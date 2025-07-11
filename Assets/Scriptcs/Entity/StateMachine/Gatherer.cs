@@ -146,7 +146,7 @@ public class Gatherer : Unit
             if ((component.GetTeam() & teamColor) == teamColor || (component.GetTeam() == TeamColorEnum.Neutral))
             {
                 // GO TO GATHERING RESOURCE
-                if (component.GetEntityType() == EntityTypeEnum.resource)
+                if (component.GetBuildingType() == BuildingTypeEnum.resource)
                 {
                     gatheringEnabled = true;
                     isGoingToPosition = false;
@@ -158,7 +158,7 @@ public class Gatherer : Unit
                     GoMeetingPosition(hit.point);
                 }
                 // GO TO BUILDING CONTRUCTION
-                else if (component.GetEntityType() == EntityTypeEnum.contructionToBuild)
+                else if (component.GetBuildingType() == BuildingTypeEnum.contructionToBuild)
                 {
                     Debug.Log("CONSTRUCTION");
                     gatheringEnabled = false;

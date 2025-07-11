@@ -237,7 +237,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CalvaryWarrior
+  m_Name: CavlaryWarrior
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Speed
@@ -303,7 +303,7 @@ AnimatorStateMachine:
     m_Position: {x: 340, y: 160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7211681945605187363}
-    m_Position: {x: 340, y: 60, z: 0}
+    m_Position: {x: 330, y: 60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2940874649908702852}
     m_Position: {x: 70, y: 120, z: 0}
@@ -409,7 +409,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 63322e7d283549c4a9df1da1007a04a0, type: 3}
+  m_Motion: {fileID: 7400000, guid: 7414dd63bca81d84fac307574db91b6e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

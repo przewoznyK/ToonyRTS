@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8376227118915533415}
   - component: {fileID: 1328018414837704350}
   m_Layer: 0
-  m_Name: Farm_Prefab
+  m_Name: Farm_Building_Prefab
   m_TagString: Resource
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,7 +53,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 3, y: 1, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1328018414837704350
 MonoBehaviour:
@@ -67,8 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ebcb89e32b89d4ab2fa56a87668633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teamColor: -1
+  teamColor: 0
   entityType: 1
+  buildingType: 1
   resourceType: 1
   _totalAvailable: 25
 --- !u!1001 &2095948600556632396

@@ -6,6 +6,7 @@ public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
 {
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
+    [SerializeField] private BuildingTypeEnum buildingType;
     [SerializeField] public ResourceTypesEnum resourceType;
     [SerializeField] private int _totalAvailable = 20;
 
@@ -63,6 +64,12 @@ public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
     {
         return entityType;
     }
+
+    public BuildingTypeEnum GetBuildingType()
+    {
+        return buildingType;
+    }
+
     public T GetProperties<T>() where T : Component
     {
         if (typeof(T) == typeof(GatherableResource))

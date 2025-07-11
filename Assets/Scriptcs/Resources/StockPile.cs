@@ -6,6 +6,7 @@ public class StockPile : MonoBehaviour, IGetTeamAndProperties
 {
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
+    [SerializeField] private BuildingTypeEnum buildingTypeEnum;
     [SerializeField] private ResourceTypesEnum stockPileType;
 
     private void Start()
@@ -35,6 +36,10 @@ public class StockPile : MonoBehaviour, IGetTeamAndProperties
     {
         return entityType;
     }
+    public BuildingTypeEnum GetBuildingType()
+    {
+        return buildingTypeEnum;
+    }
     public T GetProperties<T>() where T : Component
     {
         if (typeof(T) == typeof(StockPile))
@@ -43,5 +48,6 @@ public class StockPile : MonoBehaviour, IGetTeamAndProperties
             Debug.Log("You can only take StockPile from this");
         return null;
     }
+
 
 }

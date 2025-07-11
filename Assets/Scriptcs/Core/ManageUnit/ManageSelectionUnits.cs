@@ -8,6 +8,13 @@ public class ManageSelectionUnits : MonoBehaviour
 
     private InputAction RMBClickAction;
     private InputAction ShiftClickAction;
+
+    int layerMask;
+
+    private void Start()
+    {
+        layerMask = ~LayerMask.GetMask("IgnoreRay");
+    }
     internal void Init(InputManager inputManager, ControlledUnits controlledUnits)
     {
         this.inputManager = inputManager;
@@ -23,7 +30,7 @@ public class ManageSelectionUnits : MonoBehaviour
         bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, layerMask))
         {
             foreach (var unit in controlledUnits.selectedUnits)
             {
