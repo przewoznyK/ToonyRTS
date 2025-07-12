@@ -3,26 +3,26 @@ using UnityEngine.UI;
 
 public class UnitSetPropertiesByTeamColor : MonoBehaviour
 {
-    Unit unit;
+    MeleeWarrior meleeWarrior;
     EntityHealth entityHealth;
-    [SerializeField] private AttackArea attackArea;
+    [SerializeField] private UnitAnimationFunctions animationFunctions;
     [SerializeField] private MeshRenderer activator;
     [SerializeField] private Image floatingHealthBarFillColor;
     [SerializeField] private MeshRenderer[] meshsToChangeMaterial;
     [SerializeField] private SkinnedMeshRenderer[] skinnedMeshToChangeMaterial;
     private void Start()
     {
-        unit = GetComponent<Unit>();
+        meleeWarrior = GetComponent<MeleeWarrior>();
         entityHealth = GetComponent<EntityHealth>();
 
-        entityHealth.SetTeamColor(unit.teamColor);
-        attackArea.SetTeamColor(unit);
+        entityHealth.SetTeamColor(meleeWarrior.teamColor);
+        animationFunctions.Init(meleeWarrior);
 
-        Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(unit.teamColor);
+        Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(meleeWarrior.teamColor);
         activator.material = teamMaterialColor;
         floatingHealthBarFillColor.color = teamMaterialColor.color;
 
-        Material teamMaterialUnit = TeamColorDatabase.Instance.GetTeamMaterialUnit(unit.teamColor);
+        Material teamMaterialUnit = TeamColorDatabase.Instance.GetTeamMaterialUnit(meleeWarrior.teamColor);
         foreach (var mesh in meshsToChangeMaterial)
         {
             mesh.material = teamMaterialUnit;

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class DetectionCollider : MonoBehaviour
@@ -10,8 +11,14 @@ public class DetectionCollider : MonoBehaviour
         {
             if ((component.GetTeam() != meleeWarrior.teamColor) && (component.GetEntityType() == EntityTypeEnum.unit))
             {
-                meleeWarrior.AttackDetectionTarget(component);
+                StartCoroutine(DelayedAttack(component));
             }
         }
+    }
+
+    private IEnumerator DelayedAttack(IGetTeamAndProperties target)
+    {
+        yield return new WaitForSeconds(1f);
+        meleeWarrior.AttackDetectionTarget(target);
     }
 }

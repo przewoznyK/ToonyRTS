@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,8 +18,8 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     protected Transform activator;
     protected SphereCollider enemyDecetorCollider;
     [SerializeField] protected GameObject taskFlagPrefab;
-    public GameObject attackArea;
-
+    [SerializeField] private Transform bodyToDrop;
+    [Header("Unit Stats")]
     public int damage;
     public float attackRange;
     public float attackCooldown;
@@ -27,26 +28,28 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float defaultStoppingDistance;
     public float defaultMovementSpeed;
     public float enemyDetectionRadius;
-    [SerializeField] protected Transform bodyToDrop;
+    
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
     
     private void Start()
     {
-        agent.stoppingDistance = defaultStoppingDistance;
-        agent.speed = defaultMovementSpeed;
         InitUniversalFunction();
     }
     public void InitUniversalFunction()
     {
         unitTaskManager = GetComponent<UnitTaskManager>();
         agent = GetComponent<NavMeshAgent>();
+        animator = bodyToDrop.GetComponent<Animator>();
 
         activator = transform.GetChild(0);
         enemyDecetorCollider = transform.GetChild(1).GetComponent<SphereCollider>();
         enemyDecetorCollider.radius = enemyDetectionRadius;
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
+
+        agent.stoppingDistance = defaultStoppingDistance;
+        agent.speed = defaultMovementSpeed;
 
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onHurtAction += HurtUnit;
@@ -92,13 +95,15 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public void HurtUnit(Unit fromUnit)
     {
         animator.SetTrigger("Hurt");
-        unitTaskManager.DefenseFromAttack(fromUnit);
+        if(unitTaskManager.taskTransform == null)
+            StartCoroutine(IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage());
     }
     public void DeleteUnit()
     {
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
         unitTaskManager.enabled = false;
         animator.SetTrigger("Death");
+
         bodyToDrop.SetParent(null, true);
         Destroy(gameObject);
     }
@@ -108,5 +113,13 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         enemyDecetorCollider.enabled = value;
     }
 
+    IEnumerator IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage()
+    {
+        enemyDecetorCollider.radius = enemyDetectionRadius * 10;
+
+        yield return new WaitForSeconds(1f);
+        enemyDecetorCollider.radius = enemyDetectionRadius;
+
+    }
 
 }

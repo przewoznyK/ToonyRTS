@@ -3,21 +3,19 @@ using UnityEngine;
 
 public class AttackArea : MonoBehaviour
 {
-    private TeamColorEnum teamColor;
-    Unit unit;
-    internal void SetTeamColor(Unit unit)
+    MeleeWarrior meleeWarrior;
+    internal void Init(MeleeWarrior meleeWarrior)
     {
-        this.unit = unit;
-        teamColor = unit.teamColor;
+        this.meleeWarrior = meleeWarrior;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<EntityHealth>(out EntityHealth entityHealth))
         {
-            if (entityHealth.teamColor != teamColor)
+            if (entityHealth.teamColor != meleeWarrior.teamColor)
             {
-                entityHealth.TakeDamage(unit, 3);
+                entityHealth.TakeDamage(meleeWarrior, 3);
             }
         }
     }
