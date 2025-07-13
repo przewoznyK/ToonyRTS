@@ -26,18 +26,19 @@ public class ConstructionPlacerSystem : MonoBehaviour
 
             constructionRepresentation.SetFinishBuilding(currentConstructionData.buildingData.buildingPrefab, currentConstructionData.buildingData.positionToOccupy);
             GameObject constructionInstantiate = Instantiate(constructionRepresentationPrefab, currentConstructionData.positionToOccupy, Quaternion.identity);
-
+           
             constructionInstantiate.transform.rotation = Quaternion.Euler(90, 0, 0);
             constructionInstantiate.transform.localScale = new Vector3(currentConstructionData.buildingData.size.x, currentConstructionData.buildingData.size.y, 1);
             constructionInstantiate.transform.localScale = new Vector3(currentConstructionData.buildingData.size.x, currentConstructionData.buildingData.size.y, 1);
+           
 
             List<Unit> selectedUnits = activeClickableObject.controlledUnits.TakeSelectedUnitList();
             foreach (var unit in selectedUnits)
             {
-                if(unit is Gatherer)
+                if(unit is GathererNew)
                 {
-                    Gatherer gatherer = unit as Gatherer;
-                    gatherer.SetBuildingToBuild(constructionInstantiate);
+                    GathererNew gatherer = unit as GathererNew;
+                    gatherer.BuildConstruction(constructionInstantiate);
                 }
             }
         }

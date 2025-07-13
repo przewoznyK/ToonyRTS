@@ -10,7 +10,7 @@ public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
     [SerializeField] public ResourceTypesEnum resourceType;
     [SerializeField] private int _totalAvailable = 20;
 
-    private int _available;
+    public int _available;
     public bool IsDepleted => _available <= 0;
 
     private void OnEnable()

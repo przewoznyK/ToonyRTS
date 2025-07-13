@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class UnitAnimationFunctions : MonoBehaviour
 {
-    MeleeWarrior meleeWarrior;
+    Unit unit;
     [SerializeField] protected AttackArea attackArea;
 
-    internal virtual void Init(MeleeWarrior meleeWarrior)
+    internal virtual void Init(Unit unit)
     {
-        this.meleeWarrior = meleeWarrior;
-        attackArea.Init(meleeWarrior);
+        this.unit = unit;
+        attackArea.Init(unit);
     }
 
     public void MeleeColliderAttack(float duration)
@@ -26,9 +26,9 @@ public class UnitAnimationFunctions : MonoBehaviour
 
     public void ShootBullet()
     {
-        GameObject bullet = Instantiate(meleeWarrior.bulletPrefab, meleeWarrior.shootPoint.position, meleeWarrior.shootPoint.rotation);
-        bullet.GetComponent<Projectile>().SetStartProperties((Unit)meleeWarrior);
+        GameObject bullet = Instantiate(unit.bulletPrefab, unit.shootPoint.position, unit.shootPoint.rotation);
+        bullet.GetComponent<Projectile>().SetStartProperties(unit);
         Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-        bulletRb.AddForce(meleeWarrior.shootPoint.forward * meleeWarrior.bulletForce, ForceMode.Impulse);
+        bulletRb.AddForce(unit.shootPoint.forward * unit.bulletForce, ForceMode.Impulse);
     }
 }

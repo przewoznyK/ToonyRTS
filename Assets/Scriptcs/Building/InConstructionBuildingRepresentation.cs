@@ -9,7 +9,7 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
     [SerializeField] private GameObject finishBuilding;
     public List<Vector3Int> positionToOccupy;
 
-[SerializeField] private int timeToBuilt;
+    [SerializeField] private int timeToBuilt;
     List<Gatherer> unitGatheringResourcesList = new();
     public void SetFinishBuilding(GameObject builtToCreate, List<Vector3Int> positionOccupied)
     {
@@ -26,20 +26,21 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
             building.SetTeamColor(teamColor);
             building.SetPositionToOccupy(positionToOccupy);
         }
-      
-
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
-    public void WorkOnBuilding(int value)
+    public bool WorkOnBuilding(int value)
     {
+        Debug.Log(timeToBuilt);
         if (timeToBuilt > 0)
         {
             timeToBuilt -= value;
+            return true;
         }
         else
         {
             EndProcess();
+            return false;
         }
     }
 

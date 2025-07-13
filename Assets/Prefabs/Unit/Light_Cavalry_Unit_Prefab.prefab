@@ -148,7 +148,6 @@ MonoBehaviour:
   isGoingToPosition: 0
   TimeStuck: 0
   taskFlagPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
-  attackArea: {fileID: 5859619321268512649}
   bodyToDrop: {fileID: 4562610503314628138}
   damage: 5
   attackRange: 2
@@ -174,6 +173,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bf9b6f5c6d7ad43b08f5cfd08e5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  taskTransform: {fileID: 0}
+  attackCycleActivated: 0
 --- !u!114 &8389827534895806515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,8 +750,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6622101266766360066}
-  - component: {fileID: 6316037614656078217}
   - component: {fileID: 4749640581225434928}
+  - component: {fileID: 6316037614656078217}
   m_Layer: 6
   m_Name: EnemyDetectionCollider
   m_TagString: Untagged
@@ -773,19 +774,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2175648678903575485}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6316037614656078217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8970150375733277894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1dfd55b2037ca741b871ab5f39a3d60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meleeWarrior: {fileID: 5108092307650965228}
 --- !u!135 &4749640581225434928
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -807,6 +795,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6316037614656078217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8970150375733277894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1dfd55b2037ca741b871ab5f39a3d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unit: {fileID: 5108092307650965228}
 --- !u!1001 &4562610503315053758
 PrefabInstance:
   m_ObjectHideFlags: 0

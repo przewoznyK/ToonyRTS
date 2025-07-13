@@ -28,7 +28,13 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public float defaultStoppingDistance;
     public float defaultMovementSpeed;
     public float enemyDetectionRadius;
-    
+
+    [Header("Ranged Properties")]
+    public bool isRanged;
+    public GameObject bulletPrefab;
+    public Transform shootPoint;
+    public float bulletForce;
+
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
@@ -121,5 +127,9 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         enemyDecetorCollider.radius = enemyDetectionRadius;
 
     }
-
+    internal void AttackDetectionTarget(IGetTeamAndProperties component)
+    {
+        unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
+        SetActiveEnemyDetector(false);
+    }
 }

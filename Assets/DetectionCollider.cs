@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class DetectionCollider : MonoBehaviour
 {
-    [SerializeField] private MeleeWarrior meleeWarrior;
+    [SerializeField] private Unit unit;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {
-            if ((component.GetTeam() != meleeWarrior.teamColor) && (component.GetEntityType() == EntityTypeEnum.unit))
+            if ((component.GetTeam() != unit.teamColor) && (component.GetEntityType() == EntityTypeEnum.unit))
             {
                 StartCoroutine(DelayedAttack(component));
             }
@@ -19,6 +19,6 @@ public class DetectionCollider : MonoBehaviour
     private IEnumerator DelayedAttack(IGetTeamAndProperties target)
     {
         yield return new WaitForSeconds(1f);
-        meleeWarrior.AttackDetectionTarget(target);
+        unit.AttackDetectionTarget(target);
     }
 }

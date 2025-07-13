@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class UnitTaskManager : MonoBehaviour
 {
     protected Unit unit;
-    protected MeleeWarrior meleeWarrior;
     protected bool isOnTask;
     protected bool rotateToTaskTransform;
     public LinkedList<UnitTask> requestedTasks = new();
@@ -18,7 +16,6 @@ public class UnitTaskManager : MonoBehaviour
     private void Start()
     {
         unit = GetComponent<Unit>();
-        meleeWarrior = GetComponent<MeleeWarrior>();
     }
 
     private void Update()
@@ -43,7 +40,8 @@ public class UnitTaskManager : MonoBehaviour
 
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
-                        if (meleeWarrior.isRanged)
+                        Debug.Log("DOTARLEM");
+                        if (unit.isRanged)
                             StartCoroutine(AttackCycle("Shoot"));
                         else
                             StartCoroutine(AttackCycle("Attack"));
@@ -67,7 +65,7 @@ public class UnitTaskManager : MonoBehaviour
             {
                 var direction = taskTransform.position - transform.position;
                 var targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, meleeWarrior.rotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * Time.deltaTime);
             }
             else
                 rotateToTaskTransform = false;
@@ -112,7 +110,6 @@ public class UnitTaskManager : MonoBehaviour
 
     public void ResetTasks()
     {
- 
         requestedTasks.Clear();
         isOnTask = false;
         currentTask = null;
@@ -120,13 +117,13 @@ public class UnitTaskManager : MonoBehaviour
     }
 
 
-    IEnumerator AttackCycle(string animationTriggerName)
+    public IEnumerator AttackCycle(string animationTriggerName)
     {
-        meleeWarrior.animator.SetFloat(Unit.Speed, 0f);
+        unit.animator.SetFloat(Unit.Speed, 0f);
         yield return new WaitForSeconds(0.5f);
 
         if (AttackAndCheckIfCanContinueAttackOrSearchNewEnemy(animationTriggerName) == false) yield break;
-        yield return new WaitForSeconds(meleeWarrior.attackCooldown);
+        yield return new WaitForSeconds(unit.attackCooldown);
         StartCoroutine(AttackCycle(animationTriggerName));
     }
 
@@ -134,7 +131,7 @@ public class UnitTaskManager : MonoBehaviour
     {
         if (taskTransform)
         {
-            if(Vector3.Distance(taskTransform.position, transform.position) < meleeWarrior.attackRange)
+            if(Vector3.Distance(taskTransform.position, transform.position) < unit.attackRange)
             {
                 unit.animator.SetTrigger(animationTriggerName);
                 return true;
@@ -154,7 +151,7 @@ public class UnitTaskManager : MonoBehaviour
             Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
             if (nearestEnemy != null)
             {
-                if (Vector3.Distance(nearestEnemy.position, transform.position) > meleeWarrior.attackRange)
+                if (Vector3.Distance(nearestEnemy.position, transform.position) > unit.attackRange)
                 {
                     AttackTargetTask newTask = new(nearestEnemy);
                     requestedTasks.AddFirst(newTask);
@@ -171,8 +168,9 @@ public class UnitTaskManager : MonoBehaviour
         return nearestEnemy;
     }
 
-    internal void GoToPosition(Vector3 point)
+    internal virtual void GoToPosition(Vector3 point)
     {
+        unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         GoToPositionTask newTask = new(point);
         requestedTasks.AddLast(newTask);
@@ -181,11 +179,12 @@ public class UnitTaskManager : MonoBehaviour
 
     internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
     {
-  
         AttackTargetTask newTask = new(target);
         enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);
         DoTask();
     }
 
+    public virtual void GatherResource(GatherableResource resource) { }
+    public virtual void BuildConstructionTask(GameObject construction) { }
 }

@@ -19361,8 +19361,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5279017199662033743}
-  - component: {fileID: 9218721461820509340}
   - component: {fileID: 4627618923152200639}
+  - component: {fileID: 9218721461820509340}
   m_Layer: 6
   m_Name: EnemyDetectionCollider
   m_TagString: Untagged
@@ -19385,19 +19385,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 734466548658718395}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9218721461820509340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8556709891502187152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1dfd55b2037ca741b871ab5f39a3d60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meleeWarrior: {fileID: 3682152464257146953}
 --- !u!135 &4627618923152200639
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -19419,6 +19406,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9218721461820509340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556709891502187152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1dfd55b2037ca741b871ab5f39a3d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unit: {fileID: 3682152464257146953}
 --- !u!1 &8585845242730102444
 GameObject:
   m_ObjectHideFlags: 0
@@ -20891,6 +20891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bf9b6f5c6d7ad43b08f5cfd08e5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  taskTransform: {fileID: 0}
   attackCycleActivated: 0
 --- !u!114 &7971430098367275717
 MonoBehaviour:
