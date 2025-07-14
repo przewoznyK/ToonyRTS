@@ -15,8 +15,7 @@ public class MeleeWarrior : Unit
         }
         else if(hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {
-            Debug.Log("ENEMYT");
-            if ((component.GetTeam() & teamColor) != teamColor)
+            if (component.GetTeam() != teamColor)
             {
                 unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
             }

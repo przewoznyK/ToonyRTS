@@ -10,11 +10,6 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     protected UnitTaskManager unitTaskManager;
     public TeamColorEnum teamColor;
     public EntityTypeEnum entityType;
-    public NavMeshAgent agent;
-    public Animator animator;
-    public Vector3 TargetPosition;
-    public bool isGoingToPosition;
-    public float TimeStuck;
     protected Transform activator;
     protected SphereCollider enemyDecetorCollider;
     [SerializeField] protected GameObject taskFlagPrefab;
@@ -38,7 +33,10 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
-    
+    [HideInInspector]
+    public NavMeshAgent agent;
+    public Animator animator;
+
     private void Start()
     {
         InitUniversalFunction();

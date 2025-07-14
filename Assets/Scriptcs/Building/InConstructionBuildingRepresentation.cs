@@ -10,7 +10,7 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
     public List<Vector3Int> positionToOccupy;
 
     [SerializeField] private int timeToBuilt;
-    List<Gatherer> unitGatheringResourcesList = new();
+    List<GathererNew> unitGatheringResourcesList = new();
     public void SetFinishBuilding(GameObject builtToCreate, List<Vector3Int> positionOccupied)
     {
         finishBuilding = builtToCreate;

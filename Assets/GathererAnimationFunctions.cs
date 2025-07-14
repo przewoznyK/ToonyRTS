@@ -8,7 +8,9 @@ public class GathererAnimationFunctions : UnitAnimationFunctions
         var obj = gathererTaskManager.gatheredResources.FirstOrDefault(resource => resource.priceType == gathererTaskManager.currentResourceTypeGathering);
         if (obj != null)
         {
+            if (gathererTaskManager.currentGatherableResource == null) return;
             obj.AddValue(1);
+
             if (gathererTaskManager.currentGatherableResource.Take())
                 gathererTaskManager.currentGathered = obj.priceValue;
 
@@ -17,7 +19,6 @@ public class GathererAnimationFunctions : UnitAnimationFunctions
             else if(gathererTaskManager.currentGatherableResource._available <= 0)
                 gathererTaskManager.GoToNextResource();
 
-            Debug.Log(gathererTaskManager.currentGathered);
         }
     }
 
@@ -26,8 +27,5 @@ public class GathererAnimationFunctions : UnitAnimationFunctions
         if (gathererTaskManager.currentConstionBuildingTarget)
             if(gathererTaskManager.currentConstionBuildingTarget.WorkOnBuilding(3) == false)
                 gathererTaskManager.ResetGathererProperties();
-
-
-
     }
 }

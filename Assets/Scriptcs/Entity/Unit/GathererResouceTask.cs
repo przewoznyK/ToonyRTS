@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class GatherResourceTask : UnitTask
+public class GathererResourceTask : UnitTask
 {
     public GatherableResource gatherableResource;
     public Transform targetTransform { private set; get; }
     public ResourceTypesEnum currentResourceTypeGathering;
 
-    public GatherResourceTask(GatherableResource resource)
+    public GathererResourceTask(GatherableResource resource)
     {
         gatherableResource = resource;
         unitTaskType = UnitTaskTypeEnum.GatherResource;

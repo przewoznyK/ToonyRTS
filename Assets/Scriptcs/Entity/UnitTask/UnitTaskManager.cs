@@ -32,21 +32,24 @@ public class UnitTaskManager : MonoBehaviour
 
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
+                if (unit.teamColor == TeamColorEnum.Blue) Debug.Log("ON TASK ATTACK TARGET");
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
                 {
                     unit.agent.SetDestination(taskTransform.position);
-
+                    
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
-                        Debug.Log("DOTARLEM");
                         if (unit.isRanged)
                             StartCoroutine(AttackCycle("Shoot"));
                         else
                             StartCoroutine(AttackCycle("Attack"));
                         attackCycleActivated = true;
                         isOnTask = false;
+                        if (unit.teamColor == TeamColorEnum.Blue) Debug.Log("ZMIANA SPEEED NA 0");
+
+                        unit.animator.SetFloat(Unit.Speed, 0f);
                     }
                 }
                 else
@@ -56,6 +59,7 @@ public class UnitTaskManager : MonoBehaviour
                     isOnTask = false;
 
                 }
+            
             }
         }
 
@@ -88,12 +92,16 @@ public class UnitTaskManager : MonoBehaviour
 
                 unit.agent.SetDestination(pos);
                 taskVector = pos;
+                if (unit.teamColor == TeamColorEnum.Blue) Debug.Log("ZMIANA SPEEED NA 1");
+
                 unit.animator.SetFloat(Unit.Speed, 1f);
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
                 unit.agent.stoppingDistance = unit.attackRange;
                 taskTransform = attackTarget.targetTransform;
+                if (unit.teamColor == TeamColorEnum.Blue) Debug.Log("ZMIANA SPEEED NA 1");
+
                 unit.animator.SetFloat(Unit.Speed, 1f);
             }
       
@@ -119,7 +127,6 @@ public class UnitTaskManager : MonoBehaviour
 
     public IEnumerator AttackCycle(string animationTriggerName)
     {
-        unit.animator.SetFloat(Unit.Speed, 0f);
         yield return new WaitForSeconds(0.5f);
 
         if (AttackAndCheckIfCanContinueAttackOrSearchNewEnemy(animationTriggerName) == false) yield break;
@@ -179,6 +186,7 @@ public class UnitTaskManager : MonoBehaviour
 
     internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
     {
+        unit.SetActiveEnemyDetector(false);
         AttackTargetTask newTask = new(target);
         enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);

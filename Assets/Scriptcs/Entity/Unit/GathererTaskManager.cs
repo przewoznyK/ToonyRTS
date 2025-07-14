@@ -1,8 +1,4 @@
-
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GathererTaskManager : UnitTaskManager
@@ -66,6 +62,7 @@ public class GathererTaskManager : UnitTaskManager
                             StartCoroutine(AttackCycle("Attack"));
                         attackCycleActivated = true;
                         isOnTask = false;
+                        unit.animator.SetFloat(Unit.Speed, 0f);
                     }
                 }
                 else
@@ -73,12 +70,10 @@ public class GathererTaskManager : UnitTaskManager
                     unit.agent.ResetPath();
                     unit.animator.SetFloat(Unit.Speed, 0f);
                     isOnTask = false;
-
                 }
             }
             else if(currentTask.unitTaskType == UnitTaskTypeEnum.GatherResource)
             {
-        
                 if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
                 {
                     unit.agent.ResetPath();
@@ -127,9 +122,7 @@ public class GathererTaskManager : UnitTaskManager
                 unit.animator.SetFloat(Unit.Speed, 0f);
                 unit.animator.SetBool("Building", true);
                 isGoingToBuildingConstruction = false;
-                Debug.Log("BUDUJE");
             }
-                
         }
     }
     public override void DoTask()
@@ -154,7 +147,7 @@ public class GathererTaskManager : UnitTaskManager
                 taskTransform = attackTarget.targetTransform;
                 unit.animator.SetFloat(Unit.Speed, 1f);
             }
-            else if(currentTask is GatherResourceTask gatherResource)
+            else if(currentTask is GathererResourceTask gatherResource)
             {
                 currentGatherableResource = gatherResource.gatherableResource;
                 unit.agent.stoppingDistance = unit.defaultStoppingDistance;
@@ -178,7 +171,7 @@ public class GathererTaskManager : UnitTaskManager
     public override void GatherResource(GatherableResource resource)
     {
         attackCycleActivated = false;
-        GatherResourceTask newTask = new(resource);
+        GathererResourceTask newTask = new(resource);
         requestedTasks.AddLast(newTask);
         DoTask();
     }
@@ -194,7 +187,6 @@ public class GathererTaskManager : UnitTaskManager
     }
     public override void BuildConstructionTask(GameObject construction)
     {
-      //  currentConstionBuildingTarget = construction.transform.position;
         ResetGathererProperties();
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
@@ -209,7 +201,6 @@ public class GathererTaskManager : UnitTaskManager
 
     public void ResetGathererProperties()
     {
-        
         unit.animator.SetBool("Harvest", false);
         currentGatherableResource = null;
         isHarvesting = false;

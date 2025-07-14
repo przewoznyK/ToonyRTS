@@ -15,27 +15,32 @@ public class GathererNew : Unit
         }
         else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
         {
-            if ((component.GetTeam() & teamColor) == teamColor || (component.GetTeam() == TeamColorEnum.Neutral))
+            if ((component.GetTeam() & teamColor) != 0)
             {
                 if (component.GetBuildingType() == BuildingTypeEnum.resource)
                 {
                     unitTaskManager.GatherResource(component.GetProperties<GatherableResource>());
-                }
-                else if((component.GetTeam() & teamColor) != teamColor)
-                {
-              
-                    unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
+                    return;
                 }
             }
-                
-
-
+            if (component.GetTeam() == teamColor)
+            {
+                if (component.GetBuildingType() == BuildingTypeEnum.contructionToBuild)
+                {
+                    GameObject buildingRepresentation = component.GetProperties<InConstructionBuildingRepresentation>().gameObject;
+                    BuildConstruction(buildingRepresentation);
+                    return;
+                }
+            }
+            if(component.GetTeam() != teamColor)
+            {
+                unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
+                return;
+            }
         }
     }
     internal void BuildConstruction(GameObject constructionInstantiate)
     {
         unitTaskManager.BuildConstructionTask(constructionInstantiate);
     }
-
-
 }
