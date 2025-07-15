@@ -36,7 +36,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     [HideInInspector]
     public NavMeshAgent agent;
     public Animator animator;
-
+    
     private void Start()
     {
         InitUniversalFunction();
