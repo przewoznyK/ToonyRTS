@@ -62,9 +62,17 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
-    public void ActiveObject() => activator.gameObject.SetActive(true);
+    public void ActiveObject() 
+    { 
+        activator.gameObject.SetActive(true);
+        unitTaskManager.taskVisualization.enabled = true;
+    }
 
-    public void DeActiveObject() => activator.gameObject.SetActive(false);
+    public void DeActiveObject() 
+    {
+        activator.gameObject.SetActive(false);
+        unitTaskManager.taskVisualization.enabled = false;
+    } 
 
     public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
 

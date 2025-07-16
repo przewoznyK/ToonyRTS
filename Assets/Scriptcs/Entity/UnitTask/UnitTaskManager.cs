@@ -6,7 +6,7 @@ using UnityEngine;
 public class UnitTaskManager : MonoBehaviour
 {
     protected Unit unit;
-    protected TaskVisualization taskVisualization;
+    public TaskVisualization taskVisualization;
     public LineRenderer lineRenderer;
     protected bool isOnTask;
     protected bool rotateToTaskTransform;
@@ -16,13 +16,11 @@ public class UnitTaskManager : MonoBehaviour
     protected Vector3 taskVector;
     protected TeamColorEnum enemyTeamTarget;
     protected bool attackCycleActivated;
-    private int renderLineIndex;
     private void Start()
     {
         unit = GetComponent<Unit>();
         taskVisualization = GetComponent<TaskVisualization>();
     }
-
     private void Update()
     {
         if (isOnTask)
@@ -37,7 +35,6 @@ public class UnitTaskManager : MonoBehaviour
 
             if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
-                if (unit.teamColor == TeamColorEnum.Blue) Debug.Log("ON TASK ATTACK TARGET");
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
@@ -52,7 +49,6 @@ public class UnitTaskManager : MonoBehaviour
                             StartCoroutine(AttackCycle("Attack"));
                         attackCycleActivated = true;
                         isOnTask = false;
-                        if (unit.teamColor == TeamColorEnum.Blue) Debug.Log("ZMIANA SPEEED NA 0");
 
                         unit.animator.SetFloat(Unit.Speed, 0f);
                     }
@@ -79,44 +75,19 @@ public class UnitTaskManager : MonoBehaviour
             else
                 rotateToTaskTransform = false;
         }
-
-        if (requestedTasks.Count >= 1)
-        {
-            int taskCount = requestedTasks.Count;
-            lineRenderer.positionCount = taskCount + 2;
-
-            if (taskVector != Vector3.zero)
-                lineRenderer.SetPosition(0, transform.position);
-
-            int index = 1;
-            foreach (var task in requestedTasks)
-            {
-                if (taskVector != Vector3.zero)
-                {
-                    lineRenderer.SetPosition(index, task.taskPosition);
-                    index++;
-                }
-
-            }
-        }
-        else
-            lineRenderer.positionCount = 0;
-
     }
-
-
-
     public virtual void DoTask()
     {
         if (requestedTasks.Count > 0 && isOnTask == false)
         {
+
             currentTask = requestedTasks.First.Value;
    
             if (currentTask is GoToPositionTask goToPositionTask)
             {
                 unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                 taskTransform = null;
-                Vector3 pos = goToPositionTask.destinatedPosition;
+                Vector3 pos = goToPositionTask.taskPosition;
 
                 unit.agent.SetDestination(pos);
                 taskVector = pos;
@@ -136,24 +107,24 @@ public class UnitTaskManager : MonoBehaviour
     }
     public void GoToNextTask()
     {
+        Debug.Log("NEXT TASK");
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
-
+        taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
+        
         isOnTask = false;
         unit.animator.SetFloat(Unit.Speed, 0f);
         DoTask();
 
     }
-
     public void ResetTasks()
     {
         requestedTasks.Clear();
+        taskVisualization.ClearVisulalizationFlags();
         isOnTask = false;
         currentTask = null;
         StopAllCoroutines();
     }
-
-
     public IEnumerator AttackCycle(string animationTriggerName)
     {
         yield return new WaitForSeconds(0.5f);
@@ -162,7 +133,6 @@ public class UnitTaskManager : MonoBehaviour
         yield return new WaitForSeconds(unit.attackCooldown);
         StartCoroutine(AttackCycle(animationTriggerName));
     }
-
     bool AttackAndCheckIfCanContinueAttackOrSearchNewEnemy(string animationTriggerName)
     {
         if (taskTransform)
@@ -178,6 +148,7 @@ public class UnitTaskManager : MonoBehaviour
                 requestedTasks.AddFirst(newTask);
                 DoTask();
                 attackCycleActivated = false;
+                
                 return false;
             }
            
@@ -189,6 +160,7 @@ public class UnitTaskManager : MonoBehaviour
             {
                 if (Vector3.Distance(nearestEnemy.position, transform.position) > unit.attackRange)
                 {
+                    //GoToNextTask();
                     AttackTargetTask newTask = new(nearestEnemy);
                     requestedTasks.AddFirst(newTask);
                     DoTask();
@@ -196,6 +168,7 @@ public class UnitTaskManager : MonoBehaviour
                 }
             }
         }
+        GoToNextTask();
         return false;
     }
     public Transform FindNearestEnemy(TeamColorEnum teamColor)
@@ -203,7 +176,6 @@ public class UnitTaskManager : MonoBehaviour
         Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;
     }
-
     internal virtual void GoToPosition(Vector3 point)
     {
         unit.SetActiveEnemyDetector(false);
@@ -211,11 +183,10 @@ public class UnitTaskManager : MonoBehaviour
         GoToPositionTask newTask = new(point);
         requestedTasks.AddLast(newTask);
         DoTask();
-        if(requestedTasks.Count > 1) newTask.TakeVisulazationTask(taskVisualization.VisualizeTask(point));
-        DrawLineRenderer(point);
+        taskVisualization.ClearVisulalizationFlags();
 
+        newTask.TakeVisulazationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
-
     internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
     {
         unit.SetActiveEnemyDetector(false);
@@ -223,18 +194,7 @@ public class UnitTaskManager : MonoBehaviour
         enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);
         DoTask();
-    }
-
-    public void DrawLineRenderer(Vector3 point)
-    {
-        //if (requestedTasks.Count > 1)
-        //{
-        //    renderLineIndex++;
-        //    lineRenderer.positionCount = renderLineIndex + 1;
-        //    lineRenderer.SetPosition(0, transform.position);
-        //    lineRenderer.SetPosition(renderLineIndex, point);
-        //}
-
+        newTask.TakeVisulazationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
     public virtual void GatherResource(GatherableResource resource) { }
     public virtual void BuildConstructionTask(GameObject construction) { }

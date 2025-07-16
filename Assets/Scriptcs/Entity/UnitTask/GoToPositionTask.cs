@@ -2,17 +2,14 @@ using UnityEngine;
 
 public class GoToPositionTask : UnitTask
 {
-    GameObject flagGameObject;
-    public Vector3 destinatedPosition { private set; get; }
-
     public GoToPositionTask(Vector3 destinatedPosition)
     {
         unitTaskType = UnitTaskTypeEnum.GoToPosition;
-        this.destinatedPosition = destinatedPosition;
-
+        this.taskPosition = destinatedPosition;
     }
     public override void TakeVisulazationTask(GameObject flagGameObject)
     {
+        Debug.Log("PRZYPISUJE" + flagGameObject == null);
         this.flagGameObject = flagGameObject;
         this.taskPosition = flagGameObject.transform.position;
     }

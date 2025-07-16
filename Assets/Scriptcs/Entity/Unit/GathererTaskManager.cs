@@ -135,7 +135,7 @@ public class GathererTaskManager : UnitTaskManager
             {
                 unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                 taskTransform = null;
-                Vector3 pos = goToPositionTask.destinatedPosition;
+                Vector3 pos = goToPositionTask.taskPosition;
 
                 unit.agent.SetDestination(pos);
                 taskVector = pos;
