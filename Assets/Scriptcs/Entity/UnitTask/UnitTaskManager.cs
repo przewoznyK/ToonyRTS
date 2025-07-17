@@ -16,6 +16,8 @@ public class UnitTaskManager : MonoBehaviour
     protected Vector3 taskVector;
     protected TeamColorEnum enemyTeamTarget;
     protected bool attackCycleActivated;
+
+    int taskIndex;
     private void Start()
     {
         unit = GetComponent<Unit>();
@@ -58,7 +60,6 @@ public class UnitTaskManager : MonoBehaviour
                     unit.agent.ResetPath();
                     unit.animator.SetFloat(Unit.Speed, 0f);
                     isOnTask = false;
-
                 }
             
             }
@@ -78,6 +79,7 @@ public class UnitTaskManager : MonoBehaviour
     }
     public virtual void DoTask()
     {
+        attackCycleActivated = false;
         if (requestedTasks.Count > 0 && isOnTask == false)
         {
 
@@ -98,7 +100,6 @@ public class UnitTaskManager : MonoBehaviour
             {
                 unit.agent.stoppingDistance = unit.attackRange;
                 taskTransform = attackTarget.targetTransform;
-
                 unit.animator.SetFloat(Unit.Speed, 1f);
             }
       
@@ -107,7 +108,6 @@ public class UnitTaskManager : MonoBehaviour
     }
     public void GoToNextTask()
     {
-        Debug.Log("NEXT TASK");
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
         taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
@@ -144,6 +144,7 @@ public class UnitTaskManager : MonoBehaviour
             }
             else
             {
+                taskIndex++;
                 AttackTargetTask newTask = new(taskTransform);
                 requestedTasks.AddFirst(newTask);
                 DoTask();
@@ -160,15 +161,24 @@ public class UnitTaskManager : MonoBehaviour
             {
                 if (Vector3.Distance(nearestEnemy.position, transform.position) > unit.attackRange)
                 {
-                    //GoToNextTask();
+                    taskIndex++;
                     AttackTargetTask newTask = new(nearestEnemy);
                     requestedTasks.AddFirst(newTask);
                     DoTask();
-                    attackCycleActivated = false;
+
                 }
             }
         }
-        GoToNextTask();
+        else 
+        {
+            requestedTasks.First.Value.EndTask();
+            requestedTasks.RemoveFirst();
+            DoTask();
+            taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
+
+        }
+        
+   
         return false;
     }
     public Transform FindNearestEnemy(TeamColorEnum teamColor)
@@ -190,6 +200,7 @@ public class UnitTaskManager : MonoBehaviour
     internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
     {
         unit.SetActiveEnemyDetector(false);
+        taskIndex++;
         AttackTargetTask newTask = new(target);
         enemyTeamTarget = targetTeam;
         requestedTasks.AddLast(newTask);
