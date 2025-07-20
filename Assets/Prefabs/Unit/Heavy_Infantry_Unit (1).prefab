@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floatingHealthBsr: {fileID: 1727907265227178531}
-  maxHealth: 10
+  maxHealth: 1000
 --- !u!114 &4078867702477575506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,7 +261,7 @@ MonoBehaviour:
   rotationSpeed: 360
   defaultStoppingDistance: 2
   defaultMovementSpeed: 3
-  enemyDetectionRadius: 3
+  enemyDetectionRadius: 1
   isRanged: 0
   bulletPrefab: {fileID: 2698017595689710925, guid: c22f155d4a2b29d4295ec25f666d228d, type: 3}
   shootPoint: {fileID: 0}
@@ -398,7 +398,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1507132636819172518
 Transform:
   m_ObjectHideFlags: 0

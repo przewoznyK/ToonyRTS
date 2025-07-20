@@ -31,7 +31,6 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
 
     public bool WorkOnBuilding(int value)
     {
-        Debug.Log(timeToBuilt);
         if (timeToBuilt > 0)
         {
             timeToBuilt -= value;

@@ -10,15 +10,14 @@ public class GathererAnimationFunctions : UnitAnimationFunctions
         {
             if (gathererTaskManager.currentGatherableResource == null) return;
             obj.AddValue(1);
-
-            if (gathererTaskManager.currentGatherableResource.Take())
-                gathererTaskManager.currentGathered = obj.priceValue;
-
-            if (gathererTaskManager.CheckIfGathererHaveToReturnToStockPile())
-                gathererTaskManager.ReturnToStockPile();
-            else if(gathererTaskManager.currentGatherableResource._available <= 0)
-                gathererTaskManager.GoToNextResource();
-
+            gathererTaskManager.currentGathered = obj.priceValue;
+            if (gathererTaskManager.currentGatherableResource.Take(gathererTaskManager) == false)
+            {
+                if (gathererTaskManager.CheckIfGathererHaveToReturnToStockPile())
+                    gathererTaskManager.ReturnToStockPile();
+                else
+                    gathererTaskManager.GoToNextResource();  
+            }
         }
     }
 

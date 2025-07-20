@@ -10,5 +10,19 @@ public class BuildConstructionTask : UnitTask
         unitTaskType = UnitTaskTypeEnum.BuildingConstruction;
         this.constructionPosition = construction.transform.position;
         this.constructionBuildingRepresentation = construction.GetComponent<InConstructionBuildingRepresentation>();
+        this.taskPosition = construction.transform.position;
+    }
+    public override void TakeVisualizationTask(GameObject flagGameObject)
+    {
+        this.flagGameObject = flagGameObject;
+        this.taskPosition = flagGameObject.transform.position;
+    }
+    public override void EndTask()
+    {
+        if (flagGameObject != null)
+        {
+            flagGameObject.SetActive(false);
+            flagGameObject = null;
+        }
     }
 }

@@ -18,14 +18,16 @@ public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
         _available = _totalAvailable;
     }
 
-    public bool Take()
+    public bool Take(GathererTaskManager gathererTaskManager)
     {
-        if (_available <= 0)
-            return false;
         _available--;
-
         UpdateSize();
-
+        if (_available <= 0)
+        {
+            gathererTaskManager.currentGatherableResource = null;
+            gameObject.SetActive(false);
+            return false;
+        }
         return true;
     }
 
@@ -37,12 +39,6 @@ public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
             var vectorScale = Vector3.one * scale;
             transform.localScale = vectorScale;
         }
-        else if (scale <= 0)
-        {
-            gameObject.SetActive(false);
-            Debug.Log("Dodaæ: modyfikacje NavMeshSurface aby jednostki mog³y przechodziæ po tym terenie");
-        }
-
     }
 
     [ContextMenu("Snap")]

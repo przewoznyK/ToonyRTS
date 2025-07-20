@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class GathererNew : Unit
@@ -19,7 +18,7 @@ public class GathererNew : Unit
             {
                 if (component.GetBuildingType() == BuildingTypeEnum.resource)
                 {
-                    unitTaskManager.GatherResource(component.GetProperties<GatherableResource>());
+                    unitTaskManager.GatherResourceTask(component.GetProperties<GatherableResource>());
                     return;
                 }
             }

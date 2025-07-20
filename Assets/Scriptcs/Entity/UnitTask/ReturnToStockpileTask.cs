@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class GoToPositionTask : UnitTask
+public class ReturnToStockpileTask : UnitTask
 {
-    public GoToPositionTask(Vector3 destinatedPosition)
+    public ReturnToStockpileTask(Vector3 destinatedPosition)
     {
-        unitTaskType = UnitTaskTypeEnum.GoToPosition;
+        unitTaskType = UnitTaskTypeEnum.ReturnToStockpile;
         this.taskPosition = destinatedPosition;
     }
     public override void TakeVisualizationTask(GameObject flagGameObject)
@@ -13,7 +13,7 @@ public class GoToPositionTask : UnitTask
     }
     public override void EndTask()
     {
-        if(flagGameObject != null)
+        if (flagGameObject != null)
         {
             flagGameObject.SetActive(false);
             flagGameObject = null;

@@ -24,7 +24,7 @@ public class TaskVisualization : MonoBehaviour
     }
     private void Update()
     {
-        if(requestedTaskCount >= 1)
+        if(requestedTaskCount > 0)
             lineRenderer.SetPosition(0, transform.position);
 
         foreach (var taskData in updatingPositionTasksData)
@@ -55,7 +55,6 @@ public class TaskVisualization : MonoBehaviour
         {
             int renderLineIndex = 0;
             lineRenderer.positionCount = requestedTasks.Count + 1;
-        
             foreach (var task in requestedTasks)
             {
                 vizualizationGameObject = Instantiate(taskVizualizationPrefab, task.taskPosition, Quaternion.identity, taskVizualizationContainer);
@@ -68,6 +67,11 @@ public class TaskVisualization : MonoBehaviour
                     renderLineIndex++;
                     MovingTargetTaskVisualizationData movingTaskTarget = new(vizualizationGameObject, task.targetTransform, renderLineIndex);
                     updatingPositionTasksData.Add(movingTaskTarget);
+                }
+                else if((task.unitTaskType == UnitTaskTypeEnum.GatherResource )|| task.unitTaskType == UnitTaskTypeEnum.BuildingConstruction)
+                {
+                    renderLineIndex++;
+
                 }
                 lineRenderer.SetPosition(renderLineIndex, task.taskPosition);
               

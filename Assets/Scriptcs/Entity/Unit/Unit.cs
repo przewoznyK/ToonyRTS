@@ -12,8 +12,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public EntityTypeEnum entityType;
     protected Transform activator;
     protected SphereCollider enemyDecetorCollider;
-    [SerializeField] protected GameObject taskFlagPrefab;
-    [SerializeField] private Transform bodyToDrop;
+    private Transform bodyToDrop;
     [Header("Unit Stats")]
     public int damage;
     public float attackRange;
@@ -35,6 +34,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 
     [HideInInspector]
     public NavMeshAgent agent;
+    [HideInInspector]
     public Animator animator;
     
     private void Start()
@@ -45,11 +45,13 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     {
         unitTaskManager = GetComponent<UnitTaskManager>();
         agent = GetComponent<NavMeshAgent>();
+        bodyToDrop = transform.GetChild(2);
         animator = bodyToDrop.GetComponent<Animator>();
 
         activator = transform.GetChild(0);
         enemyDecetorCollider = transform.GetChild(1).GetComponent<SphereCollider>();
         enemyDecetorCollider.radius = enemyDetectionRadius;
+   
         AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
 
         agent.stoppingDistance = defaultStoppingDistance;
