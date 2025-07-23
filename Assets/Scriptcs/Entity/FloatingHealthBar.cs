@@ -6,10 +6,18 @@ public class FloatingHealthBar : MonoBehaviour
     [SerializeField] private Slider healthBar;
     [SerializeField] private Transform targetPosition;
     [SerializeField] private Vector3 targetOffSet = new Vector3(0, 2.6f, 0);
+    [SerializeField] private bool isStatic;
+    private void Start()
+    {
+        transform.position = targetPosition.position + targetOffSet;
+    }
     private void Update()
     {
+        if (isStatic == false)
+            transform.position = targetPosition.position + targetOffSet;
+
         transform.rotation = Camera.main.transform.rotation;
-        transform.position = targetPosition.position + targetOffSet;
+
     }
     public void UpdateHealthBar(int currentHealth, int maxHealth)
     {

@@ -13,6 +13,9 @@ public class TaskVisualization : MonoBehaviour
     private Quaternion worldRotation = Quaternion.identity;
     private void OnEnable()
     {
+        taskVizualizationContainer.position = worldPosition;
+        taskVizualizationContainer.rotation = worldRotation;
+
         lineRenderer.enabled = true;
         taskVizualizationContainer.gameObject.SetActive(true);
     }

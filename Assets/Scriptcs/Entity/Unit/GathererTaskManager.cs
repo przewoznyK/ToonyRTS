@@ -8,7 +8,7 @@ public class GathererTaskManager : UnitTaskManager
     [Header("Gatherer Properties")]
     public GatherableResource currentGatherableResource;
     public ResourceTypesEnum currentResourceTypeGathering;
-    [SerializeField] private int maxCarried = 20;
+    public int maxCarried = 20;
     public int currentGathered;
     public int reachedPerSecond;
     private bool isGoingToStockPile;

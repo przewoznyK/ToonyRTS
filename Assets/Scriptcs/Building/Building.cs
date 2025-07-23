@@ -5,7 +5,7 @@ using UnityEngine;
 public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAndProperties
 {
     [SerializeField] public List<Vector3Int> positionToOccupy;
-    [SerializeField] private TeamColorEnum teamColor;
+    public TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
@@ -84,6 +84,10 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
     }
     public T GetProperties<T>() where T : Component
     {
-        throw new NotImplementedException();
+        if (typeof(T) == typeof(Transform))
+            return transform as T;
+        else
+            Debug.Log("You can only take Transform from this");
+        return null;
     }
 }

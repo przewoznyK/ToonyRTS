@@ -3970,7 +3970,7 @@ MonoBehaviour:
   attackCooldown: 5
   maxEnemySearchingDistance: 5
   rotationSpeed: 360
-  defaultStoppingDistance: 1
+  defaultStoppingDistance: 2.5
   defaultMovementSpeed: 3
   enemyDetectionRadius: 3
   isRanged: 0
@@ -3993,6 +3993,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   taskVisualization: {fileID: 2929459154559365107}
   lineRenderer: {fileID: 4838299357745353647}
+  currentGatherableResource: {fileID: 0}
+  currentResourceTypeGathering: 0
   maxCarried: 2
   currentGathered: 0
   reachedPerSecond: 0
