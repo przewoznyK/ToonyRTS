@@ -11,12 +11,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject constructionSystemPrefab;
     [SerializeField] private GameObject playerStartGameSetupPrefab;
     [SerializeField] private GameObject accessToClassByTeamColorPrefab;
-    [SerializeField] private GameObject playerRemoveEntityPrefab;
+    [SerializeField] private GameObject removeEntityPrefab;
     private void Awake()
     {
         //  var blueTeam = new PlayerController(TeamColorEnum.Blue);
-        var blueTeam = TeamColorEnum.Blue;
+       // var blueTeam = TeamColorEnum.Blue;
         var controlledUnits = new ControlledUnits();
+
         var gridData = new GridData();
         
        
@@ -57,18 +58,17 @@ public class GameManager : MonoBehaviour
         var holdSelectionUnitCanbasInstantiate = Instantiate(holdSelectionUnitCanvas);
         var holdSelectionUnitCanbasChild = holdSelectionUnitCanbasInstantiate.transform.GetChild(0);
         var boxVisual = holdSelectionUnitCanbasChild.GetComponent<RectTransform>();
-        // Player Resources
-        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI ,3000, 3000, 2000, 1000);
+
         // Shop Manager
-        var shopManager = new ShopManager(playerResources, buildingProduction);
+        var shopManager = new ShopManager(buildingProduction);
         // Player Remove Entity
-        var playerRemoveEntityInstantiate = Instantiate(playerRemoveEntityPrefab);
-        var playerRemoveEntity = playerRemoveEntityInstantiate.GetComponent<PlayerRemoveEntity>();
+        var removeEntityInstantiate = Instantiate(removeEntityPrefab);
+        var removeEntity = removeEntityInstantiate.GetComponent<RemoveEntity>();
 
         // Init 
         manageSelectionUnits.Init(inputManager, controlledUnits);
-        playerRemoveEntity.Init(blueTeam, gridData);
-        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem, playerRemoveEntity);
+        removeEntity.Init(gridData);
+        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem, removeEntity);
         selectionInfoUI.Init(controlledUnits);
         activeClickableObject.Init(inputManager, controlledUnits, selectionInfoUI, commandPanelUI,
         boxVisual);
@@ -81,11 +81,18 @@ public class GameManager : MonoBehaviour
         var playerStartGameSetup = playerStartGameSetupInstantiate.GetComponent<PlayerStartGameSetup>();
         playerStartGameSetup.Init(playerResources, constructionPlacerSystem, gridData, TeamColorEnum.Blue, 0, 0);
 
+
+
+      
+
+
         // Global
         var accessToClassByTeamColorInstantiate = Instantiate(accessToClassByTeamColorPrefab);
         var accessToClassByTeamColor = accessToClassByTeamColorInstantiate.GetComponent<AccessToClassByTeamColor>();
-        accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(blueTeam, playerResources);
-        accessToClassByTeamColor.AddControlledUnitsManagerToGlobalList(blueTeam, controlledUnits);
+
+        var blueTeam = new PlayerController(TeamColorEnum.Blue, accessToClassByTeamColor);
+
+
 
 
         var redTeam = new PlayerController(TeamColorEnum.Red, accessToClassByTeamColor);

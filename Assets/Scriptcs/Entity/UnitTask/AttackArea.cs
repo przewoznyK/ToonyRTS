@@ -15,7 +15,7 @@ public class AttackArea : MonoBehaviour
         {
             if (entityHealth.teamColor != unit.teamColor)
             {
-                entityHealth.TakeDamage(unit, unit.damage);
+                entityHealth.TakeDamageFromUnit(unit);
             }
         }
     }

@@ -6,6 +6,7 @@ public class AccessToClassByTeamColor : MonoBehaviour
     public static AccessToClassByTeamColor instance;
     Dictionary<TeamColorEnum, PlayerResources> PlayersResourcesManagerGlobalList = new();
     Dictionary<TeamColorEnum, ControlledUnits> PlayerControlledUnitsManagerGlobalList = new();
+    Dictionary<TeamColorEnum, PlayerControlledBuildings> PlayerControlledBuildingsManagerGlobalList = new();
     Dictionary<TeamColorEnum, List<IStockPile>> PlayerStockPileGlobalList = new();
 
     private void Awake()
@@ -36,6 +37,17 @@ public class AccessToClassByTeamColor : MonoBehaviour
     public ControlledUnits GetControlledUnitsByTeamColor(TeamColorEnum teamColorEnum)
     {
         return PlayerControlledUnitsManagerGlobalList[teamColorEnum];
+    }
+
+    // Controlled Buildings List
+    public void AddControlledBuildingsManagerToGlobalList(TeamColorEnum teamColor, PlayerControlledBuildings playerControlled)
+    {
+        PlayerControlledBuildingsManagerGlobalList.Add(teamColor, playerControlled);
+    }
+
+    public PlayerControlledBuildings GetControlledBuildingsByTeamColor(TeamColorEnum teamColorEnum)
+    {
+        return PlayerControlledBuildingsManagerGlobalList[teamColorEnum];
     }
 
     // StockPile List

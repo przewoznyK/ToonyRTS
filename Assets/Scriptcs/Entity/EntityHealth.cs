@@ -15,16 +15,16 @@ public class EntityHealth : MonoBehaviour
         currentHealth = maxHealth;
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
     }
-    public void TakeDamage(Unit fromUnit, int damage)
+    public void TakeDamageFromUnit(Unit fromUnit)
     {
-        currentHealth -= damage;
+        currentHealth -= fromUnit.damage;
         floatingHealthBsr.UpdateHealthBar(currentHealth, maxHealth);
         if (currentHealth <= 0)
         {
             onDeathActiom?.Invoke();
             return;
         }
-        onHurtAction.Invoke(fromUnit);
+        onHurtAction?.Invoke(fromUnit);
         
     }
 

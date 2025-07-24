@@ -20,7 +20,6 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
         Material teamMaterialUnit = TeamColorDatabase.Instance.GetTeamBuildingUnit(building.teamColor);
         foreach (var mesh in meshsToChangeMaterial)
         {
-            Debug.Log("USTAWIAM NA: " + building.teamColor);
             mesh.material = teamMaterialUnit;
         }
     }

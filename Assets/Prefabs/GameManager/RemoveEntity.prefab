@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4371095944200305311}
   - component: {fileID: 1263870932427299325}
   m_Layer: 0
-  m_Name: PlayerRemoveEntity
+  m_Name: RemoveEntity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

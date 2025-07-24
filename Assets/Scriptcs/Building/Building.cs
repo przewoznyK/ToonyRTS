@@ -20,6 +20,9 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
     {
         if (isStockPile)
             AccessToClassByTeamColor.instance.AddStockPileToGlobalList(teamColor, this);
+
+        EntityHealth entityHealth = GetComponent<EntityHealth>();
+        entityHealth.onDeathActiom += () => RemoveEntity.Instance.RemoveEntityFromGame(this);
     }
     public ObjectTypeEnum CheckObjectType()
     {
@@ -89,5 +92,11 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
         else
             Debug.Log("You can only take Transform from this");
         return null;
+    }
+
+    public void DeleteBuilding()
+    {
+     //   AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
+        Destroy(gameObject);
     }
 }

@@ -4,12 +4,9 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     private Unit unit;
-
-    private int damage;
     internal void SetStartProperties(Unit unit)
     {
         this.unit = unit;
-        damage = this.unit.damage;
     }
     
     private void OnTriggerEnter(Collider other)
@@ -19,7 +16,7 @@ public class Projectile : MonoBehaviour
         {
             if (entity.teamColor != unit.teamColor)
             {
-                entity.TakeDamage(unit, unit.damage);
+                entity.TakeDamageFromUnit(unit);
                 Destroy(gameObject);
             }
         }

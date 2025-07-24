@@ -1801,7 +1801,7 @@ MonoBehaviour:
   constructionSystemPrefab: {fileID: 6186055460891491870, guid: cacc1c12be2006b4e86ee7a59002e0b5, type: 3}
   playerStartGameSetupPrefab: {fileID: 3167862710859587500, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
   accessToClassByTeamColorPrefab: {fileID: 2524503503730023683, guid: 76168d69c4213b1478e39edd628f97e8, type: 3}
-  playerRemoveEntityPrefab: {fileID: 5772791463340857145, guid: b7a340a9369183641a9ce27d04645fa8, type: 3}
+  removeEntityPrefab: {fileID: 5772791463340857145, guid: b7a340a9369183641a9ce27d04645fa8, type: 3}
 --- !u!4 &1840628464
 Transform:
   m_ObjectHideFlags: 0
@@ -2295,7 +2295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3275545278579393358, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4932579699349325025, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2339,11 +2339,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5728350192064951663, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5728350192064951663, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -10,7 +10,7 @@ public class CommandPanelUI : MonoBehaviour
     BuildingProduction buildingProduction;
     InputManager inputManager;
     ConstructionPreviewSystem previewSystem;
-    PlayerRemoveEntity playerRemoveEntity;
+    RemoveEntity playerRemoveEntity;
 
     private InputAction RMBClickAction;
 
@@ -24,7 +24,7 @@ public class CommandPanelUI : MonoBehaviour
     public List<Unit> currentSelectedUnits;
 
     [SerializeField] private Button removeEntityButton;
-    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem, PlayerRemoveEntity playerRemoveEntity)
+    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem, RemoveEntity playerRemoveEntity)
     {
         this.playerResources = playerResources;
         this.shopManager = shopManager;
@@ -193,12 +193,12 @@ public class CommandPanelUI : MonoBehaviour
     }
     public void RemoveEntity(Building building)
     {
-        playerRemoveEntity.RemoveEntity(building);
+        playerRemoveEntity.RemoveEntityFromGame(building);
         building.gameObject.SetActive(false);
     }
     public void RemoveEntity(Unit unit)
     {
-        playerRemoveEntity.RemoveEntity(unit);
+        playerRemoveEntity.RemoveEntityFromGame(unit);
         gameObject.SetActive(false);
     }
 

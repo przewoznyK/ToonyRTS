@@ -3967,7 +3967,7 @@ MonoBehaviour:
   entityType: 0
   damage: 5
   attackRange: 2
-  attackCooldown: 5
+  attackCooldown: 2
   maxEnemySearchingDistance: 5
   rotationSpeed: 360
   defaultStoppingDistance: 2.5
@@ -8254,6 +8254,7 @@ MonoBehaviour:
   healthBar: {fileID: 9216645472135425739}
   targetPosition: {fileID: 6696632714510631853}
   targetOffSet: {x: 0, y: 2.6, z: 0}
+  isStatic: 0
 --- !u!1 &4961613856307762356
 GameObject:
   m_ObjectHideFlags: 0
@@ -9603,7 +9604,7 @@ Transform:
   m_Children:
   - {fileID: 7324111378125420168}
   m_Father: {fileID: 67037477001527182}
-  m_LocalEulerAnglesHint: {x: -3.4840186, y: 13.708643, z: 158.00645}
+  m_LocalEulerAnglesHint: {x: -0.008584907, y: 3.2947247, z: 172.72923}
 --- !u!1 &5762110083918142839
 GameObject:
   m_ObjectHideFlags: 0

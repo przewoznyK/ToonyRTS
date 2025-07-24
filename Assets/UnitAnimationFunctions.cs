@@ -5,14 +5,20 @@ using UnityEngine;
 public class UnitAnimationFunctions : MonoBehaviour
 {
     Unit unit;
+    UnitTaskManager unitTaskManager;
     [SerializeField] protected AttackArea attackArea;
 
-    internal virtual void Init(Unit unit)
+    internal virtual void Init(Unit unit, UnitTaskManager unitTaskManager)
     {
         this.unit = unit;
+        this.unitTaskManager = unitTaskManager;
         attackArea.Init(unit);
     }
-
+    public void MeleeAttackSingleTarget()
+    {
+        if (unitTaskManager.taskTransform != null)
+            unitTaskManager.taskTransform.GetComponent<EntityHealth>().TakeDamageFromUnit(unit);
+    }
     public void MeleeColliderAttack(float duration)
     {
         StartCoroutine(ActiveAttackArea(duration));

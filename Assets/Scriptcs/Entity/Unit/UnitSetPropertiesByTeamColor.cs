@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class UnitSetPropertiesByTeamColor : MonoBehaviour
 {
     Unit unit;
+    UnitTaskManager unitTaskManager;
     EntityHealth entityHealth;
     [SerializeField] private UnitAnimationFunctions animationFunctions;
     [SerializeField] private MeshRenderer activator;
@@ -13,10 +14,11 @@ public class UnitSetPropertiesByTeamColor : MonoBehaviour
     private void Start()
     {
         unit = GetComponent<Unit>();
+        unitTaskManager = GetComponent<UnitTaskManager>();
         entityHealth = GetComponent<EntityHealth>();
 
         entityHealth.SetTeamColor(unit.teamColor);
-        animationFunctions.Init(unit);
+        animationFunctions.Init(unit, unitTaskManager);
 
         Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(unit.teamColor);
         activator.material = teamMaterialColor;

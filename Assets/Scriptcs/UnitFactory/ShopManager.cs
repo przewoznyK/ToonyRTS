@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class ShopManager
 {
-    PlayerResources playerResources;
     BuildingProduction buildingProduction;
-    public ShopManager(PlayerResources playerResources, BuildingProduction buildingProduction)
+    public ShopManager(BuildingProduction buildingProduction)
     {
-        this.playerResources = playerResources;
         this.buildingProduction = buildingProduction;
     }
 
-    public void BuyUnit(Building building, UnitNameEnum unitNameEnum)
+    public void BuyUnit(PlayerResources playerResources, Building building, UnitNameEnum unitNameEnum)
     {
         UnitData unitData = UnitDatabase.Instance.GetUnitDataByNameEnum(unitNameEnum);
         
