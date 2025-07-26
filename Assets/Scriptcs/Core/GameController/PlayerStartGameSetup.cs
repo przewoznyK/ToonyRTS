@@ -7,7 +7,7 @@ public class PlayerStartGameSetup : MonoBehaviour
     internal void Init(PlayerResources playerResources, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData, TeamColorEnum teamColor, int xPosition, int zPosition)
     {
         ConstructionData currentConstructionData = new (buildingData, xPosition, zPosition, teamColor);
-        constructionPlacerSystem.PlaceConstruction(gridData, currentConstructionData);
+        constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
     }
 
 }

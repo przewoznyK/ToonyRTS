@@ -10,7 +10,6 @@ public class CommandPanelUI : MonoBehaviour
     BuildingProduction buildingProduction;
     InputManager inputManager;
     ConstructionPreviewSystem previewSystem;
-    RemoveEntity playerRemoveEntity;
 
     private InputAction RMBClickAction;
 
@@ -24,14 +23,13 @@ public class CommandPanelUI : MonoBehaviour
     public List<Unit> currentSelectedUnits;
 
     [SerializeField] private Button removeEntityButton;
-    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem, RemoveEntity playerRemoveEntity)
+    public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem)
     {
         this.playerResources = playerResources;
         this.shopManager = shopManager;
         this.buildingProduction = buildingProduction;
         this.inputManager = inputManager;
         this.previewSystem = previewSystem;
-        this.playerRemoveEntity = playerRemoveEntity;
         RMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
     }
 
@@ -53,11 +51,11 @@ public class CommandPanelUI : MonoBehaviour
             currentButton.onClick.RemoveAllListeners();
             currentButton.image.sprite = unitDataForButton.unitSprite;
             SetButtonColorStatusByPrice(currentButton, unitDataForButton.objectPrices);
-            currentButton.onClick.AddListener(() => shopManager.BuyUnit(building, unitDataForButton.unitName));
+            currentButton.onClick.AddListener(() => shopManager.BuyUnit(playerResources, building, unitDataForButton.unitName));
         }
 
         removeEntityButton.onClick.RemoveAllListeners();
-        removeEntityButton.onClick.AddListener(() => RemoveEntity(building));
+        removeEntityButton.onClick.AddListener(() => RemoveEntityWithButton(building));
     }
     public void PrepareUnitUI(List<Unit> unitsList)
     {
@@ -84,7 +82,7 @@ public class CommandPanelUI : MonoBehaviour
         removeEntityButton.onClick.RemoveAllListeners();
         foreach (var unit in unitsList)
         {
-            removeEntityButton.onClick.AddListener(() => RemoveEntity(unit));
+            removeEntityButton.onClick.AddListener(() => RemoveEntityWithButton(unit));
         }
   
     }
@@ -191,14 +189,14 @@ public class CommandPanelUI : MonoBehaviour
             currentProductionImageFill.fillAmount = buildingProductionData.currentTimeProduction / buildingProductionData.timeProduction;
         }
     }
-    public void RemoveEntity(Building building)
+    public void RemoveEntityWithButton(Building building)
     {
-        playerRemoveEntity.RemoveEntityFromGame(building);
+        RemoveEntity.Instance.RemoveEntityFromGame(building);
         building.gameObject.SetActive(false);
     }
-    public void RemoveEntity(Unit unit)
+    public void RemoveEntityWithButton(Unit unit)
     {
-        playerRemoveEntity.RemoveEntityFromGame(unit);
+        RemoveEntity.Instance.RemoveEntityFromGame(unit);
         gameObject.SetActive(false);
     }
 

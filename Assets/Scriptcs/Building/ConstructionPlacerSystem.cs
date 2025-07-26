@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class ConstructionPlacerSystem : MonoBehaviour
 {
+    PlayerResources playerResources;
     ActiveClickableObject activeClickableObject;
     [SerializeField] private GameObject constructionRepresentationPrefab;
     [SerializeField] private InConstructionBuildingRepresentation constructionRepresentation;
-    public void Init(ActiveClickableObject activeClickableObject)
+    public void Init(PlayerResources playerResources, ActiveClickableObject activeClickableObject)
     {
+        this.playerResources = playerResources;
         this.activeClickableObject = activeClickableObject;
     }
     internal void PlaceConstruction(PlayerResources playerResources, GridData gridData, ConstructionData currentConstructionData)

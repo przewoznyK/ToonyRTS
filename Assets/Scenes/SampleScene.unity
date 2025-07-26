@@ -1792,16 +1792,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bb3e755f936884c9374a007dbe410a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputManagerPrefab: {fileID: 7898684598215392623, guid: 4870a906a4c7f5240a982e8126c83876, type: 3}
-  activeClickableObjectPrefab: {fileID: 2735644993106133342, guid: 41a3b1243b95d874fbeaa1f75a8d41bf, type: 3}
-  manageSelectionUnitsPrefab: {fileID: 7759690956516607940, guid: f31c6b703c607494f98a236227f7d44b, type: 3}
-  playerUIPrefab: {fileID: 6984731151352809971, guid: 5d5f1687d4424ad498b6af5d5a48546c, type: 3}
-  holdSelectionUnitCanvas: {fileID: 946575357793338115, guid: edd098be46399ce418da15781d623417, type: 3}
-  buildingProducionPrefab: {fileID: 2184970409176214722, guid: 77cc6ecf268c0a2428893e2d61accb93, type: 3}
-  constructionSystemPrefab: {fileID: 6186055460891491870, guid: cacc1c12be2006b4e86ee7a59002e0b5, type: 3}
-  playerStartGameSetupPrefab: {fileID: 3167862710859587500, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
-  accessToClassByTeamColorPrefab: {fileID: 2524503503730023683, guid: 76168d69c4213b1478e39edd628f97e8, type: 3}
-  removeEntityPrefab: {fileID: 5772791463340857145, guid: b7a340a9369183641a9ce27d04645fa8, type: 3}
+  <PlayerControllerPrefab>k__BackingField: {fileID: 8984050540277095674, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+  <InputManagerPrefab>k__BackingField: {fileID: 7898684598215392623, guid: 4870a906a4c7f5240a982e8126c83876, type: 3}
+  <ActiveClickableObjectPrefab>k__BackingField: {fileID: 2735644993106133342, guid: 41a3b1243b95d874fbeaa1f75a8d41bf, type: 3}
+  <ManageSelectionUnitsPrefab>k__BackingField: {fileID: 7759690956516607940, guid: f31c6b703c607494f98a236227f7d44b, type: 3}
+  <PlayerUIPrefab>k__BackingField: {fileID: 6984731151352809971, guid: 5d5f1687d4424ad498b6af5d5a48546c, type: 3}
+  <HoldSelectionUnitCanvas>k__BackingField: {fileID: 946575357793338115, guid: edd098be46399ce418da15781d623417, type: 3}
+  <BuildingProducionPrefab>k__BackingField: {fileID: 2184970409176214722, guid: 77cc6ecf268c0a2428893e2d61accb93, type: 3}
+  <ConstructionSystemPrefab>k__BackingField: {fileID: 6186055460891491870, guid: cacc1c12be2006b4e86ee7a59002e0b5, type: 3}
+  <PlayerStartGameSetupPrefab>k__BackingField: {fileID: 3167862710859587500, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
+  <AccessToClassByTeamColorPrefab>k__BackingField: {fileID: 2524503503730023683, guid: 76168d69c4213b1478e39edd628f97e8, type: 3}
+  <RemoveEntityPrefab>k__BackingField: {fileID: 5772791463340857145, guid: b7a340a9369183641a9ce27d04645fa8, type: 3}
 --- !u!4 &1840628464
 Transform:
   m_ObjectHideFlags: 0
@@ -2089,6 +2090,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9688bf977e9f65c43a1aa24d35bfec88, type: 3}
+--- !u!1001 &1754849765642464506
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.000000059604645
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.9335001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2457335624195776830, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8984050540277095674, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
+      propertyPath: m_Name
+      value: PlayerController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
 --- !u!1001 &5037314538144785869
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2528,3 +2586,4 @@ SceneRoots:
   - {fileID: 588461134}
   - {fileID: 218521937}
   - {fileID: 6380882911401061694}
+  - {fileID: 1754849765642464506}

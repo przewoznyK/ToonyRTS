@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class ConstructionPreviewSystem : MonoBehaviour
 {
+    PlayerResources playerResources;
     InputManager inputManager;
     ConstructionPlacerSystem constructionPlacerSystem;
     GridData gridData;
@@ -28,8 +29,9 @@ public class ConstructionPreviewSystem : MonoBehaviour
     public bool isOnPreview { get; private set; }
     bool canPlaceConstruction;
     private float gridSize = 1f;
-    internal void Init(InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData, ActiveClickableObject activeClickableObject)
+    internal void Init(PlayerResources playerResources, InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData, ActiveClickableObject activeClickableObject)
     {
+        this.playerResources = playerResources;
         this.inputManager = inputManager;
         this.constructionPlacerSystem = constructionPlacerSystem;
         this.gridData = gridData;
@@ -117,7 +119,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
     {
         if (canPlaceConstruction)
         {
-            constructionPlacerSystem.PlaceConstruction(gridData, currentConstructionData);
+            constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
 
             this.enabled = false;
         }
