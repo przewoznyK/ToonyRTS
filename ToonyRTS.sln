@@ -121,6 +121,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.Setti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{1284C6BA-EAC2-DB16-1E62-30696EE83FE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParrelSync", "ParrelSync.csproj", "{ECD44D6B-1828-4C08-8AB6-59C3C1CC7616}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InputSystem.TestFramework", "Unity.InputSystem.TestFramework.csproj", "{B0153AAD-1343-0402-EE65-9B347373F1A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.ShaderGraph.Utilities", "Unity.ShaderGraph.Utilities.csproj", "{2486D23F-7850-6D83-8F0D-3CA3C8A7A77E}"
@@ -465,6 +467,10 @@ Global
 		{1284C6BA-EAC2-DB16-1E62-30696EE83FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1284C6BA-EAC2-DB16-1E62-30696EE83FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1284C6BA-EAC2-DB16-1E62-30696EE83FE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECD44D6B-1828-4C08-8AB6-59C3C1CC7616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECD44D6B-1828-4C08-8AB6-59C3C1CC7616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECD44D6B-1828-4C08-8AB6-59C3C1CC7616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECD44D6B-1828-4C08-8AB6-59C3C1CC7616}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0153AAD-1343-0402-EE65-9B347373F1A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0153AAD-1343-0402-EE65-9B347373F1A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0153AAD-1343-0402-EE65-9B347373F1A5}.Release|Any CPU.ActiveCfg = Release|Any CPU

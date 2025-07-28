@@ -29,4 +29,11 @@ public class MainMenuManage : MonoBehaviour
         OpenRoomPanel();
         NetworkManager.singleton.StartHost();
     }
+
+    public void JoinRoom()
+    {
+        NetworkManager.singleton.networkAddress = "127.0.0.1";
+        OpenRoomPanel();
+        NetworkManager.singleton.StartClient();
+    }
 }
