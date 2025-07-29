@@ -143,6 +143,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  text: {fileID: 1546165750637726207, guid: 391ce6770a186e34785256445944237b, type: 3}
 --- !u!114 &5484770872638166039
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,9 @@
 using UnityEngine;
 using Mirror;
+using TMPro;
 public class PlayerTestingMirror : NetworkBehaviour
 {
+    [SerializeField] private TextMeshProUGUI text;
     void HandleMovement()
     {
         if(isLocalPlayer)
@@ -16,5 +18,10 @@ public class PlayerTestingMirror : NetworkBehaviour
     private void Update()
     {
         HandleMovement();
+    }
+
+    public void UpdateText(string value)
+    {
+        text.text = value;
     }
 }

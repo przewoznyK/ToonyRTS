@@ -1,25 +1,67 @@
 using Mirror;
+using Mirror.BouncyCastle.Bcpg;
+using NUnit.Framework;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class RoomManager : NetworkBehaviour
 {
     public static RoomManager Instance;
-
-    public RoomSlot[] slots; // przypisujesz w Inspectorze
-
-    private void Awake()
+    public List<PlayerRoomController> playerRoomControllers = new();
+    public List<TextMeshProUGUI> playerSlotsText;
+    [SyncVar(hook = nameof(OnSlot0NameChanged))] public string slot0Name;
+    [SyncVar(hook = nameof(OnSlot1NameChanged))] public string slot1Name;
+    void Start()
     {
-        Instance = this;
+        Instance = this;        
     }
 
-    [Server]
-    public void AssignPlayerToSlot(NetworkConnectionToClient conn, string name, int slotIndex)
+    public void AddPlayerToLobby(PlayerRoomController player)
     {
-        Debug.Log("DODAJE " + name + " DO SLOTA " + slotIndex);
-        if (slotIndex < 0 || slotIndex >= slots.Length) return;
+        if (!isServer) return;
+        playerRoomControllers.Add(player);
 
-        RoomSlot slot = slots[slotIndex];
-        slot.playerName = name;
-        slot.UpdateUI();
+        int newSlot = GetEmptySlot();
+
+        switch (newSlot)
+        {
+            case 0:
+                slot0Name = player.playerName;
+                break;
+            case 1:
+                slot1Name = player.playerName;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public int GetEmptySlot()
+    {
+        for (int i = 0; i < playerSlotsText.Count; i++)
+        {
+            if (playerSlotsText[i].text == "") return i;
+        }
+        return 3;
+    }
+
+
+    void OnSlot0NameChanged(string oldName, string newName)
+    {
+        if (playerSlotsText[0] != null)
+        {
+            playerSlotsText[0].text = string.IsNullOrEmpty(newName) ? "Empty" : newName;
+        }
+
+    }
+
+    void OnSlot1NameChanged(string oldName, string newName)
+    {
+        if (playerSlotsText[1] != null)
+        {
+            playerSlotsText[1].text = string.IsNullOrEmpty(newName) ? "Empty" : newName;
+        }
+
     }
 }

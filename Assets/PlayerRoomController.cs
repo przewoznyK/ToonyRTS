@@ -1,25 +1,29 @@
 using Mirror;
-using TMPro;
 using UnityEngine;
 
 public class PlayerRoomController : NetworkBehaviour
 {
-    RoomTestClicker roomTestClicker;
     [SyncVar] public string playerName;
+    void Start()
+    {
+        if(isLocalPlayer)
+        {
+            string randomName = "Player" + Random.Range(0, 100);
+            CmdSetPlayerName(randomName);
+            CmdRegisterWithRoomManager();
+        }
+
+    }
 
     [Command]
-    public void CmdJoinSlot(int slotIndex)
+    void CmdRegisterWithRoomManager()
     {
-        Debug.Log($"Gracz {playerName} chce do³¹czyæ do slota {slotIndex}");
-
-        RoomManager.Instance.AssignPlayerToSlot(connectionToClient, playerName, slotIndex);
+        RoomManager.Instance.AddPlayerToLobby(this);
     }
     [Command]
-    public override void OnStartLocalPlayer()
+    void CmdSetPlayerName(string name)
     {
-        // Nadaj nazwê (np. tymczasowo z losowej liczby)
-        playerName = "Player" + Random.Range(1000, 9999);
-        roomTestClicker = FindObjectOfType<RoomTestClicker>();
-        roomTestClicker.Click();
+        playerName = name;
     }
+
 }
