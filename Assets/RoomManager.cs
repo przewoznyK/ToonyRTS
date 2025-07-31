@@ -8,7 +8,7 @@ using UnityEngine;
 public class RoomManager : NetworkBehaviour
 {
     public static RoomManager Instance;
-    public List<PlayerRoomController> playerRoomControllers = new();
+    public List<RoomPlayerProfile> roomPlayerProfiles = new();
     public List<TextMeshProUGUI> playerSlotsText;
     [SyncVar(hook = nameof(OnSlot0NameChanged))] public string slot0Name;
     [SyncVar(hook = nameof(OnSlot1NameChanged))] public string slot1Name;
@@ -17,24 +17,25 @@ public class RoomManager : NetworkBehaviour
         Instance = this;        
     }
 
-    public void AddPlayerToLobby(PlayerRoomController player)
+    public void AddPlayerToLobby(PlayerRoomController playerToAdd)
     {
         if (!isServer) return;
-        playerRoomControllers.Add(player);
 
-        int newSlot = GetEmptySlot();
+        int emptySlotId = GetEmptySlot();
 
-        switch (newSlot)
+        switch (emptySlotId)
         {
             case 0:
-                slot0Name = player.playerName;
+                slot0Name = playerToAdd.playerName;
                 break;
             case 1:
-                slot1Name = player.playerName;
+                slot1Name = playerToAdd.playerName;
                 break;
             default:
                 break;
         }
+        var newPlayerProfile = new RoomPlayerProfile(emptySlotId, playerToAdd);
+        roomPlayerProfiles.Add(newPlayerProfile);
     }
 
     public int GetEmptySlot()
@@ -63,5 +64,16 @@ public class RoomManager : NetworkBehaviour
             playerSlotsText[1].text = string.IsNullOrEmpty(newName) ? "Empty" : newName;
         }
 
+    }
+
+    public void ChangeRoomPlayerProfileTeamColor(PlayerRoomController playerRoomController, TeamColorEnum teamColor)
+    {
+        var player = roomPlayerProfiles.Find(p => p.playerRoomController == playerRoomController);
+        if (player != null)
+        {
+            player.teamColor = teamColor;
+            Debug.Log("DLA gracza " + player.playerRoomController.playerName + " Zmieniono kolor na: " + player.teamColor);
+            player.playerRoomController.ChangeSelectedTeamColor(teamColor);
+        }
     }
 }
