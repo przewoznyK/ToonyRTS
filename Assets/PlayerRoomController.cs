@@ -1,9 +1,12 @@
 using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerRoomController : NetworkBehaviour
 {
     [SyncVar] public string playerName;
+    public string teamColorName;
+
     RoomLocalManager roomLocalManager;
     void Start()
     {
@@ -13,10 +16,7 @@ public class PlayerRoomController : NetworkBehaviour
             CmdSetPlayerName(randomName);
             CmdRegisterWithRoomManager();
             roomLocalManager = FindFirstObjectByType<RoomLocalManager>();
-            roomLocalManager.toggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel());
-            roomLocalManager.changeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton(TeamColorEnum.Blue));
 
-            roomLocalManager.changeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton(TeamColorEnum.Red));
 
         }
 
@@ -34,37 +34,42 @@ public class PlayerRoomController : NetworkBehaviour
     }
 
 
+    [TargetRpc]
+    public void TargetSlotLocked(NetworkConnection target, int slotId)
+    {
+        SlotLocked(slotId);
+    }
+    public void SlotLocked(int slotId)
+    {
+        if (slotId == 0)
+        {
+            roomLocalManager.slot0ToggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel());
+            roomLocalManager.slot0ChangeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton("Blue"));
+            roomLocalManager.slot0ChangeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton("Red"));
+
+        }
+        else if (slotId == 1)
+        {
+            roomLocalManager.slot1ToggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel());
+            roomLocalManager.slot1ChangeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton("Blue"));
+            roomLocalManager.slot1ChangeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton("Red"));
+        }
+
+    }
     public void ToggleTeamColorSelectionPanel()
     {
-        roomLocalManager.teamColorSelectionPanel.SetActive(!roomLocalManager.teamColorSelectionPanel.activeSelf);
+        roomLocalManager.slot0TeamColorSelectionPanel.SetActive(!roomLocalManager.slot0TeamColorSelectionPanel.activeSelf);
     }
 
-    public void SelectColorTeamButton(TeamColorEnum teamColor)
+    public void SelectColorTeamButton(string colorName)
     {
         ToggleTeamColorSelectionPanel();
-        CmdChangeRoomPlayerProfileTeamColor(teamColor);
+        CmdChangeRoomPlayerProfileTeamColor(colorName);
 
     }
     [Command]
-    public void CmdChangeRoomPlayerProfileTeamColor(TeamColorEnum teamColor)
+    public void CmdChangeRoomPlayerProfileTeamColor(string colorName)
     {
-        RoomManager.Instance.ChangeRoomPlayerProfileTeamColor(this, teamColor);
-    }
-
-    public void ChangeSelectedTeamColor(TeamColorEnum teamColor)
-    {
-        Color colorToChangeImage = Color.white;
-        switch (teamColor)
-        {
-            case TeamColorEnum.Blue:
-                colorToChangeImage = Color.blue;
-                break;
-            case TeamColorEnum.Red:
-                colorToChangeImage = Color.red;
-                break;
-            default:
-                break;
-        }
-        roomLocalManager.toggleTeamColorSelectionPanelButtonImage.color = colorToChangeImage;
+        RoomManager.Instance.ChangeRoomPlayerProfileTeamColor(this, colorName);
     }
 }

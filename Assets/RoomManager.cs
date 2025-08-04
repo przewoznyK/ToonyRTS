@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoomManager : NetworkBehaviour
 {
@@ -12,9 +13,16 @@ public class RoomManager : NetworkBehaviour
     public List<TextMeshProUGUI> playerSlotsText;
     [SyncVar(hook = nameof(OnSlot0NameChanged))] public string slot0Name;
     [SyncVar(hook = nameof(OnSlot1NameChanged))] public string slot1Name;
+    public Image slot0Image;
+    [SyncVar(hook = nameof(OnSlot0TeamColorChanged))] public string slot0TeamColorName;
+    public Image slot1Image;
+    [SyncVar(hook = nameof(OnSlot1TeamColorChanged))] public string slot1TeamColorName;
+
+
     void Start()
     {
-        Instance = this;        
+        Instance = this;
+        Debug.Log(slot1Image == null);
     }
 
     public void AddPlayerToLobby(PlayerRoomController playerToAdd)
@@ -36,6 +44,7 @@ public class RoomManager : NetworkBehaviour
         }
         var newPlayerProfile = new RoomPlayerProfile(emptySlotId, playerToAdd);
         roomPlayerProfiles.Add(newPlayerProfile);
+        playerToAdd.TargetSlotLocked(playerToAdd.connectionToClient, emptySlotId);
     }
 
     public int GetEmptySlot()
@@ -65,15 +74,37 @@ public class RoomManager : NetworkBehaviour
         }
 
     }
-
-    public void ChangeRoomPlayerProfileTeamColor(PlayerRoomController playerRoomController, TeamColorEnum teamColor)
+    void OnSlot0TeamColorChanged(string oldName, string newName)
     {
+        slot0Image.color = GetColorByName(newName);
+    }
+    void OnSlot1TeamColorChanged(string oldName, string newName)
+    {
+        slot1Image.color = GetColorByName(newName);
+    }
+    public Color GetColorByName(string colorName)
+    {
+        switch (colorName)
+        {
+            case "Blue":
+                return Color.blue;
+            case "Red":
+                return Color.red;
+            default:
+                return Color.white;
+        }
+    }
+    public void ChangeRoomPlayerProfileTeamColor(PlayerRoomController playerRoomController, string colorName)
+    {
+        Debug.Log("UPDATE");
         var player = roomPlayerProfiles.Find(p => p.playerRoomController == playerRoomController);
         if (player != null)
         {
-            player.teamColor = teamColor;
-            Debug.Log("DLA gracza " + player.playerRoomController.playerName + " Zmieniono kolor na: " + player.teamColor);
-            player.playerRoomController.ChangeSelectedTeamColor(teamColor);
+            player.teamColorName = colorName;
+            if(player.playerSlotId == 0)
+                slot0TeamColorName = colorName;
+            else if (player.playerSlotId == 1)
+                slot1TeamColorName = colorName;
         }
     }
 }
