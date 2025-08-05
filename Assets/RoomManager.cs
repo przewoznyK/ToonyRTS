@@ -22,7 +22,6 @@ public class RoomManager : NetworkBehaviour
     void Start()
     {
         Instance = this;
-        Debug.Log(slot1Image == null);
     }
 
     public void AddPlayerToLobby(PlayerRoomController playerToAdd)
@@ -55,7 +54,6 @@ public class RoomManager : NetworkBehaviour
         }
         return 3;
     }
-
 
     void OnSlot0NameChanged(string oldName, string newName)
     {
@@ -96,7 +94,6 @@ public class RoomManager : NetworkBehaviour
     }
     public void ChangeRoomPlayerProfileTeamColor(PlayerRoomController playerRoomController, string colorName)
     {
-        Debug.Log("UPDATE");
         var player = roomPlayerProfiles.Find(p => p.playerRoomController == playerRoomController);
         if (player != null)
         {
@@ -106,5 +103,11 @@ public class RoomManager : NetworkBehaviour
             else if (player.playerSlotId == 1)
                 slot1TeamColorName = colorName;
         }
+    }
+
+    public void StartGame()
+    {
+        if(NetworkServer.active)
+            NetworkManager.singleton.ServerChangeScene("GameScene");
     }
 }

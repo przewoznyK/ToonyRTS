@@ -16,12 +16,11 @@ public class PlayerRoomController : NetworkBehaviour
             CmdSetPlayerName(randomName);
             CmdRegisterWithRoomManager();
             roomLocalManager = FindFirstObjectByType<RoomLocalManager>();
-
-
         }
 
     }
 
+    #region Lobby
     [Command]
     void CmdRegisterWithRoomManager()
     {
@@ -33,7 +32,6 @@ public class PlayerRoomController : NetworkBehaviour
         playerName = name;
     }
 
-
     [TargetRpc]
     public void TargetSlotLocked(NetworkConnection target, int slotId)
     {
@@ -43,27 +41,30 @@ public class PlayerRoomController : NetworkBehaviour
     {
         if (slotId == 0)
         {
-            roomLocalManager.slot0ToggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel());
-            roomLocalManager.slot0ChangeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton("Blue"));
-            roomLocalManager.slot0ChangeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton("Red"));
+            roomLocalManager.slot0ToggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel(slotId));
+            roomLocalManager.slot0ChangeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton(slotId, "Blue"));
+            roomLocalManager.slot0ChangeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton(slotId, "Red"));
 
         }
         else if (slotId == 1)
         {
-            roomLocalManager.slot1ToggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel());
-            roomLocalManager.slot1ChangeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton("Blue"));
-            roomLocalManager.slot1ChangeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton("Red"));
+            roomLocalManager.slot1ToggleTeamColorSelectionPanelButton.onClick.AddListener(() => ToggleTeamColorSelectionPanel(slotId));
+            roomLocalManager.slot1ChangeTeamColorToBlueButton.onClick.AddListener(() => SelectColorTeamButton(slotId, "Blue"));
+            roomLocalManager.slot1ChangeTeamColorToRedButton.onClick.AddListener(() => SelectColorTeamButton(slotId, "Red"));
         }
 
     }
-    public void ToggleTeamColorSelectionPanel()
+    public void ToggleTeamColorSelectionPanel(int slotId)
     {
-        roomLocalManager.slot0TeamColorSelectionPanel.SetActive(!roomLocalManager.slot0TeamColorSelectionPanel.activeSelf);
+        if(slotId == 0) 
+            roomLocalManager.slot0TeamColorSelectionPanel.SetActive(!roomLocalManager.slot0TeamColorSelectionPanel.activeSelf);
+        else if(slotId == 1)
+            roomLocalManager.slot1TeamColorSelectionPanel.SetActive(!roomLocalManager.slot1TeamColorSelectionPanel.activeSelf);
     }
 
-    public void SelectColorTeamButton(string colorName)
+    public void SelectColorTeamButton(int slotId, string colorName)
     {
-        ToggleTeamColorSelectionPanel();
+        ToggleTeamColorSelectionPanel(slotId);
         CmdChangeRoomPlayerProfileTeamColor(colorName);
 
     }
@@ -71,5 +72,15 @@ public class PlayerRoomController : NetworkBehaviour
     public void CmdChangeRoomPlayerProfileTeamColor(string colorName)
     {
         RoomManager.Instance.ChangeRoomPlayerProfileTeamColor(this, colorName);
+    }
+    #endregion
+    [Command]
+    public void CmdMoveUnit(NetworkIdentity unitIdentity, Vector3 targetPos)
+    {
+        Debug.Log($"CmdMoveUnit executed on server for {unitIdentity.gameObject.name}");
+        if (unitIdentity != null && unitIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            taskManager.RespondFromServerMoveAgentTo(targetPos);
+        }
     }
 }

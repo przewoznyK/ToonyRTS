@@ -19,10 +19,13 @@ public class MyNetworkManager : NetworkManager
     public void StartGame()
     {
         Debug.Log("STARTGAME");
+        ServerChangeScene("GameScene");
     }
 
     public override void OnServerSceneChanged(string sceneName)
     {
 
     }
+
+
 }

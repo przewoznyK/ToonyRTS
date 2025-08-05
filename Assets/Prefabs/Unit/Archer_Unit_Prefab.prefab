@@ -12573,6 +12573,7 @@ MonoBehaviour:
   healthBar: {fileID: 2451098326189948344}
   targetPosition: {fileID: 734466548658718395}
   targetOffSet: {x: 0, y: 2.6, z: 0}
+  isStatic: 0
 --- !u!1 &5370603327662531433
 GameObject:
   m_ObjectHideFlags: 0
@@ -20766,6 +20767,8 @@ GameObject:
   - component: {fileID: 8660394726921784736}
   - component: {fileID: 7971430098367275717}
   - component: {fileID: 5056698454448629128}
+  - component: {fileID: -3067578733547844532}
+  - component: {fileID: -5015803967581213253}
   m_Layer: 3
   m_Name: Archer_Unit_Prefab
   m_TagString: Untagged
@@ -21027,6 +21030,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bf9b6f5c6d7ad43b08f5cfd08e5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   taskVisualization: {fileID: 0}
   lineRenderer: {fileID: 0}
 --- !u!114 &7971430098367275717
@@ -21063,3 +21069,53 @@ MonoBehaviour:
   lineRenderer: {fileID: 1069294825508298024}
   taskVizualizationPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
   taskVizualizationContainer: {fileID: 3046115296625969244}
+--- !u!114 &-3067578733547844532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9219210834630749054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 1333921761
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &-5015803967581213253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9219210834630749054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f63ea2e505fd484193fb31c5c55ca73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0.033333335
+  baselineRate: 1
+  unreliableRedundancy: 0
+  baselineIsDelta: 1
+  debugLog: 0
+  useFixedUpdate: 0
+  target: {fileID: 734466548658718395}
+  bufferSizeLimit: 64
+  sendRate: 30
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  debugDraw: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}

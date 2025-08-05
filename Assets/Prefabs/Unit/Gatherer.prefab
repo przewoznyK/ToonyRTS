@@ -3731,6 +3731,8 @@ GameObject:
   - component: {fileID: 3398873465402153737}
   - component: {fileID: 2014780516793684383}
   - component: {fileID: 2929459154559365107}
+  - component: {fileID: -7106406568659691692}
+  - component: {fileID: 6661643703115473223}
   m_Layer: 3
   m_Name: Gatherer
   m_TagString: Untagged
@@ -3991,6 +3993,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a16b8bf6ffd4e7f42b1fe9abd7925389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   taskVisualization: {fileID: 2929459154559365107}
   lineRenderer: {fileID: 4838299357745353647}
   currentGatherableResource: {fileID: 0}
@@ -4032,6 +4037,56 @@ MonoBehaviour:
   lineRenderer: {fileID: 4838299357745353647}
   taskVizualizationPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
   taskVizualizationContainer: {fileID: 1685972065261738689}
+--- !u!114 &-7106406568659691692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2237854018009168677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 2661515672
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &6661643703115473223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2237854018009168677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f63ea2e505fd484193fb31c5c55ca73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0.033333335
+  baselineRate: 1
+  unreliableRedundancy: 0
+  baselineIsDelta: 1
+  debugLog: 0
+  useFixedUpdate: 0
+  target: {fileID: 6696632714510631853}
+  bufferSizeLimit: 64
+  sendRate: 30
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  debugDraw: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
 --- !u!1 &2433014263228552456
 GameObject:
   m_ObjectHideFlags: 0

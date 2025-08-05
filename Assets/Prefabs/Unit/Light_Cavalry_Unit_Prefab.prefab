@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 8304874057526010523}
   - component: {fileID: 8389827534895806515}
   - component: {fileID: 8712535820569901625}
+  - component: {fileID: -5964803549761193015}
+  - component: {fileID: -5518665771080539863}
   m_Layer: 3
   m_Name: Light_Cavalry_Unit_Prefab
   m_TagString: Untagged
@@ -278,6 +280,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bf9b6f5c6d7ad43b08f5cfd08e5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   taskVisualization: {fileID: 0}
   lineRenderer: {fileID: 0}
 --- !u!114 &8389827534895806515
@@ -316,6 +321,56 @@ MonoBehaviour:
   lineRenderer: {fileID: 715785651265481949}
   taskVizualizationPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
   taskVizualizationContainer: {fileID: 6653127956071989153}
+--- !u!114 &-5964803549761193015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603770529138922173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 1068710281
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &-5518665771080539863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603770529138922173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f63ea2e505fd484193fb31c5c55ca73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0.033333335
+  baselineRate: 1
+  unreliableRedundancy: 0
+  baselineIsDelta: 1
+  debugLog: 0
+  useFixedUpdate: 0
+  target: {fileID: 2175648678903575485}
+  bufferSizeLimit: 64
+  sendRate: 30
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  debugDraw: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
 --- !u!1 &839256359729172571
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,6 +845,7 @@ MonoBehaviour:
   healthBar: {fileID: 7772727096129525385}
   targetPosition: {fileID: 2175648678903575485}
   targetOffSet: {x: 0, y: 2.6, z: 0}
+  isStatic: 0
 --- !u!1 &5081649774589215313
 GameObject:
   m_ObjectHideFlags: 0

@@ -75,57 +75,55 @@ public class GathererTaskManager : UnitTaskManager
     }
     public override void DoTask()
     {
-        attackCycleActivated = false;
-        if (requestedTasks.Count > 0 && isOnTask == false)
-        {
-            currentTask = requestedTasks.First.Value;
-            if (currentTask is GoToPositionTask goToPositionTask)
+            attackCycleActivated = false;
+            if (requestedTasks.Count > 0 && isOnTask == false)
             {
-                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                taskTransform = null;
-                Vector3 pos = goToPositionTask.taskPosition;
+                currentTask = requestedTasks.First.Value;
+                if (currentTask is GoToPositionTask goToPositionTask)
+                {
+                    unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                    taskTransform = null;
+                    Vector3 pos = goToPositionTask.taskPosition;
+                    RequestToServerMove(pos);
+                    taskVector = pos;
+            }
+                else if (currentTask is AttackTargetTask attackTarget)
+                {
+                    unit.agent.stoppingDistance = unit.attackRange;
+                    taskTransform = attackTarget.targetTransform;
+                    unit.animator.SetFloat(Unit.Speed, 1f);
+                }
+                else if (currentTask is GathererResourceTask gatherResource)
+                {
+                    currentGatherableResource = gatherResource.gatherableResource;
+                    unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                    taskTransform = gatherResource.targetTransform;
+                    currentResourceTypeGathering = gatherResource.currentResourceTypeGathering;
+                    unit.agent.SetDestination(taskTransform.position);
+                    unit.animator.SetFloat(Unit.Speed, 1f);
+                }
+                else if (currentTask is ReturnToStockpileTask returnToStockpile)
+                {
+                    unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                    taskTransform = null;
+                    Vector3 pos = returnToStockpile.taskPosition;
 
-                unit.agent.SetDestination(pos);
-                taskVector = pos;
-                unit.animator.SetFloat(Unit.Speed, 1f);
+                    unit.agent.SetDestination(pos);
+                    taskVector = pos;
+                    unit.animator.SetFloat(Unit.Speed, 1f);
+                    isGoingToStockPile = true;
+                }
+                else if (currentTask is BuildConstructionTask construction)
+                {
+                    currentConstionBuildingTarget = construction.constructionBuildingRepresentation;
+                    unit.agent.stoppingDistance = unit.attackRange;
+                    constructionToBuildPosition = construction.constructionPosition;
+                    unit.animator.SetFloat(Unit.Speed, 1f);
+                    unit.agent.SetDestination(construction.constructionPosition);
+                    isGoingToBuildingConstruction = true;
+                }
+                isOnTask = true;
             }
-            else if (currentTask is AttackTargetTask attackTarget)
-            {
-                unit.agent.stoppingDistance = unit.attackRange;
-                taskTransform = attackTarget.targetTransform;
-                unit.animator.SetFloat(Unit.Speed, 1f);
-            }
-            else if(currentTask is GathererResourceTask gatherResource)
-            {
-                currentGatherableResource = gatherResource.gatherableResource;
-                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                taskTransform = gatherResource.targetTransform;
-                currentResourceTypeGathering = gatherResource.currentResourceTypeGathering;
-                unit.agent.SetDestination(taskTransform.position);
-                unit.animator.SetFloat(Unit.Speed, 1f);
-            }
-            else if(currentTask is ReturnToStockpileTask returnToStockpile)
-            {
-                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                taskTransform = null;
-                Vector3 pos = returnToStockpile.taskPosition;
-
-                unit.agent.SetDestination(pos);
-                taskVector = pos;
-                unit.animator.SetFloat(Unit.Speed, 1f);
-                isGoingToStockPile = true;
-            }
-            else if (currentTask is BuildConstructionTask construction)
-            {
-                currentConstionBuildingTarget = construction.constructionBuildingRepresentation;
-                unit.agent.stoppingDistance = unit.attackRange;
-                constructionToBuildPosition = construction.constructionPosition;
-                unit.animator.SetFloat(Unit.Speed, 1f);
-                unit.agent.SetDestination(construction.constructionPosition);
-                isGoingToBuildingConstruction = true;
-            }
-            isOnTask = true;
-        }
     }
     public override void WorkingTask()
     {

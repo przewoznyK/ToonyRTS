@@ -1,7 +1,8 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class UnitTaskManager : MonoBehaviour
+public class UnitTaskManager : NetworkBehaviour
 {
     protected Unit unit;
     protected bool isOnTask;
@@ -30,30 +31,40 @@ public class UnitTaskManager : MonoBehaviour
     }
     public virtual void DoTask()
     {
-        attackCycleActivated = false;
-        if (requestedTasks.Count > 0 && isOnTask == false)
-        {
-            currentTask = requestedTasks.First.Value;
-            if (currentTask is GoToPositionTask goToPositionTask)
+            attackCycleActivated = false;
+            if (requestedTasks.Count > 0 && isOnTask == false)
             {
-                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                taskTransform = null;
-                Vector3 pos = goToPositionTask.taskPosition;
+                currentTask = requestedTasks.First.Value;
+                if (currentTask is GoToPositionTask goToPositionTask)
+                {
+                    unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                    taskTransform = null;
+                    Vector3 pos = goToPositionTask.taskPosition;
+                    RequestToServerMove(pos);
+                    taskVector = pos;
 
-                unit.agent.SetDestination(pos);
-                taskVector = pos;
+                }
+                else if (currentTask is AttackTargetTask attackTarget)
+                {
+                    unit.agent.stoppingDistance = unit.attackRange;
+                    taskTransform = attackTarget.targetTransform;
+                    unit.animator.SetFloat(Unit.Speed, 1f);
+                }
 
-                unit.animator.SetFloat(Unit.Speed, 1f);
+                isOnTask = true;
             }
-            else if (currentTask is AttackTargetTask attackTarget)
-            {
-                unit.agent.stoppingDistance = unit.attackRange;
-                taskTransform = attackTarget.targetTransform;
-                unit.animator.SetFloat(Unit.Speed, 1f);
-            }
-      
-            isOnTask = true;
-        }
+    }
+    public void RequestToServerMove(Vector3 targetPos)
+    {
+        PlayerRoomController player = NetworkClient.connection.identity.GetComponent<PlayerRoomController>();
+
+        if (player != null && player.isLocalPlayer)
+            player.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
+    }
+    public void RespondFromServerMoveAgentTo(Vector3 targetPosition)
+    {
+        unit.agent.SetDestination(targetPosition);
+        unit.animator.SetFloat(Unit.Speed, 1f);
     }
     public virtual void WorkingTask()
     {
