@@ -84,7 +84,7 @@ public class GathererTaskManager : UnitTaskManager
                     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                     taskTransform = null;
                     Vector3 pos = goToPositionTask.taskPosition;
-                    RequestToServerMove(pos);
+                    RequestToServerToMoveUnit(pos);
                     taskVector = pos;
             }
                 else if (currentTask is AttackTargetTask attackTarget)

@@ -1,9 +1,11 @@
 using Mirror;
+using Mirror.BouncyCastle.Asn1.X509;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerRoomController : NetworkBehaviour
 {
+    public static PlayerRoomController LocalPlayer { get; private set; }
     [SyncVar] public string playerName;
     public string teamColorName;
 
@@ -16,6 +18,7 @@ public class PlayerRoomController : NetworkBehaviour
             CmdSetPlayerName(randomName);
             CmdRegisterWithRoomManager();
             roomLocalManager = FindFirstObjectByType<RoomLocalManager>();
+            LocalPlayer = this;
         }
 
     }
@@ -75,12 +78,28 @@ public class PlayerRoomController : NetworkBehaviour
     }
     #endregion
     [Command]
-    public void CmdMoveUnit(NetworkIdentity unitIdentity, Vector3 targetPos)
+    public void CmdMoveUnit(NetworkIdentity requestIdentity, Vector3 targetPos)
     {
-        Debug.Log($"CmdMoveUnit executed on server for {unitIdentity.gameObject.name}");
-        if (unitIdentity != null && unitIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
         {
-            taskManager.RespondFromServerMoveAgentTo(targetPos);
+            taskManager.RespondFromServerMoveUnit(targetPos);
+        }
+    }
+
+    [Command]
+    public void CmdAttackEntity(NetworkIdentity requestIdentity, GameObject entityObject)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            taskManager.RespondFromServerToAttackEntity(entityObject);
+        }
+    }
+
+    internal void CmdMSpawnUnit(NetworkIdentity requestIdentity, GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<Building>(out var requestRespond))
+        {
+            requestRespond.RespondFromServerSpawnUnit(unitPrefab, teamColor, meetingPoint);
         }
     }
 }

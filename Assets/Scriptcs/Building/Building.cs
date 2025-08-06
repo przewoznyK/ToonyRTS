@@ -1,8 +1,9 @@
-using System;
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAndProperties
+[RequireComponent(typeof(NetworkIdentity))]
+public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeamAndProperties
 {
     [SerializeField] public List<Vector3Int> positionToOccupy;
     public TeamColorEnum teamColor;
@@ -41,14 +42,11 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
     }
     internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;
 
-    public void SpawnUnit(int unitID, TeamColorEnum teamColorEnum)
+    public void SpawnUnit(int unitID, TeamColorEnum teamColor)
     {
         GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
         GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
-        
-        var unit = unitInstantiate.GetComponent<Unit>();
-        unit.GoMeetingPosition(meetingPoint.transform.position);
-        unit.teamColor = teamColorEnum;
+        RequestToServerSpawnUnitFromBuilding(unitPrefab, teamColor, meetingPoint.transform.position);
     }
 
     public void SetTeamColor(TeamColorEnum teamColor)
@@ -71,12 +69,11 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
         }
         return objectPrices;
     }
-
+    #region interfaces
     public TeamColorEnum GetTeam()
     {
         return teamColor;
     }
-
     public EntityTypeEnum GetEntityType()
     {
         return entityType;
@@ -93,10 +90,23 @@ public class Building : MonoBehaviour, IActiveClickable, IStockPile, IGetTeamAnd
             Debug.Log("You can only take Transform from this");
         return null;
     }
+    #endregion
 
-    public void DeleteBuilding()
+    #region serverRequests
+    public void RequestToServerSpawnUnitFromBuilding(GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
     {
-     //   AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
-        Destroy(gameObject);
+        if (PlayerRoomController.LocalPlayer.isLocalPlayer)
+            PlayerRoomController.LocalPlayer.CmdMSpawnUnit(this.GetComponent<NetworkIdentity>(), unitPrefab, teamColor, meetingPoint);
     }
+    public void RespondFromServerSpawnUnit(GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
+    {
+        GameObject unitInstance = Instantiate(unitPrefab, transform.position, Quaternion.identity);
+        Unit unit = unitInstance.GetComponent<Unit>();
+        unit.teamColor = teamColor;
+        unit.unitTaskManager.RequestToServerToMoveUnit(meetingPoint);
+        NetworkServer.Spawn(unitInstance);
+
+    }
+
+    #endregion
 }

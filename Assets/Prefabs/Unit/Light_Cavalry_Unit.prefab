@@ -20,8 +20,9 @@ GameObject:
   - component: {fileID: 8712535820569901625}
   - component: {fileID: -5964803549761193015}
   - component: {fileID: -5518665771080539863}
+  - component: {fileID: -5847097752624829264}
   m_Layer: 3
-  m_Name: Light_Cavalry_Unit_Prefab
+  m_Name: Light_Cavalry_Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -371,6 +372,23 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+--- !u!114 &-5847097752624829264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 603770529138922173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 4562610503307651970}
 --- !u!1 &839256359729172571
 GameObject:
   m_ObjectHideFlags: 0
@@ -1650,6 +1668,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 154927798270218378}
   m_SourcePrefab: {fileID: 100100000, guid: 4e3c7da5fb6ce5a47a0a7dbc18b843c6, type: 3}
+--- !u!95 &4562610503307651970 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9516860, guid: 4e3c7da5fb6ce5a47a0a7dbc18b843c6, type: 3}
+  m_PrefabInstance: {fileID: 4562610503315053758}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &4562610503311860728 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 13762374, guid: 4e3c7da5fb6ce5a47a0a7dbc18b843c6, type: 3}

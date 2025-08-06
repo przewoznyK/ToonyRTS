@@ -1,4 +1,5 @@
 using Mirror;
+using Mirror.BouncyCastle.Asn1.X509;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,7 +41,7 @@ public class UnitTaskManager : NetworkBehaviour
                     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                     taskTransform = null;
                     Vector3 pos = goToPositionTask.taskPosition;
-                    RequestToServerMove(pos);
+                    RequestToServerToMoveUnit(pos);
                     taskVector = pos;
 
                 }
@@ -48,22 +49,32 @@ public class UnitTaskManager : NetworkBehaviour
                 {
                     unit.agent.stoppingDistance = unit.attackRange;
                     taskTransform = attackTarget.targetTransform;
-                    unit.animator.SetFloat(Unit.Speed, 1f);
+                    
                 }
 
                 isOnTask = true;
             }
     }
-    public void RequestToServerMove(Vector3 targetPos)
+    public void RequestToServerToMoveUnit(Vector3 targetPos)
     {
-        PlayerRoomController player = NetworkClient.connection.identity.GetComponent<PlayerRoomController>();
-
-        if (player != null && player.isLocalPlayer)
-            player.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
+        if (PlayerRoomController.LocalPlayer.isLocalPlayer)
+            PlayerRoomController.LocalPlayer.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
     }
-    public void RespondFromServerMoveAgentTo(Vector3 targetPosition)
+    public void RespondFromServerMoveUnit(Vector3 targetPosition)
     {
         unit.agent.SetDestination(targetPosition);
+        unit.animator.SetFloat(Unit.Speed, 1);
+    }
+
+    public void RequestToServerToAttackEntity(GameObject entityObject)
+    {
+        if (PlayerRoomController.LocalPlayer.isLocalPlayer)
+            PlayerRoomController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), entityObject);
+    }
+
+    public void RespondFromServerToAttackEntity(GameObject entityObject)
+    {
+        taskTransform = entityObject.transform;
         unit.animator.SetFloat(Unit.Speed, 1f);
     }
     public virtual void WorkingTask()
@@ -116,7 +127,7 @@ public class UnitTaskManager : NetworkBehaviour
             {
                 var direction = taskTransform.position - transform.position;
                 var targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * UnityEngine.Time.deltaTime);
             }
             else
                 rotateToTaskTransform = false;

@@ -7,7 +7,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(EntityHealth))]
 public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 {
-    protected UnitTaskManager unitTaskManager;
+    public UnitTaskManager unitTaskManager;
     public TeamColorEnum teamColor;
     public EntityTypeEnum entityType;
     protected Transform activator;
@@ -37,7 +37,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     [HideInInspector]
     public Animator animator;
     
-    private void Start()
+    private void Awake()
     {
         InitUniversalFunction();
     }

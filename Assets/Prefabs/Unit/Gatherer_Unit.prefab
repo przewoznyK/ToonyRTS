@@ -3733,8 +3733,9 @@ GameObject:
   - component: {fileID: 2929459154559365107}
   - component: {fileID: -7106406568659691692}
   - component: {fileID: 6661643703115473223}
+  - component: {fileID: -874522741990789072}
   m_Layer: 3
-  m_Name: Gatherer
+  m_Name: Gatherer_Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4087,6 +4088,23 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+--- !u!114 &-874522741990789072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2237854018009168677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 4061613016102332433}
 --- !u!1 &2433014263228552456
 GameObject:
   m_ObjectHideFlags: 0
