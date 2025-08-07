@@ -253,8 +253,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0bf60bc0669e047945ec103d063849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitTaskManager: {fileID: 2657769516678870146}
+  agent: {fileID: 6113699730376223000}
+  animator: {fileID: 4059576045867478609}
   teamColor: 1
   entityType: 0
+  enemyDecetorCollider: {fileID: 9020873004497206603}
   damage: 5
   attackRange: 2
   attackCooldown: 2
@@ -267,8 +271,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 2698017595689710925, guid: c22f155d4a2b29d4295ec25f666d228d, type: 3}
   shootPoint: {fileID: 0}
   bulletForce: 10
-  agent: {fileID: 6113699730376223000}
-  animator: {fileID: 0}
+  isGoingToMeetingPoint: 0
+  meetingPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &2657769516678870146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,6 +288,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  unit: {fileID: 4078867702477575506}
   taskVisualization: {fileID: 0}
   lineRenderer: {fileID: 8179056158159362906}
 --- !u!114 &2350333161342798090

@@ -21003,8 +21003,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0bf60bc0669e047945ec103d063849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitTaskManager: {fileID: 8660394726921784736}
+  agent: {fileID: 8603225086317852372}
+  animator: {fileID: 378211603905747061}
   teamColor: 1
   entityType: 0
+  enemyDecetorCollider: {fileID: 4627618923152200639}
   damage: 5
   attackRange: 30
   attackCooldown: 2
@@ -21017,8 +21021,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 2698017595689710925, guid: c22f155d4a2b29d4295ec25f666d228d, type: 3}
   shootPoint: {fileID: 2575928927591753439}
   bulletForce: 15
-  agent: {fileID: 8603225086317852372}
-  animator: {fileID: 0}
+  isGoingToMeetingPoint: 0
+  meetingPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &8660394726921784736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21034,6 +21038,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  unit: {fileID: 3682152464257146953}
   taskVisualization: {fileID: 0}
   lineRenderer: {fileID: 0}
 --- !u!114 &7971430098367275717

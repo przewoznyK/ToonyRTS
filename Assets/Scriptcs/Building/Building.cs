@@ -20,7 +20,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     private void Start()
     {
         if (isStockPile)
-            AccessToClassByTeamColor.instance.AddStockPileToGlobalList(teamColor, this);
+            AccessToClassByTeamColor.Instance.AddStockPileToGlobalList(teamColor, this);
 
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onDeathActiom += () => RemoveEntity.Instance.RemoveEntityFromGame(this);
@@ -58,7 +58,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
     public List<ObjectPrices> AddResourcesToStockPile(List<ObjectPrices> objectPrices)
     {
-        var playerResource = AccessToClassByTeamColor.instance.GetPlayerResourcesManagerByTeamColor(teamColor);
+        var playerResource = AccessToClassByTeamColor.Instance.GetPlayerResourcesManagerByTeamColor(teamColor);
         if (stockPileType == ResourceTypesEnum.allTypes)
         {
             playerResource.AddResources(objectPrices);
@@ -103,9 +103,9 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
         GameObject unitInstance = Instantiate(unitPrefab, transform.position, Quaternion.identity);
         Unit unit = unitInstance.GetComponent<Unit>();
         unit.teamColor = teamColor;
-        unit.unitTaskManager.RequestToServerToMoveUnit(meetingPoint);
+        unit.isGoingToMeetingPoint = true;
+        unit.meetingPoint = meetingPoint;
         NetworkServer.Spawn(unitInstance);
-
     }
 
     #endregion

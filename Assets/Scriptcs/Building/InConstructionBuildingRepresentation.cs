@@ -1,7 +1,8 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndProperties
+public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAndProperties
 {
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
@@ -26,6 +27,8 @@ public class InConstructionBuildingRepresentation : MonoBehaviour, IGetTeamAndPr
             building.SetTeamColor(teamColor);
             building.SetPositionToOccupy(positionToOccupy);
         }
+        building.GetComponent<ActiveComponentsAfterCreateBuilding>().RequestToServerToActiveComponentsForBuilding();
+        NetworkServer.Spawn(newBuilding);
         gameObject.SetActive(false);
     }
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class UnitTaskManager : NetworkBehaviour
 {
-    protected Unit unit;
+    [SerializeField] protected Unit unit;
     protected bool isOnTask;
     protected bool rotateToTaskTransform;
     public LinkedList<UnitTask> requestedTasks = new();
@@ -20,7 +20,6 @@ public class UnitTaskManager : NetworkBehaviour
     public LineRenderer lineRenderer;
     private void Start()
     {
-        unit = GetComponent<Unit>();
         taskVisualization = GetComponent<TaskVisualization>();
         lineRenderer = GetComponent<LineRenderer>();
     }
@@ -207,7 +206,7 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public Transform FindNearestEnemy(TeamColorEnum teamColor)
     {
-        Transform nearestEnemy = AccessToClassByTeamColor.instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
+        Transform nearestEnemy = AccessToClassByTeamColor.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;
     }
     internal virtual void GoToPosition(Vector3 point)

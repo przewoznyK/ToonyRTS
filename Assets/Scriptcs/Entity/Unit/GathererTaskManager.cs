@@ -18,8 +18,6 @@ public class GathererTaskManager : UnitTaskManager
     private IStockPile stockPile;
     private void Start()
     {
-        unit = GetComponent<Unit>();
-
         var allowedTypes = new List<ResourceTypesEnum>
         {
             ResourceTypesEnum.food,
@@ -56,7 +54,6 @@ public class GathererTaskManager : UnitTaskManager
                     requestedTasks.First.Value.EndTask();
                     requestedTasks.RemoveFirst();
                     GatherResourceTask(currentGatherableResource);
-                    Debug.Log(1);
                 }
                 else
                     GoToNextResource();
@@ -134,6 +131,7 @@ public class GathererTaskManager : UnitTaskManager
                 unit.animator.SetBool("Harvest", false);
                 if (Vector3.Distance(taskVector, transform.position) <= unit.agent.stoppingDistance)
                 {
+                    Debug.Log("DOSZEDLEM");
                     GoToNextTask();
                 }
             }
@@ -247,7 +245,7 @@ public class GathererTaskManager : UnitTaskManager
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
         unit.animator.SetBool("Harvest", false);
-        stockPile = AccessToClassByTeamColor.instance.GetClosestStockPileByTeamColor(unit.teamColor, unit.transform.position);
+        stockPile = AccessToClassByTeamColor.Instance.GetClosestStockPileByTeamColor(unit.teamColor, unit.transform.position);
         if (stockPile != null)
         {
             unit.SetActiveEnemyDetector(false);

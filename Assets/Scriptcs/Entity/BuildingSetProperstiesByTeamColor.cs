@@ -15,6 +15,7 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
         entityHealth.SetTeamColor(building.teamColor);
 
         Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(building.teamColor);
+        Debug.Log(teamMaterialColor);
         floatingHealthBarFillColor.color = teamMaterialColor.color;
 
         Material teamMaterialUnit = TeamColorDatabase.Instance.GetTeamBuildingUnit(building.teamColor);

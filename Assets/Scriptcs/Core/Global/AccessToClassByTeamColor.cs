@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AccessToClassByTeamColor : MonoBehaviour
 {
-    public static AccessToClassByTeamColor instance;
+    public static AccessToClassByTeamColor Instance;
     Dictionary<TeamColorEnum, PlayerResources> PlayersResourcesManagerGlobalList = new();
     Dictionary<TeamColorEnum, ControlledUnits> PlayerControlledUnitsManagerGlobalList = new();
     Dictionary<TeamColorEnum, PlayerControlledBuildings> PlayerControlledBuildingsManagerGlobalList = new();
@@ -11,9 +11,9 @@ public class AccessToClassByTeamColor : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
     }
 

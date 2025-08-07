@@ -94,12 +94,20 @@ public class PlayerRoomController : NetworkBehaviour
             taskManager.RespondFromServerToAttackEntity(entityObject);
         }
     }
-
+    [Command]
     internal void CmdMSpawnUnit(NetworkIdentity requestIdentity, GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
     {
         if (requestIdentity != null && requestIdentity.TryGetComponent<Building>(out var requestRespond))
         {
             requestRespond.RespondFromServerSpawnUnit(unitPrefab, teamColor, meetingPoint);
+        }
+    }
+    [Command]
+    internal void CmdActiveBuildingComponents(NetworkIdentity requestIdentity)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<ActiveComponentsAfterCreateBuilding>(out var requestRespond))
+        {
+            requestRespond.RespondFromServerToActiveComponentsForBuilding();
         }
     }
 }

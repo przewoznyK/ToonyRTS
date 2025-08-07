@@ -8,10 +8,12 @@ using UnityEngine.AI;
 public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
 {
     public UnitTaskManager unitTaskManager;
+    public NavMeshAgent agent;
+    public Animator animator;
     public TeamColorEnum teamColor;
     public EntityTypeEnum entityType;
     protected Transform activator;
-    protected SphereCollider enemyDecetorCollider;
+    [SerializeField] protected SphereCollider enemyDecetorCollider;
     private Transform bodyToDrop;
     [Header("Unit Stats")]
     public int damage;
@@ -32,28 +34,25 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
-    [HideInInspector]
-    public NavMeshAgent agent;
-    [HideInInspector]
-    public Animator animator;
-    
-    private void Awake()
+
+
+    [Header("Go To Meeting Point")]
+    public bool isGoingToMeetingPoint;
+    public Vector3 meetingPoint;
+    private void Start()
     {
         InitUniversalFunction();
+        if (isGoingToMeetingPoint)
+            unitTaskManager.GoToPosition(meetingPoint);
+
     }
     public void InitUniversalFunction()
     {
-        unitTaskManager = GetComponent<UnitTaskManager>();
-        agent = GetComponent<NavMeshAgent>();
         bodyToDrop = transform.GetChild(2);
-        animator = bodyToDrop.GetComponent<Animator>();
-
         activator = transform.GetChild(0);
-        enemyDecetorCollider = transform.GetChild(1).GetComponent<SphereCollider>();
         enemyDecetorCollider.radius = enemyDetectionRadius;
    
-        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
-
+        AccessToClassByTeamColor.Instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
         agent.stoppingDistance = defaultStoppingDistance;
         agent.speed = defaultMovementSpeed;
 
@@ -114,7 +113,7 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     public void DeleteUnit()
     {
-        AccessToClassByTeamColor.instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
+        AccessToClassByTeamColor.Instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
         unitTaskManager.enabled = false;
         animator.SetTrigger("Death");
 
