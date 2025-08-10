@@ -24,11 +24,11 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
         Building building = newBuilding.GetComponent<Building>();
         if(building)
         {
-            building.SetTeamColor(teamColor);
+ 
             building.SetPositionToOccupy(positionToOccupy);
         }
-        building.GetComponent<ActiveComponentsAfterCreateBuilding>().RequestToServerToActiveComponentsForBuilding();
         NetworkServer.Spawn(newBuilding);
+        newBuilding.GetComponent<Building>().teamColor = teamColor;
         gameObject.SetActive(false);
     }
 

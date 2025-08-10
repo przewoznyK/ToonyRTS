@@ -1,74 +1,62 @@
+using Mirror;
+using System.Collections;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
-    public void CreatePlayerController(TeamColorEnum teamColor, AccessToClassByTeamColor accessToClassByTeamColor, GridData gridData)
+
+    GridData gridData;
+    int startPositionX;
+    int startPositionY;
+    [SyncVar] public TeamColorEnum teamColor;
+    public void CreatePlayerController(TeamColorEnum teamColor, GridData gridData, int startPositionX, int startPositionY)
     {
         var teamProfile = new CreateTeamProfile(teamColor);
+        Debug.Log("USTAWIAM TEAM COLOR" + teamColor);
+        this.teamColor = teamColor;
+        this.gridData = gridData;
+        this.startPositionX = startPositionX;
+        this.startPositionY = startPositionY;
+        RpcInitClient();
+    }
+
+    [ClientRpc]
+    public void RpcInitClient()
+    {
+        if (!isLocalPlayer) return; // Upewnij siê, ¿e tylko lokalny gracz robi setup
+        Debug.Log($"[CLIENT RPC] Ustawiam gracza {teamColor}");
+        InitClientSide();
+    }
+
+    void InitClientSide()
+    {
+
 
         var controlledUnits = new ControlledUnits();
         var playerControlledBuildings = new PlayerControlledBuildings();
 
-        // Input Manager
-        GameObject inputManagerInstatiate = Instantiate(GameManager.Instance.InputManagerPrefab);
-        var inputManager = inputManagerInstatiate.GetComponent<InputManager>();
-
-        // Active Clickable Object
-        GameObject activeClickableObjectInstatiate = Instantiate(GameManager.Instance.ActiveClickableObjectPrefab);
-        var activeClickableObject = activeClickableObjectInstatiate.GetComponent<ActiveClickableObject>();
-
-        // Manage Selection Units
-        GameObject manageSelectionUnitsInstatiate = Instantiate(GameManager.Instance.ManageSelectionUnitsPrefab);
-        var manageSelectionUnits = manageSelectionUnitsInstatiate.GetComponent<ManageSelectionUnits>();
-        // Building Production
-        GameObject buildingProductionInstatiate = Instantiate(GameManager.Instance.BuildingProducionPrefab);
-        var buildingProduction = buildingProductionInstatiate.GetComponent<BuildingProduction>();
-        // Construction System
-        GameObject constructionSystemInstatiate = Instantiate(GameManager.Instance.ConstructionSystemPrefab);
-        var previewSystemTransform = constructionSystemInstatiate.transform.GetChild(0);
-        var previewSystem = previewSystemTransform.GetComponent<ConstructionPreviewSystem>();
-        var construcionPlacerSystemTransform = constructionSystemInstatiate.transform.GetChild(1);
-        var constructionPlacerSystem = construcionPlacerSystemTransform.GetComponent<ConstructionPlacerSystem>();
-
-        // PLAYER UI
-        GameObject playerUIPrefabInstantiate = Instantiate(GameManager.Instance.PlayerUIPrefab);
-        var playerUIChild = playerUIPrefabInstantiate.transform.GetChild(0);
-        var selectionInfoUI = playerUIChild.GetComponent<SelectionInfoUI>();
-
-        playerUIChild = playerUIPrefabInstantiate.transform.GetChild(1);
-        var commandPanelUI = playerUIChild.GetComponent<CommandPanelUI>();
-
-        playerUIChild = playerUIPrefabInstantiate.transform.GetChild(2);
-        var summaryPanelUI = playerUIChild.GetComponent<SummaryPanelUI>();
-
-        // Hold Selection
-        var holdSelectionUnitCanbasInstantiate = Instantiate(GameManager.Instance.HoldSelectionUnitCanvas);
-        var holdSelectionUnitCanbasChild = holdSelectionUnitCanbasInstantiate.transform.GetChild(0);
-        var boxVisual = holdSelectionUnitCanbasChild.GetComponent<RectTransform>();
-
         // Shop Manager
-        var shopManager = new ShopManager(buildingProduction);
-        var playerResources = new PlayerResources(summaryPanelUI, commandPanelUI, 3000, 3000, 2000, 1000);
+        var shopManager = new ShopManager(GameManager.Instance.buildingProduction);
+        var playerResources = new PlayerResources(GameManager.Instance.summaryPanelUI, GameManager.Instance.commandPanelUI, 3000, 3000, 2000, 1000);
 
         // Init 
-        manageSelectionUnits.Init(inputManager, controlledUnits);
-        commandPanelUI.Init(playerResources, shopManager, buildingProduction, inputManager, previewSystem);
-        selectionInfoUI.Init(controlledUnits);
-        activeClickableObject.Init(inputManager, controlledUnits, selectionInfoUI, commandPanelUI,
-        boxVisual);
-        buildingProduction.Init(commandPanelUI, TeamColorEnum.Blue);
-        previewSystem.Init(playerResources, inputManager, constructionPlacerSystem, gridData, activeClickableObject);
-        constructionPlacerSystem.Init(playerResources, activeClickableObject);
+        GameManager.Instance.removeEntity.Init(gridData);
+        GameManager.Instance.manageSelectionUnits.Init(GameManager.Instance.inputManager, controlledUnits);
+        GameManager.Instance.commandPanelUI.Init(playerResources, shopManager, GameManager.Instance.buildingProduction, GameManager.Instance.inputManager, GameManager.Instance.previewSystem);
+        GameManager.Instance.selectionInfoUI.Init(controlledUnits);
+        GameManager.Instance.activeClickableObject.Init(GameManager.Instance.inputManager, controlledUnits, GameManager.Instance.selectionInfoUI, GameManager.Instance.commandPanelUI,
+        GameManager.Instance.boxVisual, teamColor);
+        GameManager.Instance.buildingProduction.Init(GameManager.Instance.commandPanelUI, teamColor);
+        GameManager.Instance.previewSystem.Init(playerResources, GameManager.Instance.inputManager, GameManager.Instance.constructionPlacerSystem, gridData, GameManager.Instance.activeClickableObject);
+        GameManager.Instance.constructionPlacerSystem.Init(playerResources, GameManager.Instance.activeClickableObject);
 
         // Start Setup
-        var playerStartGameSetupInstantiate = Instantiate(GameManager.Instance.PlayerStartGameSetupPrefab);
-        var playerStartGameSetup = playerStartGameSetupInstantiate.GetComponent<PlayerStartGameSetup>();
-    //    playerStartGameSetup.Init(playerResources, constructionPlacerSystem, gridData, TeamColorEnum.Blue, 0, 0);
 
-        accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(teamColor, playerResources);
-        accessToClassByTeamColor.AddControlledUnitsManagerToGlobalList(teamColor, controlledUnits);
-        accessToClassByTeamColor.AddControlledBuildingsManagerToGlobalList(teamColor, playerControlledBuildings);
+        GameManager.Instance.accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(teamColor, playerResources);
+        GameManager.Instance.accessToClassByTeamColor.AddControlledUnitsManagerToGlobalList(teamColor, controlledUnits);
+        GameManager.Instance.accessToClassByTeamColor.AddControlledBuildingsManagerToGlobalList(teamColor, playerControlledBuildings);
 
+        GameManager.Instance.playerStartGameSetup.Init(playerResources, GameManager.Instance.constructionPlacerSystem, gridData, teamColor, startPositionX, startPositionX);
 
     }
 }

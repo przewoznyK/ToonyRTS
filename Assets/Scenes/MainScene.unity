@@ -2017,7 +2017,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 398232497}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Script: {fileID: 11500000, guid: f352e7fc73e4cce47b3241e89ff85074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
@@ -2025,7 +2025,7 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: Assets/Scenes/MainMenu.unity
+  offlineScene: 
   onlineScene: 
   offlineSceneLoadDelay: 0
   transport: {fileID: 0}
@@ -2038,8 +2038,8 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 2237854018009168677, guid: 507e172549042e84c96f899370b0d073, type: 3}
   - {fileID: 3275545278579393358, guid: d8d687cd63495754daa50c22e9144c51, type: 3}
+  - {fileID: 8984050540277095674, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -2055,6 +2055,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  playerControllerPrefab: {fileID: 8984050540277095674, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
 --- !u!1 &506674063
 GameObject:
   m_ObjectHideFlags: 0

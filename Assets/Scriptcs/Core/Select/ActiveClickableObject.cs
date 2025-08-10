@@ -29,14 +29,16 @@ public class ActiveClickableObject : MonoBehaviour
     Vector2 startPosition;
     Vector2 endPosition;
     #endregion
+    TeamColorEnum playerControllerTeamColor;
     [SerializeField] private LayerMask clickableLayer;
-    public void Init(InputManager inputManager, ControlledUnits controlledUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI ,RectTransform boxVisual)
+    public void Init(InputManager inputManager, ControlledUnits controlledUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI, RectTransform boxVisual, TeamColorEnum playerControllerTeamColor)
     {
         this.inputManager = inputManager;
         this.controlledUnits = controlledUnits;
         this.selectionInfoUI = selectionInfoUI;
         this.commandPanelUI = commandPanelUI;
         this.boxVisual = boxVisual;
+        this.playerControllerTeamColor = playerControllerTeamColor;
 
         LMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
         LMBHoldAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_HOLD];
@@ -73,6 +75,7 @@ public class ActiveClickableObject : MonoBehaviour
     }
     private void OnLpmClick(InputAction.CallbackContext ctx)
     {
+        Debug.Log("ON LPM CLICK");
         // Active Clickable Object and CommandUI
         if(pointerOverUI == false)
         {
@@ -86,7 +89,8 @@ public class ActiveClickableObject : MonoBehaviour
             {
                 var clickable = hit.collider.GetComponent<IActiveClickable>();
                 var teamColor = hit.collider.GetComponent<IGetTeamAndProperties>().GetTeam();
-                if (clickable != null && teamColor == TeamColorEnum.Blue)
+                Debug.Log(" GRACZ  " + playerControllerTeamColor + " KLIKA " + teamColor);
+                if (clickable != null && teamColor == playerControllerTeamColor)
                 {
                     // Active Unit
                     if (clickable.CheckObjectType() == ObjectTypeEnum.unit)

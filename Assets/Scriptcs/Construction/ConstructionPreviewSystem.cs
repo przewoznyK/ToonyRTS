@@ -18,12 +18,13 @@ public class ConstructionPreviewSystem : MonoBehaviour
     [SerializeField] private GameObject gridVisualization;
     [SerializeField] private float previewYOffset = 0.06f;
     [SerializeField] private TeamColorEnum teamColor;
-    private GameObject previewConstruction;
 
+    [SerializeField] private GameObject previewConstructionPrefab;
+    [SerializeField] private MeshFilter previewConstructionMeshFilter;
     [SerializeField] private Material previewMaterial;
+
     [SerializeField] private GameObject previewBuildingTile;
-    private Material previewMaterialInstance;
-    MeshRenderer previewConstructionMeshRenderer;
+
     BuildingData buildingData;
     ConstructionData currentConstructionData;
     public bool isOnPreview { get; private set; }
@@ -61,7 +62,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
                 Vector3Int cellPosition = gridComponent.WorldToCell(worldPosition);
 
                 Vector3 snappedWorldPosition = gridComponent.CellToWorld(cellPosition);
-                previewConstruction.transform.position = new Vector3(snappedWorldPosition.x, previewYOffset, snappedWorldPosition.z);
+                previewConstructionPrefab.transform.position = new Vector3(snappedWorldPosition.x, previewYOffset, snappedWorldPosition.z);
 
                 if(gridData.CanPlaceObjectAt(cellPosition, buildingData.size))
                 {
@@ -87,7 +88,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
         isOnPreview = false;
         gridVisualization.SetActive(false);
         currentConstructionData = null;
-        Destroy(previewConstruction);
+        previewConstructionPrefab.SetActive(false);
         activeClickableObject.enabled = true;
     }
     public void StartPreview(List<Unit> unit, BuildingData buildingData)
@@ -95,23 +96,24 @@ public class ConstructionPreviewSystem : MonoBehaviour
         this.enabled = true;
         this.buildingData = buildingData;
         gridVisualization.SetActive(true);
-        previewConstruction = Instantiate(buildingData.buildingPrefab);
-        Vector3 bottomLeft = previewConstruction.transform.position - new Vector3(buildingData.size.x / 2f, 0f, buildingData.size.y / 2f);
+
+        previewConstructionMeshFilter.mesh = buildingData.buildingPreviewMesh;
+        previewConstructionPrefab.SetActive(true);
+
+        Vector3 bottomLeft = previewConstructionPrefab.transform.position - new Vector3(buildingData.size.x / 2f, 0f, buildingData.size.y / 2f);
         for (int x = 0; x < buildingData.size.x; x++)
         {
             for (int y = 0; y < buildingData.size.y; y++)
             {
                 Vector3 tilePosition = bottomLeft + new Vector3(x + 0.5f, 0.5f, y + 0.5f);
-                GameObject tile = Instantiate(previewBuildingTile, tilePosition, Quaternion.identity, previewConstruction.transform);
+                GameObject tile = Instantiate(previewBuildingTile, tilePosition, Quaternion.identity, previewConstructionPrefab.transform);
                 tile.transform.localScale = gridComponent.cellSize;
                 tile.transform.Rotate(90, 0, 0);
             }
         }
 
-        var previewConstructionMesh = previewConstruction.transform.GetChild(0);
-        previewConstructionMeshRenderer = previewConstructionMesh.GetComponent<MeshRenderer>();
-        currentConstructionData = new ConstructionData(unit, buildingData, previewConstructionMeshRenderer, previewConstructionMeshRenderer.material, teamColor);
-        previewConstructionMeshRenderer.material = previewMaterial;
+        var previewConstructionMesh = previewConstructionPrefab.transform.GetChild(0);
+        currentConstructionData = new ConstructionData(unit, buildingData, teamColor);
         isOnPreview = true;
     }
 

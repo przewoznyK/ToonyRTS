@@ -7,8 +7,8 @@ public class PlayerRoomController : NetworkBehaviour
 {
     public static PlayerRoomController LocalPlayer { get; private set; }
     [SyncVar] public string playerName;
-    public string teamColorName;
-
+    [SyncVar] public TeamColorEnum teamColor;
+    [SyncVar] public Vector2 startPositionOnMap;
     RoomLocalManager roomLocalManager;
     void Start()
     {
@@ -20,7 +20,7 @@ public class PlayerRoomController : NetworkBehaviour
             roomLocalManager = FindFirstObjectByType<RoomLocalManager>();
             LocalPlayer = this;
         }
-
+        DontDestroyOnLoad(gameObject);
     }
 
     #region Lobby
@@ -64,7 +64,6 @@ public class PlayerRoomController : NetworkBehaviour
         else if(slotId == 1)
             roomLocalManager.slot1TeamColorSelectionPanel.SetActive(!roomLocalManager.slot1TeamColorSelectionPanel.activeSelf);
     }
-
     public void SelectColorTeamButton(int slotId, string colorName)
     {
         ToggleTeamColorSelectionPanel(slotId);
@@ -94,20 +93,16 @@ public class PlayerRoomController : NetworkBehaviour
             taskManager.RespondFromServerToAttackEntity(entityObject);
         }
     }
+
     [Command]
-    internal void CmdMSpawnUnit(NetworkIdentity requestIdentity, GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
+    public void CmdSpawnUnit(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
     {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<Building>(out var requestRespond))
+        var building = buildingId.GetComponent<Building>();
+        if (building != null)
         {
-            requestRespond.RespondFromServerSpawnUnit(unitPrefab, teamColor, meetingPoint);
+            building.ServerSpawnUnit(unitID, teamColor);
         }
     }
-    [Command]
-    internal void CmdActiveBuildingComponents(NetworkIdentity requestIdentity)
-    {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<ActiveComponentsAfterCreateBuilding>(out var requestRespond))
-        {
-            requestRespond.RespondFromServerToActiveComponentsForBuilding();
-        }
-    }
+
+
 }

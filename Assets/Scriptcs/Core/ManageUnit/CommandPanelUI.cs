@@ -73,7 +73,7 @@ public class CommandPanelUI : MonoBehaviour
             var buildingDataForButton = buildingList[i];
             var currentButton = commandButtons[i];
             currentButton.onClick.RemoveAllListeners();
-            currentButton.image.sprite = buildingDataForButton.buildingSprite;
+            currentButton.image.sprite = buildingDataForButton.buildingIcon;
             SetButtonColorStatusByPrice(currentButton, buildingDataForButton.objectPrices);
 
             currentButton.onClick.AddListener(() => previewSystem.StartPreview(currentSelectedUnits, buildingDataForButton));

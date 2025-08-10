@@ -210,7 +210,6 @@ GameObject:
   - component: {fileID: 6242064628670292108}
   - component: {fileID: 6657977664469938846}
   - component: {fileID: 6425730865762764628}
-  - component: {fileID: 7028624993453142970}
   - component: {fileID: 54269154721639220}
   m_Layer: 3
   m_Name: TownHall_Building_Prefab
@@ -254,7 +253,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 4, y: 1, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
@@ -265,7 +264,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3275545278579393358}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b68a118fae412e4ca6e87fdeb642575, type: 3}
   m_Name: 
@@ -273,6 +272,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  setProperstiesByTeamColor: {fileID: 6425730865762764628}
   positionToOccupy: []
   teamColor: 0
   entityType: 1
@@ -288,7 +288,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3275545278579393358}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e18d9c9755fb014c92ef7fa7d0550f6, type: 3}
   m_Name: 
@@ -302,35 +302,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3275545278579393358}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6ff59fd6c733604e9212829d74795fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  building: {fileID: 6242064628670292108}
+  entityHealth: {fileID: 6657977664469938846}
   floatingHealthBarFillColor: {fileID: 2525835415188681198}
   meshsToChangeMaterial:
   - {fileID: 4929303339996953470}
---- !u!114 &7028624993453142970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3275545278579393358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dde40819a50a34149acafbb2a0c21e7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  activeOnStartScene: 0
-  boxCollider: {fileID: 4894685715816293689}
-  building: {fileID: 6242064628670292108}
-  entityHealth: {fileID: 6657977664469938846}
-  buildingSetPropersties: {fileID: 6425730865762764628}
-  floatingHealthBar: {fileID: 3558880059156693512}
 --- !u!114 &54269154721639220
 MonoBehaviour:
   m_ObjectHideFlags: 0

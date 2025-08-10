@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 345983031594907714}
   - component: {fileID: 977695319817829243}
   - component: {fileID: 8178815908106686246}
+  - component: {fileID: 3314762352801864751}
   m_Layer: 3
   m_Name: Archery_Building_Prefab
   m_TagString: Untagged
@@ -68,6 +69,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b68a118fae412e4ca6e87fdeb642575, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  setProperstiesByTeamColor: {fileID: 0}
   positionToOccupy: []
   teamColor: 0
   entityType: 1
@@ -76,6 +81,23 @@ MonoBehaviour:
   meetingPoint: {fileID: 5152277234689731939}
   stockPileType: 15
   <isStockPile>k__BackingField: 0
+--- !u!114 &3314762352801864751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742799887895236592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 195716
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &4276834456729355736
 PrefabInstance:
   m_ObjectHideFlags: 0

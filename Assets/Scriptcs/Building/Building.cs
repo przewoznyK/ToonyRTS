@@ -5,8 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(NetworkIdentity))]
 public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeamAndProperties
 {
+    [SerializeField] private BuildingSetProperstiesByTeamColor setProperstiesByTeamColor;
     [SerializeField] public List<Vector3Int> positionToOccupy;
+
+    [SyncVar(hook = nameof(OnTeamColorChanged))]
     public TeamColorEnum teamColor;
+
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
@@ -42,17 +46,17 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     }
     internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;
 
-    public void SpawnUnit(int unitID, TeamColorEnum teamColor)
+    public void ServerSpawnUnit(int unitID, TeamColorEnum teamColor)
     {
+        Debug.Log("TWORZE JEDNOSTKE");
         GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
         GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
-        RequestToServerSpawnUnitFromBuilding(unitPrefab, teamColor, meetingPoint.transform.position);
+        Unit unit = unitInstantiate.GetComponent<Unit>();
+        unit.isGoingToMeetingPoint = true;
+        unit.meetingPoint = meetingPoint.transform.position;
+        NetworkServer.Spawn(unitInstantiate, connectionToClient);
     }
 
-    public void SetTeamColor(TeamColorEnum teamColor)
-    {
-        this.teamColor = teamColor;
-    }
 
     public void SetPositionToOccupy(List<Vector3Int> positionToOccupy) => this.positionToOccupy = positionToOccupy;
 
@@ -93,20 +97,10 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     #endregion
 
     #region serverRequests
-    public void RequestToServerSpawnUnitFromBuilding(GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
-    {
-        if (PlayerRoomController.LocalPlayer.isLocalPlayer)
-            PlayerRoomController.LocalPlayer.CmdMSpawnUnit(this.GetComponent<NetworkIdentity>(), unitPrefab, teamColor, meetingPoint);
-    }
-    public void RespondFromServerSpawnUnit(GameObject unitPrefab, TeamColorEnum teamColor, Vector3 meetingPoint)
-    {
-        GameObject unitInstance = Instantiate(unitPrefab, transform.position, Quaternion.identity);
-        Unit unit = unitInstance.GetComponent<Unit>();
-        unit.teamColor = teamColor;
-        unit.isGoingToMeetingPoint = true;
-        unit.meetingPoint = meetingPoint;
-        NetworkServer.Spawn(unitInstance);
-    }
 
+    void OnTeamColorChanged(TeamColorEnum oldColor, TeamColorEnum newColor)
+    {
+        setProperstiesByTeamColor.Init();
+    }
     #endregion
 }

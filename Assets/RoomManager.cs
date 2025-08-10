@@ -21,7 +21,13 @@ public class RoomManager : NetworkBehaviour
 
     void Start()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+     //   DontDestroyOnLoad(gameObject);
     }
 
     public void AddPlayerToLobby(PlayerRoomController playerToAdd)
@@ -34,9 +40,18 @@ public class RoomManager : NetworkBehaviour
         {
             case 0:
                 slot0Name = playerToAdd.playerName;
+                playerToAdd.teamColor = TeamColorEnum.Blue;
+                Debug.Log("USTAWIAM NA " + TeamColorEnum.Blue);
+                playerToAdd.startPositionOnMap = new Vector2(3, 3);
                 break;
             case 1:
                 slot1Name = playerToAdd.playerName;
+                playerToAdd.teamColor = TeamColorEnum.Red;
+                Debug.Log("USTAWIAM NA " + TeamColorEnum.Red);
+                playerToAdd.startPositionOnMap = new Vector2(-3, -3);
+
+
+
                 break;
             default:
                 break;
@@ -110,4 +125,6 @@ public class RoomManager : NetworkBehaviour
         if(NetworkServer.active)
             NetworkManager.singleton.ServerChangeScene("GameScene");
     }
+
+
 }

@@ -1,3 +1,5 @@
+using Mirror;
+using Mirror.BouncyCastle.Asn1.X509;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +54,8 @@ public class BuildingProduction : MonoBehaviour
         yield return new WaitUntil(() => productionDictionary[building].endProduction);
       
         productionDictionary[building].endProduction = false;
-        building.SpawnUnit(productionDictionary[building].productQueue.Dequeue().productId, teamColorEnum);
+
+        PlayerRoomController.LocalPlayer.CmdSpawnUnit(building.GetComponent<NetworkIdentity>() ,productionDictionary[building].productQueue.Dequeue().productId, teamColorEnum);
 
         // Next producion if exist
         if (productionDictionary[building].productQueue.Count > 0)
