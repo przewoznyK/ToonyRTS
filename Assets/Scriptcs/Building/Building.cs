@@ -48,13 +48,13 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
     public void ServerSpawnUnit(int unitID, TeamColorEnum teamColor)
     {
-        Debug.Log("TWORZE JEDNOSTKE");
         GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
         GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
         Unit unit = unitInstantiate.GetComponent<Unit>();
         unit.isGoingToMeetingPoint = true;
         unit.meetingPoint = meetingPoint.transform.position;
-        NetworkServer.Spawn(unitInstantiate, connectionToClient);
+        unit.teamColor = teamColor;
+        NetworkServer.Spawn(unitInstantiate, connectionToClient);        
     }
 
 

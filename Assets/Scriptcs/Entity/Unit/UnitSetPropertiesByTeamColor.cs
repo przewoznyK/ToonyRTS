@@ -20,6 +20,8 @@ public class UnitSetPropertiesByTeamColor : MonoBehaviour
         entityHealth.SetTeamColor(unit.teamColor);
         animationFunctions.Init(unit, unitTaskManager);
 
+        AccessToClassByTeamColor.Instance.GetControlledUnitsByTeamColor(unit.teamColor).AddToAllUnits(unit);
+        
         Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(unit.teamColor);
         activator.material = teamMaterialColor;
         floatingHealthBarFillColor.color = teamMaterialColor.color;

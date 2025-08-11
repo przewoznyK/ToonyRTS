@@ -76,33 +76,4 @@ public class PlayerRoomController : NetworkBehaviour
         RoomManager.Instance.ChangeRoomPlayerProfileTeamColor(this, colorName);
     }
     #endregion
-    [Command]
-    public void CmdMoveUnit(NetworkIdentity requestIdentity, Vector3 targetPos)
-    {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            taskManager.RespondFromServerMoveUnit(targetPos);
-        }
-    }
-
-    [Command]
-    public void CmdAttackEntity(NetworkIdentity requestIdentity, GameObject entityObject)
-    {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            taskManager.RespondFromServerToAttackEntity(entityObject);
-        }
-    }
-
-    [Command]
-    public void CmdSpawnUnit(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
-    {
-        var building = buildingId.GetComponent<Building>();
-        if (building != null)
-        {
-            building.ServerSpawnUnit(unitID, teamColor);
-        }
-    }
-
-
 }

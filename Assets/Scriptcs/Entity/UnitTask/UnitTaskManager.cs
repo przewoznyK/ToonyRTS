@@ -56,8 +56,8 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RequestToServerToMoveUnit(Vector3 targetPos)
     {
-        if (PlayerRoomController.LocalPlayer.isLocalPlayer)
-            PlayerRoomController.LocalPlayer.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
     }
     public void RespondFromServerMoveUnit(Vector3 targetPosition)
     {
@@ -67,8 +67,8 @@ public class UnitTaskManager : NetworkBehaviour
 
     public void RequestToServerToAttackEntity(GameObject entityObject)
     {
-        if (PlayerRoomController.LocalPlayer.isLocalPlayer)
-            PlayerRoomController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), entityObject);
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), entityObject);
     }
 
     public void RespondFromServerToAttackEntity(GameObject entityObject)
@@ -184,11 +184,10 @@ public class UnitTaskManager : NetworkBehaviour
             if (nearestEnemy != null)
             {
                 if (Vector3.Distance(nearestEnemy.position, transform.position) > unit.attackRange)
-                {;
+                {
                     AttackTargetTask newTask = new(nearestEnemy);
                     requestedTasks.AddFirst(newTask);
                     DoTask();
-
                 }
             }
         }
@@ -198,7 +197,6 @@ public class UnitTaskManager : NetworkBehaviour
             requestedTasks.RemoveFirst();
             DoTask();
             taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
-
         }
         
    

@@ -2016,7 +2016,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47bb3e755f936884c9374a007dbe410a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
   inputManager: {fileID: 1208125094}
   activeClickableObject: {fileID: 1627738956}
   manageSelectionUnits: {fileID: 545751353}

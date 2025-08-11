@@ -43,10 +43,6 @@ public class ConstructionPlacerSystem : NetworkBehaviour
             }
         }
         else
-        {
-            GameObject constructionInstantiate = Instantiate(currentConstructionData.buildingData.buildingPrefab, currentConstructionData.positionToOccupy, Quaternion.identity);
-            NetworkServer.Spawn(constructionInstantiate);
-            constructionInstantiate.GetComponent<Building>().teamColor = currentConstructionData.teamColor;
-        }
+            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.positionToOccupy, currentConstructionData.teamColor);
     }
 }

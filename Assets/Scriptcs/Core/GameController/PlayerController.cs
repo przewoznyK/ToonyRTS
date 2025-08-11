@@ -4,33 +4,37 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
+    public static PlayerController LocalPlayer { get; private set; }
 
-    GridData gridData;
-    int startPositionX;
-    int startPositionY;
     [SyncVar] public TeamColorEnum teamColor;
-    public void CreatePlayerController(TeamColorEnum teamColor, GridData gridData, int startPositionX, int startPositionY)
+    public int startPositionX;
+    public int startPositionY;
+    public override void OnStartLocalPlayer()
     {
+        base.OnStartLocalPlayer();
+        StartCoroutine(Delay());
+    }
+    public void CreatePlayerController(TeamColorEnum teamColor, int startPositionX, int startPositionY)
+    {
+        if (!isLocalPlayer) return;
+
         var teamProfile = new CreateTeamProfile(teamColor);
-        Debug.Log("USTAWIAM TEAM COLOR" + teamColor);
         this.teamColor = teamColor;
-        this.gridData = gridData;
         this.startPositionX = startPositionX;
         this.startPositionY = startPositionY;
-        RpcInitClient();
-    }
-
-    [ClientRpc]
-    public void RpcInitClient()
-    {
-        if (!isLocalPlayer) return; // Upewnij siê, ¿e tylko lokalny gracz robi setup
-        Debug.Log($"[CLIENT RPC] Ustawiam gracza {teamColor}");
         InitClientSide();
     }
 
+    IEnumerator Delay()
+    {
+        LocalPlayer = this;
+        yield return new WaitForSeconds(2f);
+        CreatePlayerController(teamColor, startPositionX, startPositionY);
+    }
+    
     void InitClientSide()
     {
-
+        GridData gridData = new GridData();
 
         var controlledUnits = new ControlledUnits();
         var playerControlledBuildings = new PlayerControlledBuildings();
@@ -51,7 +55,6 @@ public class PlayerController : NetworkBehaviour
         GameManager.Instance.constructionPlacerSystem.Init(playerResources, GameManager.Instance.activeClickableObject);
 
         // Start Setup
-
         GameManager.Instance.accessToClassByTeamColor.AddPlayerResourceManagerToGlobalList(teamColor, playerResources);
         GameManager.Instance.accessToClassByTeamColor.AddControlledUnitsManagerToGlobalList(teamColor, controlledUnits);
         GameManager.Instance.accessToClassByTeamColor.AddControlledBuildingsManagerToGlobalList(teamColor, playerControlledBuildings);
@@ -59,4 +62,45 @@ public class PlayerController : NetworkBehaviour
         GameManager.Instance.playerStartGameSetup.Init(playerResources, GameManager.Instance.constructionPlacerSystem, gridData, teamColor, startPositionX, startPositionX);
 
     }
+
+
+
+    [Command]
+    public void CmdSpawnBuilding(Vector3 position, TeamColorEnum teamColor)
+    {
+        GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(0).buildingPrefab; // np. z GameManagera
+        GameObject building = Instantiate(prefab, position, Quaternion.identity);
+        building.GetComponent<Building>().teamColor = teamColor;
+        NetworkServer.Spawn(building);
+    }
+    [Command]
+    public void CmdMoveUnit(NetworkIdentity requestIdentity, Vector3 targetPos)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            taskManager.RespondFromServerMoveUnit(targetPos);
+        }
+    }
+
+    [Command]
+    public void CmdAttackEntity(NetworkIdentity requestIdentity, GameObject entityObject)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            taskManager.RespondFromServerToAttackEntity(entityObject);
+        }
+    }
+
+    [Command]
+    public void CmdSpawnUnit(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
+    {
+        var building = buildingId.GetComponent<Building>();
+        if (building != null)
+        {
+            building.ServerSpawnUnit(unitID, teamColor);
+        }
+    }
+
+
+
 }

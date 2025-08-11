@@ -131,7 +131,6 @@ public class GathererTaskManager : UnitTaskManager
                 unit.animator.SetBool("Harvest", false);
                 if (Vector3.Distance(taskVector, transform.position) <= unit.agent.stoppingDistance)
                 {
-                    Debug.Log("DOSZEDLEM");
                     GoToNextTask();
                 }
             }

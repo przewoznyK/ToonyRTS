@@ -6,12 +6,12 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(EntityHealth))]
-public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
+public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 {
     public UnitTaskManager unitTaskManager;
     public NavMeshAgent agent;
     public Animator animator;
-    public TeamColorEnum teamColor;
+    [SyncVar] public TeamColorEnum teamColor;
     public EntityTypeEnum entityType;
     protected Transform activator;
     [SerializeField] protected SphereCollider enemyDecetorCollider;
@@ -35,8 +35,6 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
-
-
     [Header("Go To Meeting Point")]
     public bool isGoingToMeetingPoint;
     public Vector3 meetingPoint;
@@ -53,7 +51,6 @@ public class Unit : MonoBehaviour, IActiveClickable, IGetTeamAndProperties
         activator = transform.GetChild(0);
         enemyDecetorCollider.radius = enemyDetectionRadius;
    
-        AccessToClassByTeamColor.Instance.GetControlledUnitsByTeamColor(teamColor).AddToAllUnits(this);
         agent.stoppingDistance = defaultStoppingDistance;
         agent.speed = defaultMovementSpeed;
 
