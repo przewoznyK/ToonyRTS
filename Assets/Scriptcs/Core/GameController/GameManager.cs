@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
     public ManageSelectionUnits manageSelectionUnits;
     public PlayerStartGameSetup playerStartGameSetup;
     public RemoveEntity removeEntity;
-    public AccessToClassByTeamColor accessToClassByTeamColor;
     public BuildingProduction buildingProduction;
 
 

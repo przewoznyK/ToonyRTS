@@ -204,7 +204,7 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public Transform FindNearestEnemy(TeamColorEnum teamColor)
     {
-        Transform nearestEnemy = AccessToClassByTeamColor.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
+        Transform nearestEnemy = EntitiesOnMapDatabase.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;
     }
     internal virtual void GoToPosition(Vector3 point)

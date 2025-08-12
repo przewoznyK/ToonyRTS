@@ -10,7 +10,7 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
     public void Init()
     {
         entityHealth.SetTeamColor(building.teamColor);
-        Debug.Log("building color " + building.teamColor);
+
         Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(building.teamColor);
         floatingHealthBarFillColor.color = teamMaterialColor.color;
 
@@ -18,6 +18,15 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
         foreach (var mesh in meshsToChangeMaterial)
         {
             mesh.material = teamMaterialUnit;
+        }
+
+        if (building.isStockPile && (building.teamColor == PlayerController.LocalPlayer.teamColor))
+        {
+            Debug.Log(PlayerController.LocalPlayer.stockPileManager.stockPiles);
+
+            PlayerController.LocalPlayer.stockPileManager.stockPiles.Add(building);
+
+
         }
     }
 }

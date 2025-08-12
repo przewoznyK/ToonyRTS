@@ -244,7 +244,7 @@ public class GathererTaskManager : UnitTaskManager
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
         unit.animator.SetBool("Harvest", false);
-        stockPile = AccessToClassByTeamColor.Instance.GetClosestStockPileByTeamColor(unit.teamColor, unit.transform.position);
+        stockPile = PlayerController.LocalPlayer.stockPileManager.GetClosestStockPile(transform.position);
         if (stockPile != null)
         {
             unit.SetActiveEnemyDetector(false);

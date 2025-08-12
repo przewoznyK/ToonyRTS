@@ -16,14 +16,14 @@ public class RemoveEntity : MonoBehaviour
         if(building.isStockPile)
         {
             IStockPile stockPile = building.GetComponent<IStockPile>();
-            AccessToClassByTeamColor.Instance.RemoveStockPileFromGlobalList(building.teamColor, stockPile);
+            PlayerController.LocalPlayer.stockPileManager.stockPiles.Remove(stockPile);
         }
         gridData.RemoveObjectAt(building.positionToOccupy);
     }
 
     public void RemoveEntityFromGame(Unit unit)
     {
-        AccessToClassByTeamColor.Instance.GetControlledUnitsByTeamColor(unit.teamColor).RemoveUnit(unit);
+        PlayerController.LocalPlayer.controlledUnits.RemoveUnit(unit);
         Destroy(unit.gameObject);
     }
 }

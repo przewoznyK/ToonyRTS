@@ -111,7 +111,10 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     public void DeleteUnit()
     {
-        AccessToClassByTeamColor.Instance.GetControlledUnitsByTeamColor(teamColor).RemoveUnit(this);
+        if(teamColor == PlayerController.LocalPlayer.teamColor)
+            PlayerController.LocalPlayer.controlledUnits.RemoveUnit(this);
+
+        EntitiesOnMapDatabase.Instance.RemoveUnitFromList(teamColor, this);
         unitTaskManager.enabled = false;
         animator.SetTrigger("Death");
 

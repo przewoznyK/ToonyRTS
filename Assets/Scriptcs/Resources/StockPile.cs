@@ -16,10 +16,9 @@ public class StockPile : MonoBehaviour, IGetTeamAndProperties
 
     public List<ObjectPrices> Add(List<ObjectPrices> objectPrices)
     {
-        var playerResource = AccessToClassByTeamColor.Instance.GetPlayerResourcesManagerByTeamColor(teamColor);
         if (stockPileType == ResourceTypesEnum.allTypes)
         {
-            playerResource.AddResources(objectPrices);
+          PlayerController.LocalPlayer.playerResources.AddResources(objectPrices);
             foreach (var obj in objectPrices)
             {
                obj.SetValue(0);
