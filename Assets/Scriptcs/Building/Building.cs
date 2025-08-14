@@ -1,4 +1,5 @@
 using Mirror;
+using Mirror.BouncyCastle.Asn1.X509;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingType;
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
-    [SerializeField] private Transform meetingPoint;
+    [SerializeField] public Transform meetingPoint;
 
     [Header("OPTIONAL STOCKPILE")]
     [SerializeField] private ResourceTypesEnum stockPileType;
@@ -41,8 +42,11 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     {
         meetingPoint.gameObject.SetActive(false);
     }
-    internal void SetMeetingPoint(Vector3 newMeetingPointPosition) => meetingPoint.transform.position = newMeetingPointPosition;
-
+    internal void RequestToServerToUpdateMeetingPoint(Vector3 newMeetingPointPosition)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdUpdateMeetingPointBuilding(this.GetComponent<NetworkIdentity>(), newMeetingPointPosition);
+    }
     public void ServerSpawnUnit(int unitID, TeamColorEnum teamColor)
     {
         GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;

@@ -18,10 +18,13 @@ public class UnitTaskManager : NetworkBehaviour
     public TaskVisualization taskVisualization;
     [HideInInspector]
     public LineRenderer lineRenderer;
+    public int animatorSpeedValue;
+    public bool respondFromServer;
     private void Start()
     {
         taskVisualization = GetComponent<TaskVisualization>();
         lineRenderer = GetComponent<LineRenderer>();
+
     }
     private void Update()
     {
@@ -54,28 +57,7 @@ public class UnitTaskManager : NetworkBehaviour
                 isOnTask = true;
             }
     }
-    public void RequestToServerToMoveUnit(Vector3 targetPos)
-    {
-        if (PlayerController.LocalPlayer.isLocalPlayer)
-            PlayerController.LocalPlayer.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
-    }
-    public void RespondFromServerMoveUnit(Vector3 targetPosition)
-    {
-        unit.agent.SetDestination(targetPosition);
-        unit.animator.SetFloat(Unit.Speed, 1);
-    }
 
-    public void RequestToServerToAttackEntity(GameObject entityObject)
-    {
-        if (PlayerController.LocalPlayer.isLocalPlayer)
-            PlayerController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), entityObject);
-    }
-
-    public void RespondFromServerToAttackEntity(GameObject entityObject)
-    {
-        taskTransform = entityObject.transform;
-        unit.animator.SetFloat(Unit.Speed, 1f);
-    }
     public virtual void WorkingTask()
     {
         if (isOnTask)
@@ -94,8 +76,7 @@ public class UnitTaskManager : NetworkBehaviour
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
                 {
-                    unit.agent.SetDestination(taskTransform.position);
-
+                    RequestToServerToMoveUnit(taskTransform.position);
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
                         if (unit.isRanged)
@@ -138,10 +119,9 @@ public class UnitTaskManager : NetworkBehaviour
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
         taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
-
-        unit.animator.SetFloat(Unit.Speed, 0f);
         DoTask();
-
+        RequestToServerToChangeAnimatorSpeed(0);
+        unit.animator.SetFloat("Speed", animatorSpeedValue);
     }
     public void ResetTasks()
     {
@@ -207,8 +187,10 @@ public class UnitTaskManager : NetworkBehaviour
         Transform nearestEnemy = EntitiesOnMapDatabase.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
         return nearestEnemy;
     }
-    internal virtual void GoToPosition(Vector3 point)
+    #region tasks
+    public virtual void GoToPosition(Vector3 point)
     {
+        Debug.Log("ide na POZYCJE");
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         GoToPositionTask newTask = new(point);
@@ -227,4 +209,38 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public virtual void GatherResourceTask(GatherableResource resource) { }
     public virtual void BuildConstructionTask(GameObject construction) { }
+    #endregion
+
+
+
+    public void RequestToServerToChangeAnimatorSpeed(int speedValue)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdChangeAnimatorSpeedUnit(this.GetComponent<NetworkIdentity>(), speedValue);
+    }
+
+    public void RequestToServerToMoveUnit(Vector3 targetPos)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdMoveUnit(this.GetComponent<NetworkIdentity>(), targetPos);
+    }
+    public void RespondFromServerToMoveUnit(Vector3 targetPos)
+    {
+        unit.agent.SetDestination(targetPos);
+        unit.animator.SetFloat("Speed", 1);
+    }
+    public void RequestToServerToAttackEntity(Transform targetTransform)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), targetTransform);
+    }
+    public void RespondFromServerToAttackEntity(Transform targetTransform)
+    {
+        taskTransform = targetTransform;
+        respondFromServer = true;
+    }
+    public void UpdateAnimatorSpeedValue(int newValue)
+    {
+        unit.animator.SetFloat("Speed", newValue);
+    }
 }

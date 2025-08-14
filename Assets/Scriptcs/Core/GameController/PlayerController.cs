@@ -1,5 +1,7 @@
 using Mirror;
+using Mirror.BouncyCastle.Asn1.X509;
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -64,6 +66,82 @@ public class PlayerController : NetworkBehaviour
 
     }
 
+
+
+    // Update Animator Speed
+    [Command]
+    internal void CmdChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            RpcChangeAnimatorSpeedUnit(networkIdentity, speedValue);
+        }
+
+    }
+    [ClientRpc]
+    void RpcChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            taskManager.UpdateAnimatorSpeedValue(speedValue);
+        }
+    }
+
+    // Move Unit
+    [Command]
+    public void CmdMoveUnit(NetworkIdentity requestIdentity, Vector3 targetPos)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            RpcMoveUnit(requestIdentity, targetPos);
+        }
+    }
+    [ClientRpc]
+    public void RpcMoveUnit(NetworkIdentity requestIdentity, Vector3 targetPosition)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            taskManager.RespondFromServerToMoveUnit(targetPosition);
+        }
+
+    }
+
+    // Update Meeting Point
+    [Command]
+    public void CmdUpdateMeetingPointBuilding(NetworkIdentity requestIdentity, Vector3 newMeetingPosition)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<Building>(out var building))
+            RpcUpdateMeetingPoint(requestIdentity, newMeetingPosition);
+    }
+    [ClientRpc]
+    void RpcUpdateMeetingPoint(NetworkIdentity requestIdentity, Vector3 newMeetingPosition)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<Building>(out var building))
+            building.meetingPoint.transform.position = newMeetingPosition;
+    }
+    
+    // Attack Entity
+    [Command]
+    public void CmdAttackEntity(NetworkIdentity requestIdentity, Transform targetTransform)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            RpcAttackEntity(requestIdentity, targetTransform);
+    }
+    [ClientRpc]
+    void RpcAttackEntity(NetworkIdentity requestIdentity, Transform targetTransform)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            taskManager.RespondFromServerToAttackEntity(targetTransform);
+    }
+    
+    // Spawn Objects
+    [Command]
+    public void CmdSpawnUnit(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
+    {
+        var building = buildingId.GetComponent<Building>();
+        if (building != null)
+            building.ServerSpawnUnit(unitID, teamColor);
+    }
     [Command]
     public void CmdSpawnBuilding(Vector3 position, TeamColorEnum teamColor)
     {
@@ -72,34 +150,4 @@ public class PlayerController : NetworkBehaviour
         building.GetComponent<Building>().teamColor = teamColor;
         NetworkServer.Spawn(building);
     }
-    [Command]
-    public void CmdMoveUnit(NetworkIdentity requestIdentity, Vector3 targetPos)
-    {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            taskManager.RespondFromServerMoveUnit(targetPos);
-        }
-    }
-
-    [Command]
-    public void CmdAttackEntity(NetworkIdentity requestIdentity, GameObject entityObject)
-    {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            taskManager.RespondFromServerToAttackEntity(entityObject);
-        }
-    }
-
-    [Command]
-    public void CmdSpawnUnit(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
-    {
-        var building = buildingId.GetComponent<Building>();
-        if (building != null)
-        {
-            building.ServerSpawnUnit(unitID, teamColor);
-        }
-    }
-
-
-
 }

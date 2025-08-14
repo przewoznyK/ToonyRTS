@@ -165,7 +165,7 @@ public class CommandPanelUI : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100))
             {
-                currentSelectedBuilding.SetMeetingPoint(hit.point);
+                currentSelectedBuilding.RequestToServerToUpdateMeetingPoint(hit.point);
 
             }
         }

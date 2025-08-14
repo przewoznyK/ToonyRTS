@@ -15,6 +15,7 @@ public class GathererTaskManager : UnitTaskManager
     private bool isGoingToBuildingConstruction;
     Vector3 constructionToBuildPosition;
     public InConstructionBuildingRepresentation currentConstionBuildingTarget { get; private set; }
+
     private IStockPile stockPile;
     private void Start()
     {
@@ -87,7 +88,7 @@ public class GathererTaskManager : UnitTaskManager
                 else if (currentTask is AttackTargetTask attackTarget)
                 {
                     unit.agent.stoppingDistance = unit.attackRange;
-                    taskTransform = attackTarget.targetTransform;
+                    RequestToServerToAttackEntity(attackTarget.targetTransform);
                     unit.animator.SetFloat(Unit.Speed, 1f);
                 }
                 else if (currentTask is GathererResourceTask gatherResource)
@@ -126,6 +127,7 @@ public class GathererTaskManager : UnitTaskManager
     {
         if (isOnTask)
         {
+            Debug.Log(currentTask.unitTaskType);
             if (currentTask.unitTaskType == UnitTaskTypeEnum.GoToPosition)
             {
                 unit.animator.SetBool("Harvest", false);
@@ -134,14 +136,14 @@ public class GathererTaskManager : UnitTaskManager
                     GoToNextTask();
                 }
             }
-
+      
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
-                if (taskTransform != null)
+                if (taskTransform != null && respondFromServer)
                 {
-                    unit.agent.SetDestination(taskTransform.position);
+                    RequestToServerToMoveUnit(taskTransform.position);
 
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
@@ -154,7 +156,7 @@ public class GathererTaskManager : UnitTaskManager
                         unit.animator.SetFloat(Unit.Speed, 0f);
                     }
                 }
-                else
+                else if(respondFromServer)
                 {
                     unit.agent.ResetPath();
                     unit.animator.SetFloat(Unit.Speed, 0f);
@@ -230,15 +232,16 @@ public class GathererTaskManager : UnitTaskManager
     {
         return currentGathered >= maxCarried;
     }
-    internal override void GoToPosition(Vector3 point)
-    {
-        unit.SetActiveEnemyDetector(false);
-        attackCycleActivated = false;
-        GoToPositionTask newTask = new(point);
-        requestedTasks.AddLast(newTask);
-        DoTask();
-        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
-    }
+    //public override void GoToPosition(Vector3 point)
+    //{
+    //    Debug.Log("GO TO POSITION" + point); 
+    //    unit.SetActiveEnemyDetector(false);
+    //    attackCycleActivated = false;
+    //    GoToPositionTask newTask = new(point);
+    //    requestedTasks.AddLast(newTask);
+    //    DoTask();
+    //    newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
+    //}
     public void ReturnToStockPile()
     {
         requestedTasks.First.Value.EndTask();
