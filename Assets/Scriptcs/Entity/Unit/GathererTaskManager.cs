@@ -127,7 +127,6 @@ public class GathererTaskManager : UnitTaskManager
     {
         if (isOnTask)
         {
-            Debug.Log(currentTask.unitTaskType);
             if (currentTask.unitTaskType == UnitTaskTypeEnum.GoToPosition)
             {
                 unit.animator.SetBool("Harvest", false);
@@ -141,7 +140,7 @@ public class GathererTaskManager : UnitTaskManager
             {
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
-                if (taskTransform != null && respondFromServer)
+                if (taskTransform != null)
                 {
                     RequestToServerToMoveUnit(taskTransform.position);
 
@@ -156,12 +155,12 @@ public class GathererTaskManager : UnitTaskManager
                         unit.animator.SetFloat(Unit.Speed, 0f);
                     }
                 }
-                else if(respondFromServer)
-                {
-                    unit.agent.ResetPath();
-                    unit.animator.SetFloat(Unit.Speed, 0f);
-                    isOnTask = false;
-                }
+                //else if(respondFromServer)
+                //{
+                //    unit.agent.ResetPath();
+                //    unit.animator.SetFloat(Unit.Speed, 0f);
+                //    isOnTask = false;
+                //}
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.GatherResource)
             {
@@ -232,16 +231,7 @@ public class GathererTaskManager : UnitTaskManager
     {
         return currentGathered >= maxCarried;
     }
-    //public override void GoToPosition(Vector3 point)
-    //{
-    //    Debug.Log("GO TO POSITION" + point); 
-    //    unit.SetActiveEnemyDetector(false);
-    //    attackCycleActivated = false;
-    //    GoToPositionTask newTask = new(point);
-    //    requestedTasks.AddLast(newTask);
-    //    DoTask();
-    //    newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
-    //}
+
     public void ReturnToStockPile()
     {
         requestedTasks.First.Value.EndTask();

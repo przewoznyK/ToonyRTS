@@ -26,6 +26,10 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     public float defaultMovementSpeed;
     public float enemyDetectionRadius;
 
+    [Header("Go To Meeting Point")]
+    public bool isGoingToMeetingPoint;
+    public Vector3 meetingPoint;
+
     [Header("Ranged Properties")]
     public bool isRanged;
     public GameObject bulletPrefab;
@@ -35,9 +39,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     public static readonly int Speed = Animator.StringToHash("Speed");
     public static readonly int AttackAnimationTrigger  = Animator.StringToHash("Attack");
 
-    [Header("Go To Meeting Point")]
-    public bool isGoingToMeetingPoint;
-    public Vector3 meetingPoint;
+
     private void Start()
     {
         InitUniversalFunction();
@@ -50,7 +52,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
         bodyToDrop = transform.GetChild(2);
         activator = transform.GetChild(0);
         enemyDecetorCollider.radius = enemyDetectionRadius;
-   
+        
         agent.stoppingDistance = defaultStoppingDistance;
         agent.speed = defaultMovementSpeed;
 

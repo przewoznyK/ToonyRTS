@@ -4,22 +4,14 @@ public class MeleeWarrior : Unit
 {
     public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
-        if (isShiftPressed == false)
-            unitTaskManager.ResetTasks();  
+        if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
+            unitTaskManager.RequestToServerToResetTasks();
 
         if (hit.collider.CompareTag("Ground"))
-        {
             unitTaskManager.GoToPosition(hit.point);
 
-        }
         else if(hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
-        {
             if (component.GetTeam() != teamColor)
-            {
                 unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
-            }
-        }
     }
-
-
 }

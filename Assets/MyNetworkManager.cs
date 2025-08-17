@@ -21,8 +21,9 @@ public class MyNetworkManager : NetworkManager
                     GameObject newPlayer = Instantiate(playerControllerPrefab);
                     var pc = newPlayer.GetComponent<PlayerController>();
                     pc.teamColor = roomPlayer.teamColor;
+                    Debug.Log("POZYCJA DLA " + roomPlayer.teamColor + "   " + roomPlayer.startPositionOnMap);
                     pc.startPositionX = (int)roomPlayer.startPositionOnMap.x;
-                    pc.startPositionY = (int)roomPlayer.startPositionOnMap.y;
+                    pc.startPositionZ = (int)roomPlayer.startPositionOnMap.y;
 
                     NetworkServer.ReplacePlayerForConnection(conn, newPlayer);
                 }

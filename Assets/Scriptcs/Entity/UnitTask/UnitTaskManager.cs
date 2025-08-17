@@ -1,5 +1,6 @@
 using Mirror;
 using Mirror.BouncyCastle.Asn1.X509;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -95,7 +96,6 @@ public class UnitTaskManager : NetworkBehaviour
                     unit.animator.SetFloat(Unit.Speed, 0f);
                     isOnTask = false;
                 }
-
             }
         }
     }
@@ -123,15 +123,10 @@ public class UnitTaskManager : NetworkBehaviour
         RequestToServerToChangeAnimatorSpeed(0);
         unit.animator.SetFloat("Speed", animatorSpeedValue);
     }
-    public void ResetTasks()
-    {
-        requestedTasks.Clear();
-        isOnTask = false;
-        currentTask = null;
-        StopAllCoroutines();
-    }
+
     public IEnumerator AttackCycle(string animationTriggerName)
     {
+        RequestToServerToChangeAnimatorSpeed(0);
         yield return new WaitForSeconds(0.5f);
 
         if (AttackAndCheckIfCanContinueAttackOrSearchNewEnemy(animationTriggerName) == false) yield break;
@@ -190,7 +185,6 @@ public class UnitTaskManager : NetworkBehaviour
     #region tasks
     public virtual void GoToPosition(Vector3 point)
     {
-        Debug.Log("ide na POZYCJE");
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         GoToPositionTask newTask = new(point);
@@ -211,14 +205,27 @@ public class UnitTaskManager : NetworkBehaviour
     public virtual void BuildConstructionTask(GameObject construction) { }
     #endregion
 
-
-
     public void RequestToServerToChangeAnimatorSpeed(int speedValue)
     {
         if (PlayerController.LocalPlayer.isLocalPlayer)
             PlayerController.LocalPlayer.CmdChangeAnimatorSpeedUnit(this.GetComponent<NetworkIdentity>(), speedValue);
     }
-
+    public void RespondFromServerUpdateAnimatorSpeedValue(int newValue)
+    {
+        unit.animator.SetFloat("Speed", newValue);
+    }
+    public void RequestToServerToResetTasks()
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdResetTasksUnit(this.GetComponent<NetworkIdentity>());
+    }
+    public void RespondFromServerToResetTasks()
+    {
+        requestedTasks.Clear();
+        isOnTask = false;
+        currentTask = null;
+        StopAllCoroutines();
+    }
     public void RequestToServerToMoveUnit(Vector3 targetPos)
     {
         if (PlayerController.LocalPlayer.isLocalPlayer)
@@ -236,11 +243,8 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RespondFromServerToAttackEntity(Transform targetTransform)
     {
+        Debug.Log("ATTACK");
         taskTransform = targetTransform;
         respondFromServer = true;
-    }
-    public void UpdateAnimatorSpeedValue(int newValue)
-    {
-        unit.animator.SetFloat("Speed", newValue);
     }
 }

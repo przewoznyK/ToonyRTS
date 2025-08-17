@@ -3966,6 +3966,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f45675dd470a290409507b2c65c25e5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   unitTaskManager: {fileID: 3398873465402153737}
   agent: {fileID: 1931739716519375481}
   animator: {fileID: 4061613016102332433}
@@ -3979,13 +3982,13 @@ MonoBehaviour:
   rotationSpeed: 360
   defaultStoppingDistance: 2.5
   defaultMovementSpeed: 3
-  enemyDetectionRadius: 3
+  enemyDetectionRadius: 1
+  isGoingToMeetingPoint: 0
+  meetingPoint: {x: 0, y: 0, z: 0}
   isRanged: 0
   bulletPrefab: {fileID: 0}
   shootPoint: {fileID: 0}
   bulletForce: 0
-  isGoingToMeetingPoint: 0
-  meetingPoint: {x: 0, y: 0, z: 0}
 --- !u!114 &3398873465402153737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4004,6 +4007,8 @@ MonoBehaviour:
   unit: {fileID: 5854089882970665631}
   taskVisualization: {fileID: 2929459154559365107}
   lineRenderer: {fileID: 4838299357745353647}
+  animatorSpeedValue: 0
+  respondFromServer: 0
   currentGatherableResource: {fileID: 0}
   currentResourceTypeGathering: 0
   maxCarried: 2

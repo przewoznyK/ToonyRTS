@@ -55,7 +55,7 @@ public class BuildingProduction : MonoBehaviour
       
         productionDictionary[building].endProduction = false;
 
-        PlayerController.LocalPlayer.CmdSpawnUnit(building.GetComponent<NetworkIdentity>() ,productionDictionary[building].productQueue.Dequeue().productId, teamColorEnum);
+        PlayerController.LocalPlayer.CmdSpawnUnitFromBuilding(building.GetComponent<NetworkIdentity>() ,productionDictionary[building].productQueue.Dequeue().productId, teamColorEnum);
 
         // Next producion if exist
         if (productionDictionary[building].productQueue.Count > 0)

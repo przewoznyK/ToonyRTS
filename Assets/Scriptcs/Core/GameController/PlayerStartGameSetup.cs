@@ -8,6 +8,8 @@ public class PlayerStartGameSetup : MonoBehaviour
     {
         ConstructionData currentConstructionData = new (buildingData, xPosition, zPosition, teamColor);
         constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
+
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(0, teamColor, xPosition -3, zPosition -3);
     }
 
 }

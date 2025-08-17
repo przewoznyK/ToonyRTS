@@ -58,7 +58,6 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
         NetworkServer.Spawn(unitInstantiate, connectionToClient);        
     }
 
-
     public void SetPositionToOccupy(List<Vector3Int> positionToOccupy) => this.positionToOccupy = positionToOccupy;
 
     public List<ObjectPrices> AddResourcesToStockPile(List<ObjectPrices> objectPrices)

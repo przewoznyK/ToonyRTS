@@ -1,10 +1,6 @@
 using Mirror;
-using Mirror.BouncyCastle.Asn1.X509;
-using NUnit.Framework;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
@@ -14,22 +10,22 @@ public class PlayerController : NetworkBehaviour
     public ControlledUnits controlledUnits = new ControlledUnits();
     public PlayerResources playerResources;
     [SyncVar] public TeamColorEnum teamColor;
-    public int startPositionX;
-    public int startPositionY;
+    [SyncVar] public int startPositionX;
+    [SyncVar] public int startPositionZ;
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
         StartCoroutine(Delay());
         Debug.Log(stockPileManager == null);
     }
-    public void CreatePlayerController(TeamColorEnum teamColor, int startPositionX, int startPositionY)
+    public void CreatePlayerController(TeamColorEnum teamColor, int startPositionX, int startPositionZ)
     {
         if (!isLocalPlayer) return;
 
         var teamProfile = new CreateTeamProfile(teamColor);
         this.teamColor = teamColor;
         this.startPositionX = startPositionX;
-        this.startPositionY = startPositionY;
+        this.startPositionZ = startPositionZ;
         InitClientSide();
     }
 
@@ -38,7 +34,7 @@ public class PlayerController : NetworkBehaviour
         LocalPlayer = this;
         yield return new WaitForSeconds(2f);
 
-        CreatePlayerController(teamColor, startPositionX, startPositionY);
+        CreatePlayerController(teamColor, startPositionX, startPositionZ);
     }
     
     void InitClientSide()
@@ -62,7 +58,7 @@ public class PlayerController : NetworkBehaviour
         GameManager.Instance.constructionPlacerSystem.Init(playerResources, GameManager.Instance.activeClickableObject);
 
 
-        GameManager.Instance.playerStartGameSetup.Init(playerResources, GameManager.Instance.constructionPlacerSystem, gridData, teamColor, startPositionX, startPositionX);
+        GameManager.Instance.playerStartGameSetup.Init(playerResources, GameManager.Instance.constructionPlacerSystem, gridData, teamColor, startPositionX, startPositionZ);
 
     }
 
@@ -73,17 +69,14 @@ public class PlayerController : NetworkBehaviour
     internal void CmdChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
             RpcChangeAnimatorSpeedUnit(networkIdentity, speedValue);
-        }
-
     }
     [ClientRpc]
     void RpcChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
         {
-            taskManager.UpdateAnimatorSpeedValue(speedValue);
+            taskManager.RespondFromServerUpdateAnimatorSpeedValue(speedValue);
         }
     }
 
@@ -119,7 +112,19 @@ public class PlayerController : NetworkBehaviour
         if (requestIdentity != null && requestIdentity.TryGetComponent<Building>(out var building))
             building.meetingPoint.transform.position = newMeetingPosition;
     }
-    
+
+    [Command]
+    public void CmdResetTasksUnit(NetworkIdentity requestIdentity)
+    {
+        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            RpcResetTaskUnit(requestIdentity);
+    }
+    [ClientRpc]
+    internal void RpcResetTaskUnit(NetworkIdentity networkIdentity)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            taskManager.RespondFromServerToResetTasks();
+    }
     // Attack Entity
     [Command]
     public void CmdAttackEntity(NetworkIdentity requestIdentity, Transform targetTransform)
@@ -133,10 +138,21 @@ public class PlayerController : NetworkBehaviour
         if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
             taskManager.RespondFromServerToAttackEntity(targetTransform);
     }
-    
+
     // Spawn Objects
     [Command]
-    public void CmdSpawnUnit(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
+    public void CmdSpawnUnitOnStart(int unitID, TeamColorEnum teamColor, int xPosition, int zPosition)
+    {
+        GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
+        GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
+        Unit unit = unitInstantiate.GetComponent<Unit>();
+        unit.transform.position = new Vector3(xPosition, 0, zPosition);
+        unit.isGoingToMeetingPoint = false;
+        unit.teamColor = teamColor;
+        NetworkServer.Spawn(unitInstantiate, connectionToClient);
+    }
+    [Command]
+    public void CmdSpawnUnitFromBuilding(NetworkIdentity buildingId, int unitID, TeamColorEnum teamColor)
     {
         var building = buildingId.GetComponent<Building>();
         if (building != null)
@@ -150,4 +166,5 @@ public class PlayerController : NetworkBehaviour
         building.GetComponent<Building>().teamColor = teamColor;
         NetworkServer.Spawn(building);
     }
+
 }

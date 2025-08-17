@@ -4,8 +4,8 @@ public class GathererNew : Unit
 {
     public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
-        if (isShiftPressed == false)
-            unitTaskManager.ResetTasks();
+        if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
+            unitTaskManager.RequestToServerToResetTasks();
 
         if (hit.collider.CompareTag("Ground"))
         {
