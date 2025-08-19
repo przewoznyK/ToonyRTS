@@ -27,7 +27,8 @@ public class GameManager : MonoBehaviour
     public ConstructionPreviewSystem previewSystem;
     public ConstructionPlacerSystem constructionPlacerSystem;
     public Transform previewSystemTransform;
-    GridData gridData;
+    public GridDataNetwork gridDataNetwork;
+
     private void Awake()
     {
         Instance = this;

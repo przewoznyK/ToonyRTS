@@ -3,9 +3,9 @@ using UnityEngine;
 public class RemoveEntity : MonoBehaviour
 {
     public static RemoveEntity Instance;
-    GridData gridData;
+    GridDataNetwork gridData;
 
-    internal void Init(GridData gridData)
+    internal void Init(GridDataNetwork gridData)
     {
         Instance = this;
         this.gridData = gridData;

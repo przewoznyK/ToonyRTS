@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class GridData
+public class GridDataNetwork : NetworkBehaviour
 {
-    Dictionary<Vector3Int, PlacementData> placedObjects = new();
+    public class PlacementDataSync : SyncDictionary<Vector3Int, PlacementData> { }
 
+    public PlacementDataSync placedObjects = new PlacementDataSync();
+
+    [Server]
     public void AddObjectAt(Vector3Int cellPosition,
                             Vector2Int objectSize,
                             int ID,

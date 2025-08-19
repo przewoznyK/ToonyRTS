@@ -8,10 +8,10 @@ public class MeleeWarrior : Unit
             unitTaskManager.RequestToServerToResetTasks();
 
         if (hit.collider.CompareTag("Ground"))
-            unitTaskManager.GoToPosition(hit.point);
+            unitTaskManager.RequestToServerToCreateGoToPositionTask(hit.point);
 
         else if(hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
             if (component.GetTeam() != teamColor)
-                unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
+                unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
 }

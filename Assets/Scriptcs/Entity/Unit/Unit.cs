@@ -44,7 +44,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     {
         InitUniversalFunction();
         if (isGoingToMeetingPoint)
-            unitTaskManager.GoToPosition(meetingPoint);
+            unitTaskManager.RequestToServerToCreateGoToPositionTask(meetingPoint);
 
     }
     public void InitUniversalFunction()
@@ -124,10 +124,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
         Destroy(gameObject);
     }
 
-    public void SetActiveEnemyDetector(bool value)
-    {
-        enemyDecetorCollider.enabled = value;
-    }
+    public void SetActiveEnemyDetector(bool value) =>  enemyDecetorCollider.enabled = value;
 
     IEnumerator IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage()
     {
@@ -139,7 +136,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
-        unitTaskManager.AttackTarget(component.GetProperties<Transform>(), component.GetTeam());
+        unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
         SetActiveEnemyDetector(false);
     }
 }

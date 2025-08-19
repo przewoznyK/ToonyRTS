@@ -3,7 +3,9 @@ using Mirror.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 public class UnitTaskManager : NetworkBehaviour
 {
     [SerializeField] protected Unit unit;
@@ -121,6 +123,7 @@ public class UnitTaskManager : NetworkBehaviour
         taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
         DoTask();
         RequestToServerToChangeAnimatorSpeed(0);
+        unit.SetActiveEnemyDetector(true);
         unit.animator.SetFloat("Speed", animatorSpeedValue);
     }
 
@@ -183,28 +186,12 @@ public class UnitTaskManager : NetworkBehaviour
         return nearestEnemy;
     }
     #region tasks
-    public virtual void GoToPosition(Vector3 point)
-    {
-        unit.SetActiveEnemyDetector(false);
-        attackCycleActivated = false;
-        GoToPositionTask newTask = new(point);
-        requestedTasks.AddLast(newTask);
-        DoTask();
-        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
-    }
-    internal void AttackTarget(Transform target, TeamColorEnum targetTeam)
-    {
-        unit.SetActiveEnemyDetector(false);
-        AttackTargetTask newTask = new(target);
-        enemyTeamTarget = targetTeam;
-        requestedTasks.AddLast(newTask);
-        DoTask();
-        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
-    }
+
     public virtual void GatherResourceTask(GatherableResource resource) { }
     public virtual void BuildConstructionTask(GameObject construction) { }
     #endregion
 
+    // Change Animator Speed
     public void RequestToServerToChangeAnimatorSpeed(int speedValue)
     {
         if (PlayerController.LocalPlayer.isLocalPlayer)
@@ -214,6 +201,8 @@ public class UnitTaskManager : NetworkBehaviour
     {
         unit.animator.SetFloat("Speed", newValue);
     }
+
+    // Reset Tasks
     public void RequestToServerToResetTasks()
     {
         if (PlayerController.LocalPlayer.isLocalPlayer)
@@ -224,7 +213,39 @@ public class UnitTaskManager : NetworkBehaviour
         requestedTasks.Clear();
         isOnTask = false;
         currentTask = null;
+        unit.SetActiveEnemyDetector(true);
         StopAllCoroutines();
+    }
+
+    // Go To Position Task
+    public virtual void RequestToServerToCreateGoToPositionTask(Vector3 positionPoint)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdCreateGoToPositionTask(this.GetComponent<NetworkIdentity>(), positionPoint);
+    }
+    public void RespondFromServerToCreateGoToPositionTask(Vector3 positionPoint)
+    {
+        unit.SetActiveEnemyDetector(false);
+        attackCycleActivated = false;
+        GoToPositionTask newTask = new(positionPoint);
+        requestedTasks.AddLast(newTask);
+        DoTask();
+        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
+    }
+    // Attack Entity Task
+    public virtual void RequestToServerToCreateAttackEntityTask(TeamColorEnum targetTeam, Transform targetEntity)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdCreateAttackEntityTask(this.GetComponent<NetworkIdentity>(), targetTeam, targetEntity);
+    }
+    public void RespondFromServerToCreateAttackEntityTask(TeamColorEnum targetTeam, Transform targetEntity)
+    {
+        unit.SetActiveEnemyDetector(false);
+        AttackTargetTask newTask = new(targetEntity);
+        enemyTeamTarget = targetTeam;
+        requestedTasks.AddLast(newTask);
+        DoTask();
+        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
     public void RequestToServerToMoveUnit(Vector3 targetPos)
     {
@@ -243,7 +264,6 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RespondFromServerToAttackEntity(Transform targetTransform)
     {
-        Debug.Log("ATTACK");
         taskTransform = targetTransform;
         respondFromServer = true;
     }

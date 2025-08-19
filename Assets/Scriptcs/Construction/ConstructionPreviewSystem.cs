@@ -7,7 +7,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
     PlayerResources playerResources;
     InputManager inputManager;
     ConstructionPlacerSystem constructionPlacerSystem;
-    GridData gridData;
+    GridDataNetwork gridData;
     ActiveClickableObject activeClickableObject;
 
     private InputAction mousePositionAction;
@@ -30,7 +30,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
     public bool isOnPreview { get; private set; }
     bool canPlaceConstruction;
     private float gridSize = 1f;
-    internal void Init(PlayerResources playerResources, InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridData gridData, ActiveClickableObject activeClickableObject)
+    internal void Init(PlayerResources playerResources, InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridDataNetwork gridData, ActiveClickableObject activeClickableObject)
     {
         this.playerResources = playerResources;
         this.inputManager = inputManager;

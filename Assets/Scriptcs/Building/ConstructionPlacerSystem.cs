@@ -14,7 +14,7 @@ public class ConstructionPlacerSystem : NetworkBehaviour
         this.playerResources = playerResources;
         this.activeClickableObject = activeClickableObject;
     }
-    internal void PlaceConstruction(PlayerResources playerResources, GridData gridData, ConstructionData currentConstructionData)
+    internal void PlaceConstruction(PlayerResources playerResources, GridDataNetwork gridData, ConstructionData currentConstructionData)
     {
         
         gridData.AddObjectAt(currentConstructionData.positionToOccupy, currentConstructionData.buildingData.size, 1 ,1, currentConstructionData);
