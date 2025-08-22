@@ -188,7 +188,6 @@ public class UnitTaskManager : NetworkBehaviour
     #region tasks
 
     public virtual void GatherResourceTask(GatherableResource resource) { }
-    public virtual void BuildConstructionTask(GameObject construction) { }
     #endregion
 
     // Change Animator Speed
@@ -267,4 +266,5 @@ public class UnitTaskManager : NetworkBehaviour
         taskTransform = targetTransform;
         respondFromServer = true;
     }
+    public virtual void RequestToServerToBuildConstructionTask(GameObject constructionInstantiate) { }
 }

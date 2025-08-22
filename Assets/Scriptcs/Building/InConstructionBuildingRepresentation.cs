@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAndProperties
 {
-    [SerializeField] private TeamColorEnum teamColor;
+    public TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingTypeEnum;
     [SerializeField] private GameObject finishBuilding;
@@ -20,16 +20,7 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
 
     internal void EndProcess()
     {
-        GameObject newBuilding = Instantiate(finishBuilding, transform.position, Quaternion.identity);
-        Building building = newBuilding.GetComponent<Building>();
-        if(building)
-        {
- 
-            building.SetPositionToOccupy(positionToOccupy);
-        }
-        NetworkServer.Spawn(newBuilding);
-        newBuilding.GetComponent<Building>().teamColor = teamColor;
-        gameObject.SetActive(false);
+        PlayerController.LocalPlayer.CmdSpawnBuilding(transform.position, teamColor, this.gameObject);
     }
 
     public bool WorkOnBuilding(int value)

@@ -1,7 +1,9 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -12,6 +14,7 @@ public class PlayerController : NetworkBehaviour
     [SyncVar] public TeamColorEnum teamColor;
     [SyncVar] public int startPositionX;
     [SyncVar] public int startPositionZ;
+    public GameObject contructionRepresentationPrefab;
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
@@ -53,7 +56,7 @@ public class PlayerController : NetworkBehaviour
         GameManager.Instance.activeClickableObject.Init(GameManager.Instance.inputManager, controlledUnits, GameManager.Instance.selectionInfoUI, GameManager.Instance.commandPanelUI,
         GameManager.Instance.boxVisual, teamColor);
         GameManager.Instance.buildingProduction.Init(GameManager.Instance.commandPanelUI, teamColor);
-        GameManager.Instance.previewSystem.Init(playerResources, GameManager.Instance.inputManager, GameManager.Instance.constructionPlacerSystem, GameManager.Instance.gridDataNetwork, GameManager.Instance.activeClickableObject);
+        GameManager.Instance.previewSystem.Init(playerResources, GameManager.Instance.inputManager, GameManager.Instance.constructionPlacerSystem, GameManager.Instance.gridDataNetwork, GameManager.Instance.activeClickableObject, teamColor);
         GameManager.Instance.constructionPlacerSystem.Init(playerResources, GameManager.Instance.activeClickableObject);
 
 
@@ -149,17 +152,32 @@ public class PlayerController : NetworkBehaviour
 
     // Attack Entity 
     [Command]
-    public void CmdAttackEntity(NetworkIdentity requestIdentity, Transform targetTransform)
+    public void CmdAttackEntity(NetworkIdentity networkIdentity, Transform targetTransform)
     {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcAttackEntity(requestIdentity, targetTransform);
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            RpcAttackEntity(networkIdentity, targetTransform);
     }
     [ClientRpc]
-    void RpcAttackEntity(NetworkIdentity requestIdentity, Transform targetTransform)
+    void RpcAttackEntity(NetworkIdentity networkIdentity, Transform targetTransform)
     {
-        if (requestIdentity != null && requestIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
             taskManager.RespondFromServerToAttackEntity(targetTransform);
     }
+
+    // Build Construction
+    [Command]
+    internal void CmdBuildConstructionTask(NetworkIdentity networkIdentity, GameObject construction)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GathererTaskManager>(out var taskManager))
+            RpcBuildConstructionTask(networkIdentity, construction);
+    }
+    [ClientRpc]
+    void RpcBuildConstructionTask(NetworkIdentity networkIdentity, GameObject construction)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GathererTaskManager>(out var gathererTaskManager))
+            gathererTaskManager.RespondFromServerToBuildConstructionTask(construction);
+    }
+
     #endregion
 
     #region Spawn Objects
@@ -183,13 +201,55 @@ public class PlayerController : NetworkBehaviour
             building.ServerSpawnUnit(unitID, teamColor);
     }
     [Command]
-    public void CmdSpawnBuilding(Vector3 position, TeamColorEnum teamColor)
+    public void CmdSpawnBuilding(Vector3Int position, TeamColorEnum teamColor)
     {
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(0).buildingPrefab;
         GameObject building = Instantiate(prefab, position, Quaternion.identity);
         building.GetComponent<Building>().teamColor = teamColor;
         NetworkServer.Spawn(building);
     }
+    [Command]
+    public void CmdSpawnBuilding(Vector3 position, TeamColorEnum teamColor, GameObject constructionRepresentation)
+    {
+        GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(0).buildingPrefab;
+        GameObject building = Instantiate(prefab, position, Quaternion.identity);
+        building.GetComponent<Building>().teamColor = teamColor;
+        NetworkServer.Spawn(building);
+
+        if (constructionRepresentation != null && constructionRepresentation.TryGetComponent<NetworkIdentity>(out var netIdentity))
+            NetworkServer.Destroy(constructionRepresentation);
+    }
+    [Command]
+    public void CmdSpawnConstructionRepresentation(Vector3 position, Vector2 size, List<Unit> selectedUnits, TeamColorEnum teamColor)
+    {
+        GameObject obj = Instantiate(contructionRepresentationPrefab, position, Quaternion.identity);
+        obj.transform.rotation = Quaternion.Euler(90, 0, 0);
+        NetworkServer.Spawn(obj);
+
+        foreach (var unit in selectedUnits)
+        {
+            if (unit is GathererNew)
+            {
+                GathererNew gatherer = unit as GathererNew;
+                gatherer.BuildConstruction(obj);
+            }
+        }
+    }
+
+
+    [Command]
+    internal void CmdUpdateGridData(NetworkIdentity networkIdentity, PlacementData data, List<Vector3Int> positionToOccupy)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GridDataNetwork>(out var gridDataNetwork))
+            RpcUpdateGridData(networkIdentity, data, positionToOccupy);
+    }
+    [ClientRpc]
+    internal void RpcUpdateGridData(NetworkIdentity networkIdentity, PlacementData data, List<Vector3Int> positionToOccupy)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GridDataNetwork>(out var gridDataNetwork))
+            gridDataNetwork.RespondFromServerUpdateGridData(data, positionToOccupy);
+    }
+
 
 
     #endregion

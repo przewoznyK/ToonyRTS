@@ -40,6 +40,6 @@ public class GathererNew : Unit
     }
     internal void BuildConstruction(GameObject constructionInstantiate)
     {
-        unitTaskManager.BuildConstructionTask(constructionInstantiate);
+        unitTaskManager.RequestToServerToBuildConstructionTask(constructionInstantiate);
     }
 }

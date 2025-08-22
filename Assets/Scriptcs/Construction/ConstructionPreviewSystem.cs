@@ -30,13 +30,14 @@ public class ConstructionPreviewSystem : MonoBehaviour
     public bool isOnPreview { get; private set; }
     bool canPlaceConstruction;
     private float gridSize = 1f;
-    internal void Init(PlayerResources playerResources, InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridDataNetwork gridData, ActiveClickableObject activeClickableObject)
+    internal void Init(PlayerResources playerResources, InputManager inputManager, ConstructionPlacerSystem constructionPlacerSystem, GridDataNetwork gridData, ActiveClickableObject activeClickableObject, TeamColorEnum teamColor)
     {
         this.playerResources = playerResources;
         this.inputManager = inputManager;
         this.constructionPlacerSystem = constructionPlacerSystem;
         this.gridData = gridData;
         this.activeClickableObject = activeClickableObject;
+        this.teamColor = teamColor;
         mousePositionAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_MOUSE_POSITION];
         LMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
         RMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
@@ -55,7 +56,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
         {
             Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(mouseScreenPosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
             {
                 Vector3 worldPosition = hitInfo.point;
@@ -113,6 +114,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
         }
 
         var previewConstructionMesh = previewConstructionPrefab.transform.GetChild(0);
+        Debug.Log(teamColor);
         currentConstructionData = new ConstructionData(unit, buildingData, teamColor);
         isOnPreview = true;
     }
@@ -122,7 +124,6 @@ public class ConstructionPreviewSystem : MonoBehaviour
         if (canPlaceConstruction)
         {
             constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
-
             this.enabled = false;
         }
     }

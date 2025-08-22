@@ -13,4 +13,6 @@ public class BuildingData : ScriptableObject
     [field: SerializeField] public Vector2Int size { get; private set; }
     [field: SerializeField] public List<ObjectPrices> objectPrices = new();
     [field: SerializeField] public List<Vector3Int> positionToOccupy;
+
+    public BuildingData() { }
 }

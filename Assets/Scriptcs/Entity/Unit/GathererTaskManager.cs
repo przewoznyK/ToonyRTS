@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
-
+using Mirror;
 public class GathererTaskManager : UnitTaskManager
 {
     public List<ObjectPrices> gatheredResources { get; private set; } = new();
@@ -84,7 +83,7 @@ public class GathererTaskManager : UnitTaskManager
                     Vector3 pos = goToPositionTask.taskPosition;
                     RequestToServerToMoveUnit(pos);
                     taskVector = pos;
-            }
+                }
                 else if (currentTask is AttackTargetTask attackTarget)
                 {
                     unit.agent.stoppingDistance = unit.attackRange;
@@ -97,8 +96,7 @@ public class GathererTaskManager : UnitTaskManager
                     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                     taskTransform = gatherResource.targetTransform;
                     currentResourceTypeGathering = gatherResource.currentResourceTypeGathering;
-                    unit.agent.SetDestination(taskTransform.position);
-                    unit.animator.SetFloat(Unit.Speed, 1f);
+                    RequestToServerToMoveUnit(taskTransform.position);
                 }
                 else if (currentTask is ReturnToStockpileTask returnToStockpile)
                 {
@@ -106,9 +104,9 @@ public class GathererTaskManager : UnitTaskManager
                     taskTransform = null;
                     Vector3 pos = returnToStockpile.taskPosition;
 
-                    unit.agent.SetDestination(pos);
                     taskVector = pos;
-                    unit.animator.SetFloat(Unit.Speed, 1f);
+
+                    RequestToServerToMoveUnit(pos);
                     isGoingToStockPile = true;
                 }
                 else if (currentTask is BuildConstructionTask construction)
@@ -116,8 +114,7 @@ public class GathererTaskManager : UnitTaskManager
                     currentConstionBuildingTarget = construction.constructionBuildingRepresentation;
                     unit.agent.stoppingDistance = unit.attackRange;
                     constructionToBuildPosition = construction.constructionPosition;
-                    unit.animator.SetFloat(Unit.Speed, 1f);
-                    unit.agent.SetDestination(construction.constructionPosition);
+                    RequestToServerToMoveUnit(construction.constructionPosition);
                     isGoingToBuildingConstruction = true;
                 }
                 isOnTask = true;
@@ -155,12 +152,6 @@ public class GathererTaskManager : UnitTaskManager
                         unit.animator.SetFloat(Unit.Speed, 0f);
                     }
                 }
-                //else if(respondFromServer)
-                //{
-                //    unit.agent.ResetPath();
-                //    unit.animator.SetFloat(Unit.Speed, 0f);
-                //    isOnTask = false;
-                //}
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.GatherResource)
             {
@@ -184,9 +175,8 @@ public class GathererTaskManager : UnitTaskManager
     {
         unit.animator.SetBool("Harvest", false);
         isGoingToStockPile = false;
-
         unit.animator.SetBool("Building", false);
-
+        GoToNextTask();
     }
 
     public void GoToNextResource()
@@ -257,7 +247,12 @@ public class GathererTaskManager : UnitTaskManager
         newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
 
-    public override void BuildConstructionTask(GameObject construction)
+    public override void RequestToServerToBuildConstructionTask(GameObject construction)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdBuildConstructionTask(this.GetComponent<NetworkIdentity>(), construction);
+    }
+    public void RespondFromServerToBuildConstructionTask(GameObject construction)
     {
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
@@ -266,4 +261,6 @@ public class GathererTaskManager : UnitTaskManager
         DoTask();
         newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
+
+
 }

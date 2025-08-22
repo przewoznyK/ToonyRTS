@@ -8,6 +8,8 @@ public class ConstructionData
     public Vector3Int positionToOccupy;
     public bool createFromPreviewSystem;
     public TeamColorEnum teamColor;
+
+    public ConstructionData() { }
     public ConstructionData(BuildingData buildingData, int xPosition, int zPosition, TeamColorEnum teamColor)
     {
         this.buildingData = buildingData;

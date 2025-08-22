@@ -5,27 +5,31 @@ using Mirror;
 
 public class GridDataNetwork : NetworkBehaviour
 {
-    public class PlacementDataSync : SyncDictionary<Vector3Int, PlacementData> { }
+    Dictionary<Vector3Int, PlacementData> placedObjects = new();
 
-    public PlacementDataSync placedObjects = new PlacementDataSync();
-
-    [Server]
-    public void AddObjectAt(Vector3Int cellPosition,
+    public void UpdateGridDataInLocal(Vector3Int cellPosition,
                             Vector2Int objectSize,
                             int ID,
                             int placedObjectIndex, ConstructionData constructionData)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(cellPosition, objectSize);
-  
         PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
+        RequestToServerToUpdateGridData(data, positionToOccupy);
+    }
+    public void RequestToServerToUpdateGridData(PlacementData data, List<Vector3Int> positionToOccupy)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdUpdateGridData(this.GetComponent<NetworkIdentity>(), data,
+                            positionToOccupy);
+    }
+    public void RespondFromServerUpdateGridData(PlacementData data, List<Vector3Int> positionToOccupy)
+    {
         foreach (var pos in positionToOccupy)
         {
             if (placedObjects.ContainsKey(pos))
                 throw new Exception($"Dictionary already contains this cell position {pos}");
             placedObjects[pos] = data;
-           
         }
-        constructionData.buildingData.positionToOccupy = positionToOccupy;
     }
 
     private List<Vector3Int> CalculatePositions(Vector3Int cellPosition, Vector2Int objectSize)
