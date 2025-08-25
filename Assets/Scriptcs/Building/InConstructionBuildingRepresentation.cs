@@ -7,11 +7,10 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
     public TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingTypeEnum;
-    [SerializeField] private GameObject finishBuilding;
+    public GameObject finishBuilding;
     public List<Vector3Int> positionToOccupy;
 
     [SerializeField] private int timeToBuilt;
-    List<GathererNew> unitGatheringResourcesList = new();
     public void SetFinishBuilding(GameObject builtToCreate, List<Vector3Int> positionOccupied)
     {
         finishBuilding = builtToCreate;
@@ -20,7 +19,7 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
 
     internal void EndProcess()
     {
-        PlayerController.LocalPlayer.CmdSpawnBuilding(transform.position, teamColor, this.gameObject);
+        PlayerController.LocalPlayer.CmdContructionEndProcess(this.GetComponent<NetworkIdentity>(), finishBuilding);
     }
 
     public bool WorkOnBuilding(int value)

@@ -192,7 +192,6 @@ public class CommandPanelUI : MonoBehaviour
     public void RemoveEntityWithButton(Building building)
     {
         RemoveEntity.Instance.RemoveEntityFromGame(building);
-        building.gameObject.SetActive(false);
     }
     public void RemoveEntityWithButton(Unit unit)
     {

@@ -29,9 +29,9 @@ public class ConstructionPlacerSystem : NetworkBehaviour
 
             List<Unit> selectedUnits = activeClickableObject.controlledUnits.TakeSelectedUnitList();
 
-            PlayerController.LocalPlayer.CmdSpawnConstructionRepresentation(position, size, selectedUnits, currentConstructionData.teamColor);
+            PlayerController.LocalPlayer.CmdSpawnConstructionRepresentation(position, size, selectedUnits, currentConstructionData.teamColor, currentConstructionData.buildingData.positionToOccupy);
         }
         else
-            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.positionToOccupy, currentConstructionData.teamColor);
+            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.positionToOccupy, currentConstructionData.teamColor, currentConstructionData.buildingData.positionToOccupy);
     }
 }

@@ -18,7 +18,9 @@ public class RemoveEntity : MonoBehaviour
             IStockPile stockPile = building.GetComponent<IStockPile>();
             PlayerController.LocalPlayer.stockPileManager.stockPiles.Remove(stockPile);
         }
-        gridData.RemoveObjectAt(building.positionToOccupy);
+        Debug.Log(building.positionToOccupy.Count + " < --- ");
+        gridData.RequestToServerToRemoveObjectFromGridData(building.positionToOccupy);
+        PlayerController.LocalPlayer.CmdRemoveEntity(building.gameObject);
     }
 
     public void RemoveEntityFromGame(Unit unit)

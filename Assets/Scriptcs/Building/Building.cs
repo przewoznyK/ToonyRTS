@@ -24,6 +24,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
     private void Start()
     {
+        Debug.Log(teamColor);
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onDeathActiom += () => RemoveEntity.Instance.RemoveEntityFromGame(this);
     }
@@ -99,6 +100,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
     void OnTeamColorChanged(TeamColorEnum oldColor, TeamColorEnum newColor)
     {
+        Debug.Log("ON TEAM COLOR CHANGED");
         setProperstiesByTeamColor.Init();
     }
     #endregion

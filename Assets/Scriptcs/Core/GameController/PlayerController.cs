@@ -201,53 +201,97 @@ public class PlayerController : NetworkBehaviour
             building.ServerSpawnUnit(unitID, teamColor);
     }
     [Command]
-    public void CmdSpawnBuilding(Vector3Int position, TeamColorEnum teamColor)
+    public void CmdSpawnBuilding(Vector3Int position, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy)
     {
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(0).buildingPrefab;
         GameObject building = Instantiate(prefab, position, Quaternion.identity);
         building.GetComponent<Building>().teamColor = teamColor;
+        building.GetComponent<Building>().positionToOccupy = positionToOccupy;
+
         NetworkServer.Spawn(building);
+        RpcSetActiveGameObject(building.gameObject, true);
+
     }
+
     [Command]
-    public void CmdSpawnBuilding(Vector3 position, TeamColorEnum teamColor, GameObject constructionRepresentation)
+    public void CmdSpawnConstructionRepresentation(Vector3 position, Vector2 size, List<Unit> selectedUnits, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy)
     {
+        GameObject contructionRepresentation = Instantiate(contructionRepresentationPrefab, position, Quaternion.identity);
+        contructionRepresentation.transform.rotation = Quaternion.Euler(90, 0, 0);
+        NetworkServer.Spawn(contructionRepresentation);
+
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(0).buildingPrefab;
         GameObject building = Instantiate(prefab, position, Quaternion.identity);
         building.GetComponent<Building>().teamColor = teamColor;
+        building.GetComponent<Building>().positionToOccupy = positionToOccupy;
+        building.gameObject.SetActive(false);
         NetworkServer.Spawn(building);
 
-        if (constructionRepresentation != null && constructionRepresentation.TryGetComponent<NetworkIdentity>(out var netIdentity))
-            NetworkServer.Destroy(constructionRepresentation);
-    }
-    [Command]
-    public void CmdSpawnConstructionRepresentation(Vector3 position, Vector2 size, List<Unit> selectedUnits, TeamColorEnum teamColor)
-    {
-        GameObject obj = Instantiate(contructionRepresentationPrefab, position, Quaternion.identity);
-        obj.transform.rotation = Quaternion.Euler(90, 0, 0);
-        NetworkServer.Spawn(obj);
+
+        RpcSetFinishBuilding(contructionRepresentation.GetComponent<InConstructionBuildingRepresentation>(), building);
+        RpcSetActiveGameObject(building.gameObject, false);
 
         foreach (var unit in selectedUnits)
         {
             if (unit is GathererNew)
             {
                 GathererNew gatherer = unit as GathererNew;
-                gatherer.BuildConstruction(obj);
+                gatherer.BuildConstruction(contructionRepresentation);
             }
         }
+
     }
 
+    [ClientRpc]
+    public void RpcSetFinishBuilding(InConstructionBuildingRepresentation inConstructionBuildingRepresentation, GameObject finishBuilding)
+    {
+        inConstructionBuildingRepresentation.finishBuilding = finishBuilding;
+    }
 
     [Command]
-    internal void CmdUpdateGridData(NetworkIdentity networkIdentity, PlacementData data, List<Vector3Int> positionToOccupy)
+    internal void CmdAddObjectToGridData(NetworkIdentity networkIdentity, PlacementData data, List<Vector3Int> positionToOccupy)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<GridDataNetwork>(out var gridDataNetwork))
-            RpcUpdateGridData(networkIdentity, data, positionToOccupy);
+            RpcAddObjectToGridData(networkIdentity, data, positionToOccupy);
     }
     [ClientRpc]
-    internal void RpcUpdateGridData(NetworkIdentity networkIdentity, PlacementData data, List<Vector3Int> positionToOccupy)
+    internal void RpcAddObjectToGridData(NetworkIdentity networkIdentity, PlacementData data, List<Vector3Int> positionToOccupy)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<GridDataNetwork>(out var gridDataNetwork))
-            gridDataNetwork.RespondFromServerUpdateGridData(data, positionToOccupy);
+            gridDataNetwork.RespondFromServerToAddObjectToGridData(data, positionToOccupy);
+    }
+
+    [Command]
+    internal void CmdRemoveObjectFromGridData(NetworkIdentity networkIdentity, List<Vector3Int> positionToRemove)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GridDataNetwork>(out var gridDataNetwork))
+            RpcRemoveObjectFromoGridData(networkIdentity, positionToRemove);
+    }
+    [ClientRpc]
+    internal void RpcRemoveObjectFromoGridData(NetworkIdentity networkIdentity, List<Vector3Int> positionToRemove)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GridDataNetwork>(out var gridDataNetwork))
+            gridDataNetwork.RespondFromServerToRemoveObjectFromGridData(positionToRemove);
+    }
+
+    [Command]
+    public void CmdContructionEndProcess(NetworkIdentity networkIdentity, GameObject building)
+    {
+
+          if (networkIdentity != null && networkIdentity.TryGetComponent<GameObject>(out var gameObject))
+             NetworkServer.Destroy(gameObject);
+        RpcSetActiveGameObject(building, true);
+    }
+    [ClientRpc]
+    public void RpcSetActiveGameObject(GameObject gameObject, bool value)
+    {
+        gameObject.SetActive(value);
+    }
+
+    [Command]
+    public void CmdRemoveEntity(GameObject gameObject)
+    {
+        NetworkServer.Destroy(gameObject);
     }
 
 

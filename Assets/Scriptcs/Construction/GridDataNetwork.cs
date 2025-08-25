@@ -14,15 +14,15 @@ public class GridDataNetwork : NetworkBehaviour
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(cellPosition, objectSize);
         PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
-        RequestToServerToUpdateGridData(data, positionToOccupy);
+        RequestToServerToAddObjectToGridData(data, positionToOccupy);
     }
-    public void RequestToServerToUpdateGridData(PlacementData data, List<Vector3Int> positionToOccupy)
+    public void RequestToServerToAddObjectToGridData(PlacementData data, List<Vector3Int> positionToOccupy)
     {
         if (PlayerController.LocalPlayer.isLocalPlayer)
-            PlayerController.LocalPlayer.CmdUpdateGridData(this.GetComponent<NetworkIdentity>(), data,
+            PlayerController.LocalPlayer.CmdAddObjectToGridData(this.GetComponent<NetworkIdentity>(), data,
                             positionToOccupy);
     }
-    public void RespondFromServerUpdateGridData(PlacementData data, List<Vector3Int> positionToOccupy)
+    public void RespondFromServerToAddObjectToGridData(PlacementData data, List<Vector3Int> positionToOccupy)
     {
         foreach (var pos in positionToOccupy)
         {
@@ -32,6 +32,19 @@ public class GridDataNetwork : NetworkBehaviour
         }
     }
 
+    public void RequestToServerToRemoveObjectFromGridData(List<Vector3Int> positionToRemove)
+    {
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdRemoveObjectFromGridData(this.GetComponent<NetworkIdentity>(), positionToRemove);
+    }
+
+    public void RespondFromServerToRemoveObjectFromGridData(List<Vector3Int> positionToRemove)
+    {
+        foreach (var pos in positionToRemove)
+        {
+            placedObjects.Remove(pos);
+        }
+    }
     private List<Vector3Int> CalculatePositions(Vector3Int cellPosition, Vector2Int objectSize)
     {
         List<Vector3Int> returnVal = new();
@@ -60,12 +73,5 @@ public class GridDataNetwork : NetworkBehaviour
         return true;
     }
 
-    internal void RemoveObjectAt(List<Vector3Int> positionToRemove)
-    {
-        foreach (var pos in positionToRemove)
-        {
-            placedObjects.Remove(pos);
-        }
-    }
 
 }
