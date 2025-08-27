@@ -20,12 +20,12 @@ public class RemoveEntity : MonoBehaviour
         }
         Debug.Log(building.positionToOccupy.Count + " < --- ");
         gridData.RequestToServerToRemoveObjectFromGridData(building.positionToOccupy);
-        PlayerController.LocalPlayer.CmdRemoveEntity(building.gameObject);
+        PlayerController.LocalPlayer.CmdRemoveGameObject(building.gameObject);
     }
 
     public void RemoveEntityFromGame(Unit unit)
     {
         PlayerController.LocalPlayer.controlledUnits.RemoveUnit(unit);
-        Destroy(unit.gameObject);
+        PlayerController.LocalPlayer.CmdRemoveGameObject(unit.gameObject);
     }
 }

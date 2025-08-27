@@ -18,7 +18,7 @@ MonoBehaviour:
   attack: 5
   speed: 5
   unitSprite: {fileID: 21300000, guid: 0684e1a8dd3a99040acd54dde2a32a0a, type: 3}
-  unitPrefab: {fileID: 8117000407933228372, guid: ac54060b8d360824d825de4a4c2d582d, type: 3}
+  unitPrefab: {fileID: 25436527979274690, guid: c4d26f87a84386b4f8c0eda4295e9938, type: 3}
   productionTime: 5
   objectPrices:
   - <priceType>k__BackingField: 1

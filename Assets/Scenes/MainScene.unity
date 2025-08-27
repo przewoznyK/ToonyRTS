@@ -476,6 +476,7 @@ GameObject:
   - component: {fileID: 66992309}
   - component: {fileID: 66992308}
   - component: {fileID: 66992307}
+  - component: {fileID: 66992310}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -557,6 +558,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &66992310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66992306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &79161205
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,6 +2087,16 @@ MonoBehaviour:
   - {fileID: 8984050540277095674, guid: 3c6e493a5ab309446843df8a5caea929, type: 3}
   - {fileID: 2237854018009168677, guid: 507e172549042e84c96f899370b0d073, type: 3}
   - {fileID: 4185059133582313794, guid: 566c19c2432728f408d655d726e9ea01, type: 3}
+  - {fileID: 6105883438009200769, guid: 96ae41039a2054645b587a6850d0e41f, type: 3}
+  - {fileID: 3233483462419014237, guid: 93aef26657c8a4344a44ea26f92b9082, type: 3}
+  - {fileID: 6406861800826851747, guid: 9688bf977e9f65c43a1aa24d35bfec88, type: 3}
+  - {fileID: 4974017246394439791, guid: 58abb9f0fe7c902439e312184ba9cd94, type: 3}
+  - {fileID: 742799887895236592, guid: f5582f4fea7433e46aece7d0d5d55916, type: 3}
+  - {fileID: 256414972649936468, guid: 3812dabafe4ce854aa80daf9448093de, type: 3}
+  - {fileID: 5901932244641710482, guid: 368f2ac582fad234aab6c02d52bd9050, type: 3}
+  - {fileID: 9219210834630749054, guid: 6c2c884ca53e4ea468284c64fb024609, type: 3}
+  - {fileID: 25436527979274690, guid: c4d26f87a84386b4f8c0eda4295e9938, type: 3}
+  - {fileID: 603770529138922173, guid: 45e6092f2e5c01041b47c01fe1599164, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2

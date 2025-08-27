@@ -10,24 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9a4ac8b1b190e24fac7463893398ee5, type: 3}
-  m_Name: Farm
+  m_Name: FarmSO_Building_Data
   m_EditorClassIdentifier: 
   buildingID: 3
   buildingName: 3
   health: 1000
-  buildingSprite: {fileID: 21300000, guid: 6382bcd9afbce294b996cb964a8bf457, type: 3}
+  buildingIcon: {fileID: 21300000, guid: 9bdfef7a066beba478a58913de7b9cfc, type: 3}
+  buildingPreviewMesh: {fileID: 4300000, guid: 520e20395d1150a4c94174228bde0499, type: 3}
   buildingPrefab: {fileID: 4974017246394439791, guid: 58abb9f0fe7c902439e312184ba9cd94, type: 3}
   <size>k__BackingField: {x: 3, y: 3}
   objectPrices:
   - <priceType>k__BackingField: 2
     <priceValue>k__BackingField: 10
-  positionToOccupy:
-  - {x: 1, y: 0, z: 9}
-  - {x: 1, y: 0, z: 10}
-  - {x: 1, y: 0, z: 11}
-  - {x: 2, y: 0, z: 9}
-  - {x: 2, y: 0, z: 10}
-  - {x: 2, y: 0, z: 11}
-  - {x: 3, y: 0, z: 9}
-  - {x: 3, y: 0, z: 10}
-  - {x: 3, y: 0, z: 11}

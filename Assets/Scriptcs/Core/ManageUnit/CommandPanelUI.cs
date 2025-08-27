@@ -64,10 +64,8 @@ public class CommandPanelUI : MonoBehaviour
         currentSelectedBuilding = null;
         currentSelectedUnits = unitsList;
         productionPanel.gameObject.SetActive(false);
-        var buildingList = BuildingDatabase.Instance.GetBuildingList();
-        
-     
 
+        var buildingList = BuildingDatabase.Instance.GetBuildingList();
         for (int i = 0; i < buildingList.Count; i++)
         {
             var buildingDataForButton = buildingList[i];
@@ -75,7 +73,6 @@ public class CommandPanelUI : MonoBehaviour
             currentButton.onClick.RemoveAllListeners();
             currentButton.image.sprite = buildingDataForButton.buildingIcon;
             SetButtonColorStatusByPrice(currentButton, buildingDataForButton.objectPrices);
-
             currentButton.onClick.AddListener(() => previewSystem.StartPreview(currentSelectedUnits, buildingDataForButton));
         }
 
@@ -84,7 +81,6 @@ public class CommandPanelUI : MonoBehaviour
         {
             removeEntityButton.onClick.AddListener(() => RemoveEntityWithButton(unit));
         }
-  
     }
 
     public void DisplayProductionQueue(Building building)
@@ -120,7 +116,6 @@ public class CommandPanelUI : MonoBehaviour
     }
 
     // BUTTONS
-
     public void ClearCommandButtons()
     {
         foreach (var button in commandButtons)

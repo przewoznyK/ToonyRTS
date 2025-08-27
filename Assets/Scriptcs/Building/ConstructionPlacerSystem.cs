@@ -16,22 +16,20 @@ public class ConstructionPlacerSystem : NetworkBehaviour
     }
     internal void PlaceConstruction(PlayerResources playerResources, GridDataNetwork gridData, ConstructionData currentConstructionData)
     {
-        
-        gridData.UpdateGridDataInLocal(currentConstructionData.positionToOccupy, currentConstructionData.buildingData.size, 1, 1, currentConstructionData);
+        List<Vector3Int> positionsToOccupy = gridData.UpdateGridDataInLocal(currentConstructionData.positionToOccupy, currentConstructionData.buildingData.size, 1, 1, currentConstructionData);
         if(currentConstructionData.createFromPreviewSystem == true)
         {
             // Pay Cost
             playerResources.SpendResources(currentConstructionData.buildingData.objectPrices);
 
-            constructionRepresentation.SetFinishBuilding(currentConstructionData.buildingData.buildingPrefab, currentConstructionData.buildingData.positionToOccupy);
             Vector3 position = currentConstructionData.positionToOccupy;
             Vector2 size = currentConstructionData.buildingData.size;
 
             List<Unit> selectedUnits = activeClickableObject.controlledUnits.TakeSelectedUnitList();
 
-            PlayerController.LocalPlayer.CmdSpawnConstructionRepresentation(position, size, selectedUnits, currentConstructionData.teamColor, currentConstructionData.buildingData.positionToOccupy);
+            PlayerController.LocalPlayer.CmdSpawnConstructionRepresentation(currentConstructionData.buildingData.buildingID, position, size, selectedUnits, currentConstructionData.teamColor, positionsToOccupy);
         }
         else
-            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.positionToOccupy, currentConstructionData.teamColor, currentConstructionData.buildingData.positionToOccupy);
+            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.buildingData.buildingID ,currentConstructionData.positionToOccupy, currentConstructionData.teamColor, positionsToOccupy);
     }
 }

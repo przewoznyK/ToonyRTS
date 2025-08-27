@@ -20,6 +20,7 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
     internal void EndProcess()
     {
         PlayerController.LocalPlayer.CmdContructionEndProcess(this.GetComponent<NetworkIdentity>(), finishBuilding);
+        PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
     }
 
     public bool WorkOnBuilding(int value)

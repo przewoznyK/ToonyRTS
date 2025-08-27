@@ -7,14 +7,15 @@ public class GridDataNetwork : NetworkBehaviour
 {
     Dictionary<Vector3Int, PlacementData> placedObjects = new();
 
-    public void UpdateGridDataInLocal(Vector3Int cellPosition,
+    public List<Vector3Int> UpdateGridDataInLocal(Vector3Int cellPosition,
                             Vector2Int objectSize,
                             int ID,
                             int placedObjectIndex, ConstructionData constructionData)
     {
-        List<Vector3Int> positionToOccupy = CalculatePositions(cellPosition, objectSize);
-        PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
-        RequestToServerToAddObjectToGridData(data, positionToOccupy);
+        List<Vector3Int> positionsToOccupy = CalculatePositions(cellPosition, objectSize);
+        PlacementData data = new PlacementData(positionsToOccupy, ID, placedObjectIndex);
+        RequestToServerToAddObjectToGridData(data, positionsToOccupy);
+        return positionsToOccupy;
     }
     public void RequestToServerToAddObjectToGridData(PlacementData data, List<Vector3Int> positionToOccupy)
     {

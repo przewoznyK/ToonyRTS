@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9a4ac8b1b190e24fac7463893398ee5, type: 3}
-  m_Name: Barrack
+  m_Name: ArcherySO_Building_Data
   m_EditorClassIdentifier: 
-  buildingID: 1
+  buildingID: 2
   buildingName: 2
   health: 1000
-  buildingSprite: {fileID: 21300000, guid: 7b511e2eae6a6fd4d945e79394bc76c2, type: 3}
-  buildingPrefab: {fileID: 256414972649936468, guid: 3812dabafe4ce854aa80daf9448093de, type: 3}
+  buildingIcon: {fileID: 21300000, guid: 04e6b3a5165989447850c74a83dfe88e, type: 3}
+  buildingPreviewMesh: {fileID: 4300000, guid: 7036859d28e2cb84c9948a1fcf49fe95, type: 3}
+  buildingPrefab: {fileID: 742799887895236592, guid: f5582f4fea7433e46aece7d0d5d55916, type: 3}
   <size>k__BackingField: {x: 5, y: 5}
   objectPrices:
   - <priceType>k__BackingField: 1
     <priceValue>k__BackingField: 100
-  positionToOccupy: []

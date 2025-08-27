@@ -100,7 +100,6 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
     void OnTeamColorChanged(TeamColorEnum oldColor, TeamColorEnum newColor)
     {
-        Debug.Log("ON TEAM COLOR CHANGED");
         setProperstiesByTeamColor.Init();
     }
     #endregion

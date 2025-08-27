@@ -1,39 +1,41 @@
+using Mirror;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
+public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties
 {
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingType;
     [SerializeField] public ResourceTypesEnum resourceType;
-    [SerializeField] private int _totalAvailable = 20;
 
-    public int _available;
-    public bool IsDepleted => _available <= 0;
+    [SerializeField] private int totalAvailable = 20;
+
+    [SyncVar(hook = nameof(OnAvailableChanged))]
+    public int available;
 
     private void OnEnable()
     {
-        _available = _totalAvailable;
+        available = totalAvailable;
     }
 
     public bool Take(GathererTaskManager gathererTaskManager)
     {
-        _available--;
-        UpdateSize();
-        if (_available <= 0)
+        PlayerController.LocalPlayer.CmdTakeResource(this.netIdentity);
+        Debug.Log(available);
+        if (available <= 0)
         {
             gathererTaskManager.currentGatherableResource = null;
-            gameObject.SetActive(false);
+            PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
             return false;
         }
         return true;
     }
 
-    private void UpdateSize()
+    private void OnAvailableChanged(int oldValue, int newValue)
     {
-        float scale = (float)_available / _totalAvailable;
+        float scale = (float)available / totalAvailable;
         if (scale > 0 && scale < 1f)
         {
             var vectorScale = Vector3.one * scale;
@@ -50,7 +52,7 @@ public class GatherableResource : MonoBehaviour, IGetTeamAndProperties
         }
     }
 
-    public void SetAvailable(int amount) => _available = amount;
+    public void SetAvailable(int amount) => available = amount;
 
     public TeamColorEnum GetTeam()
     {

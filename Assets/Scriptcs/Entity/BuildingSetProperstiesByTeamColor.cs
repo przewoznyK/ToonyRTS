@@ -9,6 +9,7 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
     [SerializeField] private MeshRenderer[] meshsToChangeMaterial;
     public void Init()
     {
+        Debug.Log("INIT");
         entityHealth.SetTeamColor(building.teamColor);
 
         Material teamMaterialColor = TeamColorDatabase.Instance.GetTeamMaterialColor(building.teamColor);
