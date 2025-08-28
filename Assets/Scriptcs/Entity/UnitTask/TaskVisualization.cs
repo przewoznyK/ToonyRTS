@@ -61,7 +61,6 @@ public class TaskVisualization : MonoBehaviour
             lineRenderer.positionCount = requestedTasks.Count + 1;
             foreach (var task in requestedTasks)
             {
-                Debug.Log("TASK VISUALIZATION " + task.taskPosition);
                 vizualizationGameObject = Instantiate(taskVizualizationPrefab, task.taskPosition, Quaternion.identity, taskVizualizationContainer);
                 if (task.unitTaskType == UnitTaskTypeEnum.GoToPosition)
                 {

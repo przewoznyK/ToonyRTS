@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class GathererNew : Unit
 {
+    private void Update()
+    {
+        var collider = GetComponent<CapsuleCollider>();
+    }
     public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
         if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)

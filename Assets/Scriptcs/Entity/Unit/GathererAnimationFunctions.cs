@@ -24,7 +24,10 @@ public class GathererAnimationFunctions : UnitAnimationFunctions
     public void BuildingConstruction()
     {
         if (gathererTaskManager.currentConstionBuildingTarget)
-            if(gathererTaskManager.currentConstionBuildingTarget.WorkOnBuilding(3) == false)
-                gathererTaskManager.ResetGathererProperties();
+        {
+            gathererTaskManager.currentConstionBuildingTarget.WorkOnBuilding(3);
+
+        }
+
     }
 }

@@ -18,7 +18,7 @@ MonoBehaviour:
   buildingIcon: {fileID: 21300000, guid: 7b511e2eae6a6fd4d945e79394bc76c2, type: 3}
   buildingPreviewMesh: {fileID: 4300004, guid: e2f28d7d7478cb64597ebb9077abfe6e, type: 3}
   buildingPrefab: {fileID: 256414972649936468, guid: 3812dabafe4ce854aa80daf9448093de, type: 3}
-  <size>k__BackingField: {x: 5, y: 5}
+  <size>k__BackingField: {x: 10, y: 10}
   objectPrices:
   - <priceType>k__BackingField: 1
     <priceValue>k__BackingField: 100

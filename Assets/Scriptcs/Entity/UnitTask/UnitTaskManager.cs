@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -219,7 +220,6 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RespondFromServerToCreateGoToPositionTask(Vector3 positionPoint)
     {
-        Debug.Log(positionPoint);
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         GoToPositionTask newTask = new(positionPoint);
@@ -262,4 +262,9 @@ public class UnitTaskManager : NetworkBehaviour
         respondFromServer = true;
     }
     public virtual void RequestToServerToBuildConstructionTask(GameObject constructionInstantiate) { }
+
+    public virtual void StopBuildingThisConstruction()
+    {
+        throw new NotImplementedException();
+    }
 }

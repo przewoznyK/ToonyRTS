@@ -44,7 +44,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     {
         InitUniversalFunction();
         if (isGoingToMeetingPoint)
-            unitTaskManager.RequestToServerToCreateGoToPositionTask(meetingPoint);
+            GoToMeetingPoint();
 
     }
     public void InitUniversalFunction()
@@ -60,6 +60,19 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
         entityHealth.onHurtAction += HurtUnit;
         entityHealth.onDeathActiom += () => DeleteUnit();
 
+    }
+
+    void GoToMeetingPoint()
+    {
+        unitTaskManager.RequestToServerToCreateGoToPositionTask(meetingPoint);
+        StartCoroutine(ChangeAgentQualityAfterDelay(ObstacleAvoidanceType.HighQualityObstacleAvoidance, 3f));
+    }
+
+    IEnumerator ChangeAgentQualityAfterDelay(ObstacleAvoidanceType obstacleAvoidanceType, float time)
+    {
+
+        yield return new WaitForSeconds(time);
+        agent.obstacleAvoidanceType = obstacleAvoidanceType;
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 
@@ -77,10 +90,6 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
 
-    public void GoMeetingPosition(Vector3 position)
-    {
-        agent.SetDestination(position);
-    }
     public virtual void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed) => Debug.Log("Override this method");
 
     public TeamColorEnum GetTeam()

@@ -602,13 +602,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.34682897, y: -0.39044833, z: 0.161729, w: 0.8373192}
-  m_LocalPosition: {x: 7.2, y: 0, z: 247.2}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2003614422}
-  m_LocalEulerAnglesHint: {x: 45, y: -50, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2251,13 +2251,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d7932474ae265546b86b5bc64b52d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTransform: {fileID: 330585546}
+  cameraTransform: {fileID: 2003614422}
   followTransform: {fileID: 0}
   moveWithKeyboad: 1
   moveWithEdgeScrolling: 0
   moveWithMouseDrag: 1
-  fastSpeed: 0.05
-  normalSpeed: 0.05
+  fastSpeed: 1
+  normalSpeed: 0.5
   movementSensitivity: 1
   edgeSize: 50
 --- !u!4 &2003614422
@@ -2268,14 +2268,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003614420}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -180, y: 15, z: -182.9}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
+  m_LocalPosition: {x: -1.2, y: 30, z: -19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 330585546}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!4 &2041854851 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 307329807927053998, guid: 93aef26657c8a4344a44ea26f92b9082, type: 3}

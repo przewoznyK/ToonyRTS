@@ -9,6 +9,8 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
     [SerializeField] private BuildingTypeEnum buildingTypeEnum;
     public GameObject finishBuilding;
     public List<Vector3Int> positionToOccupy;
+    public List<GathererNew> gatherersBuildingThisConstruction;
+
 
     [SerializeField] private int timeToBuilt;
     public void SetFinishBuilding(GameObject builtToCreate, List<Vector3Int> positionOccupied)
@@ -19,6 +21,10 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
 
     internal void EndProcess()
     {
+        foreach (var gatherer in gatherersBuildingThisConstruction)
+        {
+            gatherer.unitTaskManager.StopBuildingThisConstruction();
+        }
         PlayerController.LocalPlayer.CmdContructionEndProcess(this.GetComponent<NetworkIdentity>(), finishBuilding);
         PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
     }

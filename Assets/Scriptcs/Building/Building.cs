@@ -55,6 +55,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
         Unit unit = unitInstantiate.GetComponent<Unit>();
         unit.isGoingToMeetingPoint = true;
         unit.meetingPoint = meetingPoint.transform.position;
+        Debug.Log("ORIGIN " + meetingPoint.transform.position);
         unit.teamColor = teamColor;
         NetworkServer.Spawn(unitInstantiate, connectionToClient);        
     }

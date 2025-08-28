@@ -82,8 +82,9 @@ public class GathererTaskManager : UnitTaskManager
                 else if (currentTask is BuildConstructionTask construction)
                 {
                     currentConstionBuildingTarget = construction.constructionBuildingRepresentation;
+                    construction.constructionBuildingRepresentation.gatherersBuildingThisConstruction.Add((GathererNew)this.unit);
                     unit.agent.stoppingDistance = unit.attackRange;
-                    constructionToBuildPosition = construction.constructionPosition;
+                Debug.Log("Change Position");
                     RequestToServerToMoveUnit(construction.constructionPosition);
                     RequestToServerToChangeAnimatorSpeed(1);
                     isGoingToBuildingConstruction = true;
@@ -172,7 +173,10 @@ public class GathererTaskManager : UnitTaskManager
     {
         gatheredResources = newObjectPrices;
     }
-
+    public override void StopBuildingThisConstruction()
+    {
+        ResetGathererProperties();
+    }
     public void ResetGathererProperties()
     {
         RequestToServerToSetBoolAnimation("Harvest", false);

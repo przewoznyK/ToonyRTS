@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour
     public const string INPUT_GAME_RMB_Click = "RMB Click";
     // Keyboard
     public const string INPUT_GAME_SHIFT = "Shift";
+    public const string INPUT_GAME_MOVE = "Move";
 
     private void Awake()
     {

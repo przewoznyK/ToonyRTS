@@ -33,23 +33,10 @@ public class RTSCameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        // Allow Camera to follow Target
-        if (followTransform != null)
-        {
-            transform.position = followTransform.position;
-        }
-        // Let us control Camera
-        else
-        {
-            HandleCameraMovement();
-        }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            followTransform = null;
-        }
+            HandleCameraMovement();
     }
 
     void HandleCameraMovement()
@@ -57,31 +44,28 @@ public class RTSCameraController : MonoBehaviour
         // Keyboard Control
         if (moveWithKeyboad)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            movementSpeed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : normalSpeed;
+
+            // Zbieramy kierunek ruchu
+            Vector3 direction = Vector3.zero;
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+                direction += Vector3.forward;
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+                direction += Vector3.back;
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                direction += Vector3.right;
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+                direction += Vector3.left;
+
+   
+            if (direction.magnitude > 0)
             {
-                movementSpeed = fastSpeed;
-            }
-            else
-            {
-                movementSpeed = normalSpeed;
+                direction.Normalize();
+
+                // Ruch tylko, jeœli jest jakiœ kierunek
+                transform.position += direction * movementSpeed;
             }
 
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-            {
-                newPosition += (transform.forward * movementSpeed);
-            }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            {
-                newPosition += (transform.forward * -movementSpeed);
-            }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                newPosition += (transform.right * movementSpeed);
-            }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            {
-                newPosition += (transform.right * -movementSpeed);
-            }
         }
 
         // Edge Scrolling
@@ -114,7 +98,7 @@ public class RTSCameraController : MonoBehaviour
 
         }
 
-        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementSensitivity);
+     //   transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementSensitivity);
 
         //     Cursor.lockState = CursorLockMode.Confined; // If we have an extra monitor we don't want to exit screen bounds
     }
