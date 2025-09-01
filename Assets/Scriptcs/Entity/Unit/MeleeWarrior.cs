@@ -14,4 +14,17 @@ public class MeleeWarrior : Unit
             if (component.GetTeam() != teamColor)
                 unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
+
+    public override void PlayerLeftMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
+    {
+        if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
+            unitTaskManager.RequestToServerToResetTasks();
+
+        if (aggressiveApproach)
+        {
+            Debug.Log("LEFT PLAYER REQUEST");
+            unitTaskManager.RequestToServerToCreateAggressiveApproachTask(hit.point);
+        }
+
+    }
 }

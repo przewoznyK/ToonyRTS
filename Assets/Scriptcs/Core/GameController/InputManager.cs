@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerInput))]
 public class InputManager : MonoBehaviour
 {
-    private TeamColorEnum myTeamColor;
+    public static InputManager Instance;
 
     public PlayerInput Inputs { get; private set; }
  
@@ -19,8 +20,17 @@ public class InputManager : MonoBehaviour
     public const string INPUT_GAME_SHIFT = "Shift";
     public const string INPUT_GAME_MOVE = "Move";
 
+    public bool isMouseOverGameObject;
     private void Awake()
     {
+        Instance = this;
         Inputs = GetComponent<PlayerInput>();
+    }
+
+    private void Update()
+    {
+        if (EventSystem.current.IsPointerOverGameObject())
+            isMouseOverGameObject = true;
+        else isMouseOverGameObject = false;
     }
 }

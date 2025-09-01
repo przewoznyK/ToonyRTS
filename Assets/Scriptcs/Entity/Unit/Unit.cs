@@ -16,6 +16,8 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     protected Transform activator;
     [SerializeField] protected SphereCollider enemyDecetorCollider;
     private Transform bodyToDrop;
+    public bool aggressiveApproach;
+
     [Header("Unit Stats")]
     public int damage;
     public float attackRange;
@@ -91,6 +93,8 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
 
     public virtual void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed) => Debug.Log("Override this method");
+    public virtual void PlayerLeftMouseButtonCommand(RaycastHit hit, bool isShiftPressed) => Debug.Log("Override this method");
+
 
     public TeamColorEnum GetTeam()
     {
@@ -148,4 +152,6 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
         unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
         SetActiveEnemyDetector(false);
     }
+
+
 }

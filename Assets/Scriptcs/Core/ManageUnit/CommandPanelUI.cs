@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -13,16 +15,20 @@ public class CommandPanelUI : MonoBehaviour
 
     private InputAction RMBClickAction;
 
-    [SerializeField] private Button[] commandButtons;
+    [SerializeField] private Button[] classCommandButtons;
     [SerializeField] private Transform productionPanel;
     [SerializeField] private GameObject productRepresentationPrefab;
+    [SerializeField] private Button removeEntityButton;
+    [SerializeField] private Button toggleAggresiveApproachButton;
+    [SerializeField] private Image toggleAggresiveApproachButtonStatusColor;
     List<UnitNameEnum> unitCanBuyList;
     private Image currentProductionImageFill;
-    public Building currentSelectedBuilding;
+    public Building currentSelectedBuilding { get; private set; }
     private BuildingProductionData buildingProductionData;
     public List<Unit> currentSelectedUnits;
 
-    [SerializeField] private Button removeEntityButton;
+    public bool aggresiveApproach;
+
     public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem)
     {
         this.playerResources = playerResources;
@@ -31,6 +37,25 @@ public class CommandPanelUI : MonoBehaviour
         this.inputManager = inputManager;
         this.previewSystem = previewSystem;
         RMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
+    }
+
+    private void Update()
+    {
+        if (currentProductionImageFill != null)
+        {
+            currentProductionImageFill.fillAmount = buildingProductionData.currentTimeProduction / buildingProductionData.timeProduction;
+        }
+    }
+    private void OnEnable()
+    {
+
+        RMBClickAction.performed += SetMeetingPositionWithRightMouseButton;
+    }
+    private void OnDisable()
+    {
+        if (currentSelectedBuilding != null)
+            currentSelectedBuilding.DisableObject();
+        RMBClickAction.performed -= SetMeetingPositionWithRightMouseButton;
     }
 
     public void PrepareBuildingUI(Building building)
@@ -47,7 +72,7 @@ public class CommandPanelUI : MonoBehaviour
         for (int i = 0; i < unitCanBuyList.Count; i++)
         {
             var unitDataForButton = UnitDatabase.Instance.GetUnitDataByNameEnum(unitCanBuyList[i]);
-            var currentButton = commandButtons[i];
+            var currentButton = classCommandButtons[i];
             currentButton.onClick.RemoveAllListeners();
             currentButton.image.sprite = unitDataForButton.unitSprite;
             SetButtonColorStatusByPrice(currentButton, unitDataForButton.objectPrices);
@@ -65,23 +90,41 @@ public class CommandPanelUI : MonoBehaviour
         currentSelectedUnits = unitsList;
         productionPanel.gameObject.SetActive(false);
 
-        var buildingList = BuildingDatabase.Instance.GetBuildingList();
-        for (int i = 0; i < buildingList.Count; i++)
-        {
-            var buildingDataForButton = buildingList[i];
-            var currentButton = commandButtons[i];
-            currentButton.onClick.RemoveAllListeners();
-            currentButton.image.sprite = buildingDataForButton.buildingIcon;
-            SetButtonColorStatusByPrice(currentButton, buildingDataForButton.objectPrices);
-            currentButton.onClick.AddListener(() => previewSystem.StartPreview(currentSelectedUnits, buildingDataForButton));
-        }
+        PrepareButtonsByUnitClass(unitsList);
 
         removeEntityButton.onClick.RemoveAllListeners();
+        toggleAggresiveApproachButton.onClick.RemoveAllListeners();
+        toggleAggresiveApproachButtonStatusColor.color = Color.white;
+
+        aggresiveApproach = false;
         foreach (var unit in unitsList)
         {
             removeEntityButton.onClick.AddListener(() => RemoveEntityWithButton(unit));
+            toggleAggresiveApproachButton.onClick.AddListener(() => SetAggresiveApproachButton());
+        }
+
+
+    }
+
+    public void PrepareButtonsByUnitClass(List<Unit> unitsList)
+    {
+        bool allGatherers = unitsList.All(unit => unit is GathererNew);
+        if (allGatherers)
+        {
+            var buildingList = BuildingDatabase.Instance.GetBuildingList();
+
+            for (int i = 0; i < buildingList.Count; i++)
+            {
+                var buildingDataForButton = buildingList[i];
+                var currentButton = classCommandButtons[i];
+                currentButton.onClick.RemoveAllListeners();
+                currentButton.image.sprite = buildingDataForButton.buildingIcon;
+                SetButtonColorStatusByPrice(currentButton, buildingDataForButton.objectPrices);
+                currentButton.onClick.AddListener(() => previewSystem.StartPreview(currentSelectedUnits, buildingDataForButton));
+            }
         }
     }
+
 
     public void DisplayProductionQueue(Building building)
     {
@@ -118,7 +161,7 @@ public class CommandPanelUI : MonoBehaviour
     // BUTTONS
     public void ClearCommandButtons()
     {
-        foreach (var button in commandButtons)
+        foreach (var button in classCommandButtons)
         {
             button.onClick.RemoveAllListeners();
             button.image.sprite = null;
@@ -165,25 +208,9 @@ public class CommandPanelUI : MonoBehaviour
             }
         }
     }
-    private void OnEnable()
-    {
 
-        RMBClickAction.performed += SetMeetingPositionWithRightMouseButton;
-    }
-    private void OnDisable()
-    {
-        if(currentSelectedBuilding != null)
-            currentSelectedBuilding.DisableObject();
-        RMBClickAction.performed -= SetMeetingPositionWithRightMouseButton;
-    }
 
-    private void Update()
-    {
-        if(currentProductionImageFill != null)
-        {
-            currentProductionImageFill.fillAmount = buildingProductionData.currentTimeProduction / buildingProductionData.timeProduction;
-        }
-    }
+
     public void RemoveEntityWithButton(Building building)
     {
         RemoveEntity.Instance.RemoveEntityFromGame(building);
@@ -194,5 +221,33 @@ public class CommandPanelUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void SetAggresiveApproachButton()
+    {
+        Debug.Log("SET");
+        toggleAggresiveApproachButton.onClick.RemoveAllListeners();
 
+        foreach (var unit in currentSelectedUnits)
+        {
+            toggleAggresiveApproachButton.onClick.AddListener(() => ResetAggresiveApproachButton());
+            unit.aggressiveApproach = true;
+
+        }
+
+        toggleAggresiveApproachButtonStatusColor.color = Color.red;
+    }
+
+    private void ResetAggresiveApproachButton()
+    {
+        Debug.Log("RESET");
+        toggleAggresiveApproachButton.onClick.RemoveAllListeners();
+
+        foreach (var unit in currentSelectedUnits)
+        {
+            toggleAggresiveApproachButton.onClick.AddListener(() => SetAggresiveApproachButton());
+            unit.aggressiveApproach = true;
+
+        }
+
+        toggleAggresiveApproachButtonStatusColor.color = Color.white;
+    }
 }

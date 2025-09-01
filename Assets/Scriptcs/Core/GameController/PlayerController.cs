@@ -163,6 +163,19 @@ public class PlayerController : NetworkBehaviour
             taskManager.RespondFromServerToCreateAttackEntityTask(targetTeam, targetEntity);
     }
 
+    [Command]
+    public void CmdCreateAggressiveApproachTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            RpcCreateAggressiveApproachTask(networkIdentity, positionPoint);
+    }
+    [ClientRpc]
+    internal void RpcCreateAggressiveApproachTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+            taskManager.RespondFromServerToCreateAggressiveApproachTask(positionPoint);
+    }
+
     // Attack Entity 
     [Command]
     public void CmdAttackEntity(NetworkIdentity networkIdentity, Transform targetTransform)

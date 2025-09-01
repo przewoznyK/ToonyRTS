@@ -42,6 +42,16 @@ public class GathererNew : Unit
             }
         }
     }
+
+    public override void PlayerLeftMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
+    {
+        //if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
+        //    unitTaskManager.RequestToServerToResetTasks();
+
+        //if (hit.collider.CompareTag("Ground") && aggresiveApproach)
+        //    Debug.Log("111");
+    }
+
     internal void BuildConstruction(GameObject constructionInstantiate)
     {
         unitTaskManager.RequestToServerToBuildConstructionTask(constructionInstantiate);
