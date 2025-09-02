@@ -19,7 +19,6 @@ public class PlayerController : NetworkBehaviour
     {
         base.OnStartLocalPlayer();
         StartCoroutine(Delay());
-        Debug.Log(stockPileManager == null);
     }
     public void CreatePlayerController(TeamColorEnum teamColor, int startPositionX, int startPositionZ)
     {
@@ -58,7 +57,7 @@ public class PlayerController : NetworkBehaviour
         GameManager.Instance.buildingProduction.Init(GameManager.Instance.commandPanelUI, teamColor);
         GameManager.Instance.previewSystem.Init(playerResources, GameManager.Instance.inputManager, GameManager.Instance.constructionPlacerSystem, GameManager.Instance.gridDataNetwork, GameManager.Instance.activeClickableObject, teamColor);
         GameManager.Instance.constructionPlacerSystem.Init(playerResources, GameManager.Instance.activeClickableObject);
-
+        GameManager.Instance.commandShortcutKeyManager.Init(GameManager.Instance.inputManager, GameManager.Instance.commandPanelUI);
 
         GameManager.Instance.playerStartGameSetup.Init(playerResources, GameManager.Instance.constructionPlacerSystem, GameManager.Instance.gridDataNetwork, teamColor, startPositionX, startPositionZ);
 
@@ -319,6 +318,23 @@ public class PlayerController : NetworkBehaviour
         var resource = resourceNetId.GetComponent<GatherableResource>();
         if (resource != null)
             resource.available--;
+    }
+
+    [Command]
+    internal void CmdRemoveUnit(NetworkIdentity networkIdentity, Unit unit)
+    {
+        if (networkIdentity != null)
+        {
+            RpcRemoveUnit(unit);
+        }
+    }
+
+    [ClientRpc]
+    internal void RpcRemoveUnit(Unit unit)
+    {
+        unit.RespondFromServerToRemoveUnit();
+
+
     }
     #endregion
 }

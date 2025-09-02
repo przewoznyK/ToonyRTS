@@ -60,7 +60,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onHurtAction += HurtUnit;
-        entityHealth.onDeathActiom += () => DeleteUnit();
+        entityHealth.onDeathActiom += () => RequestToServerToRemoveUnit();
 
     }
 
@@ -124,19 +124,18 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
         if(unitTaskManager.taskTransform == null)
             StartCoroutine(IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage());
     }
-    public void DeleteUnit()
+    public void RequestToServerToRemoveUnit()
     {
         if(teamColor == PlayerController.LocalPlayer.teamColor)
-            PlayerController.LocalPlayer.controlledUnits.RemoveUnit(this);
-
-        EntitiesOnMapDatabase.Instance.RemoveUnitFromList(teamColor, this);
-        unitTaskManager.enabled = false;
-        animator.SetTrigger("Death");
-
-        bodyToDrop.SetParent(null, true);
-        Destroy(gameObject);
+            PlayerController.LocalPlayer.CmdRemoveUnit(this.netIdentity, this);
     }
 
+    public void RespondFromServerToRemoveUnit()
+    {
+        PlayerController.LocalPlayer.controlledUnits.RemoveUnit(this);
+        if (isServer)
+            PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
+    }
     public void SetActiveEnemyDetector(bool value) =>  enemyDecetorCollider.enabled = value;
 
     IEnumerator IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage()
@@ -145,13 +144,21 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 
         yield return new WaitForSeconds(1f);
         enemyDecetorCollider.radius = enemyDetectionRadius;
-
     }
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
-        unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
+        if (component == null)
+            return;
+
+        var team = component.GetTeam();
+        if (component == null)
+            return;
+
+        var props = component.GetProperties<Transform>();
+        if (component == null)
+            return;
+
+        unitTaskManager.RequestToServerToCreateAttackEntityTask(team, props);
         SetActiveEnemyDetector(false);
     }
-
-
 }

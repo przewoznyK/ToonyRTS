@@ -42,7 +42,6 @@ public class UnitTaskManager : NetworkBehaviour
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
-                unit.agent.stoppingDistance = unit.attackRange;
                 RequestToServerToAttackEntity(attackTarget.targetTransform);
                 RequestToServerToChangeAnimatorSpeed(1);
             }
@@ -52,12 +51,16 @@ public class UnitTaskManager : NetworkBehaviour
                 Unit closetEnemyUnit = DetectUnits(aggressiveApproach.taskPosition);
 
                 if (closetEnemyUnit != null)
-                    RequestToServerToAttackEntity(closetEnemyUnit.transform);
+                {
+                    RequestToServerToCreateAttackEntityTask(closetEnemyUnit.teamColor, closetEnemyUnit.transform);
+
+                }
                 else
                     RequestToServerToCreateGoToPositionTask(aggressiveApproach.taskPosition);
 
                 RequestToServerToChangeAnimatorSpeed(1);
                 GoToNextTask();
+                return;
             }
             isOnTask = true;
         }
@@ -77,7 +80,6 @@ public class UnitTaskManager : NetworkBehaviour
 
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
             {
-                Debug.Log("ATTACK TARGET  TASK " + currentTask.targetTransform.position);
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
@@ -94,6 +96,17 @@ public class UnitTaskManager : NetworkBehaviour
                         isOnTask = false;
                         RequestToServerToChangeAnimatorSpeed(0);
                     }
+                }
+                else
+                {
+                    Unit closetEnemyUnit = FindNearestEnemy(enemyTeamTarget);
+
+                    if (closetEnemyUnit != null)
+                    {
+                        RequestToServerToAttackEntity(closetEnemyUnit.transform);
+                    }
+                    else
+                        GoToNextTask();
                 }
             }
         }
@@ -154,32 +167,38 @@ public class UnitTaskManager : NetworkBehaviour
         }
         if (taskTransform == null && requestedTasks.Count == 0)
         {
-            Transform nearestEnemy = FindNearestEnemy(enemyTeamTarget);
-            if (nearestEnemy != null)
+            Unit closetEnemyUnit = FindNearestEnemy(enemyTeamTarget);
+
+            if (closetEnemyUnit != null)
             {
-                if (Vector3.Distance(nearestEnemy.position, transform.position) > unit.attackRange)
-                {
-                    AttackTargetTask newTask = new(nearestEnemy);
-                    requestedTasks.AddFirst(newTask);
-                    DoTask();
-                }
+                RequestToServerToAttackEntity(closetEnemyUnit.transform);
+                return false;
             }
         }
-        else 
-        {
-            requestedTasks.First.Value.EndTask();
-            requestedTasks.RemoveFirst();
-            DoTask();
-            taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks);
-        }
-        
-   
+        else
+            GoToNextTask();
+
+
         return false;
     }
-    public Transform FindNearestEnemy(TeamColorEnum teamColor)
+    private void AttackNearestEnemyByTeamColor()
     {
-        Transform nearestEnemy = EntitiesOnMapDatabase.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
-        return nearestEnemy;
+        Unit closettEnemy = FindNearestEnemy(enemyTeamTarget);
+        if (closettEnemy != null)
+        {
+          //  Debug.Log("Znalazlem enemy");
+            if (Vector3.Distance(closettEnemy.transform.position, transform.position) > unit.attackRange)
+            {
+                AttackTargetTask newTask = new(closettEnemy.transform);
+                requestedTasks.AddFirst(newTask);
+                DoTask();
+            }
+        }
+    }
+    public Unit FindNearestEnemy(TeamColorEnum teamColor)
+    {
+        Unit closettEnemy = EntitiesOnMapDatabase.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance);
+        return closettEnemy;
     }
     #region tasks
 
@@ -258,7 +277,6 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RespondFromServerToCreateAggressiveApproachTask(Vector3 positionPoint)
     {
-        Debug.Log("RESPOND AGGRESIVE");
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         AggressiveApproachTask newTask = new(positionPoint);
@@ -278,7 +296,6 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RequestToServerToAttackEntity(Transform targetTransform)
     {
-        Debug.Log("REQUEST TO ATTACK ENTITY ");
         if (PlayerController.LocalPlayer.isLocalPlayer)
             PlayerController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), targetTransform);
     }
@@ -324,7 +341,7 @@ public class UnitTaskManager : NetworkBehaviour
                 closestDistanceSqr = distanceSqr;
             }
         }
-        Debug.Log(closestUnit.name+ "CLOSET ENEMY");
+      //  Debug.Log(closestUnit.name+ "CLOSET ENEMY");
         return closestUnit;
     }
 }

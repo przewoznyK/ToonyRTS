@@ -4020,7 +4020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floatingHealthBsr: {fileID: 2624349839308790403}
-  maxHealth: 1000
+  maxHealth: 50
 --- !u!114 &5854089882970665631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4042,6 +4042,7 @@ MonoBehaviour:
   teamColor: 1
   entityType: 0
   enemyDecetorCollider: {fileID: 784655628790818481}
+  aggressiveApproach: 0
   damage: 5
   attackRange: 2
   attackCooldown: 2
@@ -4075,7 +4076,7 @@ MonoBehaviour:
   taskVisualization: {fileID: 2929459154559365107}
   lineRenderer: {fileID: 4838299357745353647}
   animatorSpeedValue: 0
-  respondFromServer: 0
+  detectionSphereEnemyAggressionApproachRadius: 10
   currentGatherableResource: {fileID: 0}
   currentResourceTypeGathering: 0
   maxCarried: 2

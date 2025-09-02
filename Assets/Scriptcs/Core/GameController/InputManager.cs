@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
     // Keyboard
     public const string INPUT_GAME_SHIFT = "Shift";
     public const string INPUT_GAME_MOVE = "Move";
+    public const string INPUT_TOGGLE_AGGRESSIVE_APPROACH_COMMAND = "Toggle Aggressive Approach Command";
 
     public bool isMouseOverGameObject;
     private void Awake()

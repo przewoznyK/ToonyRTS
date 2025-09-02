@@ -41,7 +41,6 @@ public class ConstructionPreviewSystem : MonoBehaviour
         mousePositionAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_MOUSE_POSITION];
         LMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
         RMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
-
     }
 
     private void OnEnable()

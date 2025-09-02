@@ -23,25 +23,25 @@ public class EntitiesOnMapDatabase : MonoBehaviour
         unitsListByTeamColor[teamColor].Remove(unit);
     }
 
-    public Transform GetClosestTransformEnemyByTeamColor(TeamColorEnum teamColor, Vector3 fromPosition, float maxSearchingDistance)
-    {;
+    public Unit GetClosestTransformEnemyByTeamColor(TeamColorEnum teamColor, Vector3 fromPosition, float maxSearchingDistance)
+    {
         var unitList = unitsListByTeamColor[teamColor];
         if (unitList.Count == 0)
             return null;
 
-        Transform closest = null;
+        Unit closestEnemy = null;
         float minDistance = float.MaxValue;
-
         foreach (var enemy in unitList)
         {
             float distance = Vector3.Distance(fromPosition, enemy.transform.position);
             if (distance < minDistance)
             {
                 minDistance = distance;
-                closest = enemy.transform;
+                closestEnemy = enemy;
             }
         }
-        return closest;
+
+        return closestEnemy;
 
     }
 }

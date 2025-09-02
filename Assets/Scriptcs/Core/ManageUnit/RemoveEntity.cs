@@ -25,7 +25,6 @@ public class RemoveEntity : MonoBehaviour
 
     public void RemoveEntityFromGame(Unit unit)
     {
-        PlayerController.LocalPlayer.controlledUnits.RemoveUnit(unit);
-        PlayerController.LocalPlayer.CmdRemoveGameObject(unit.gameObject);
+    
     }
 }

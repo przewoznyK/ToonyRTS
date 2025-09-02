@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public PlayerStartGameSetup playerStartGameSetup;
     public RemoveEntity removeEntity;
     public BuildingProduction buildingProduction;
-
+    public CommandShortcutKeyManager commandShortcutKeyManager;
 
     [Header("PlayerUI")]
     public SelectionInfoUI selectionInfoUI;

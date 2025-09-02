@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class ControlledUnits
 {
@@ -58,5 +59,6 @@ public class ControlledUnits
     {
         DeleteFromAllUnits(unit);
         DeleteFromSelectedUnits(unit);
+        EntitiesOnMapDatabase.Instance.RemoveUnitFromList(unit.teamColor, unit);
     }
 }

@@ -27,7 +27,7 @@ public class CommandPanelUI : MonoBehaviour
     private BuildingProductionData buildingProductionData;
     public List<Unit> currentSelectedUnits;
 
-    public bool aggresiveApproach;
+    private bool aggresiveApproach;
 
     public void Init(PlayerResources playerResources, ShopManager shopManager, BuildingProduction buildingProduction, InputManager inputManager, ConstructionPreviewSystem previewSystem)
     {
@@ -217,8 +217,20 @@ public class CommandPanelUI : MonoBehaviour
     }
     public void RemoveEntityWithButton(Unit unit)
     {
-        RemoveEntity.Instance.RemoveEntityFromGame(unit);
+
+        unit.RequestToServerToRemoveUnit();
         gameObject.SetActive(false);
+    }
+
+    public void ToggleAggresiveApproachButton()
+    {
+        if (gameObject.activeSelf == false)
+            return;
+        if (aggresiveApproach == false)
+            SetAggresiveApproachButton();
+        else ResetAggresiveApproachButton();
+
+        aggresiveApproach = !aggresiveApproach;
     }
 
     private void SetAggresiveApproachButton()

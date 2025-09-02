@@ -24,7 +24,6 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
     private void Start()
     {
-        Debug.Log(teamColor);
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onDeathActiom += () => RemoveEntity.Instance.RemoveEntityFromGame(this);
     }

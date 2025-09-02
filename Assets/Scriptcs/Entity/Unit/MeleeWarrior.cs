@@ -22,7 +22,6 @@ public class MeleeWarrior : Unit
 
         if (aggressiveApproach)
         {
-            Debug.Log("LEFT PLAYER REQUEST");
             unitTaskManager.RequestToServerToCreateAggressiveApproachTask(hit.point);
         }
 
