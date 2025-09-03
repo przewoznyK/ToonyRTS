@@ -174,7 +174,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 25436527979274690}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.1
+  m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 16
   avoidancePriority: 50
@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floatingHealthBsr: {fileID: 1727907265227178531}
-  maxHealth: 50
+  maxHealth: 30
 --- !u!114 &4078867702477575506
 MonoBehaviour:
   m_ObjectHideFlags: 0

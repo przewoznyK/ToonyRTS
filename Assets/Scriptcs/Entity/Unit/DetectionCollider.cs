@@ -11,6 +11,7 @@ public class DetectionCollider : MonoBehaviour
         {
             if ((component.GetTeam() != unit.teamColor) && (component.GetEntityType() == EntityTypeEnum.unit))
             {
+                GetComponent<SphereCollider>().enabled = false;
                 StartCoroutine(DelayedAttack(component));
             }
         }
@@ -19,6 +20,6 @@ public class DetectionCollider : MonoBehaviour
     private IEnumerator DelayedAttack(IGetTeamAndProperties target)
     {
         yield return new WaitForSeconds(2f);
-        unit.AttackDetectionTarget(target);
+            unit.AttackDetectionTarget(target);
     }
 }

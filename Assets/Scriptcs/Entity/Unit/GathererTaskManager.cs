@@ -54,9 +54,25 @@ public class GathererTaskManager : UnitTaskManager
                 }
                 else if (currentTask is AttackTargetTask attackTarget)
                 {
-                    unit.agent.stoppingDistance = unit.attackRange;
                     RequestToServerToAttackEntity(attackTarget.targetTransform);
                     RequestToServerToChangeAnimatorSpeed(1);
+                }
+                else if (currentTask is AggressiveApproachTask aggressiveApproach)
+                {
+                    unit.agent.stoppingDistance = unit.attackRange;
+                    Unit closetEnemyUnit = DetectUnits(aggressiveApproach.taskPosition);
+
+                    if (closetEnemyUnit != null)
+                    {
+                        RequestToServerToCreateAttackEntityTask(closetEnemyUnit.teamColor, closetEnemyUnit.transform);
+
+                    }
+                    else
+                        RequestToServerToCreateGoToPositionTask(aggressiveApproach.taskPosition);
+
+                    RequestToServerToChangeAnimatorSpeed(1);
+                    GoToNextTask();
+                    return;
                 }
                 else if (currentTask is GathererResourceTask gatherResource)
                 {
@@ -112,6 +128,7 @@ public class GathererTaskManager : UnitTaskManager
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
                 {
+                    // Working Task Unitl Unit Reach Enemy 
                     RequestToServerToMoveUnit(taskTransform.position);
 
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
@@ -121,9 +138,15 @@ public class GathererTaskManager : UnitTaskManager
                         else
                             StartCoroutine(AttackCycle("Attack"));
                         attackCycleActivated = true;
-                        isOnTask = false;
                         RequestToServerToChangeAnimatorSpeed(0);
+                        isOnTask = false;
                     }
+                }
+                else if (taskTransform == null && requestedTasks.Count == 1)
+                {
+                    GoToNextTask();
+                    AttackNearestEnemyByTeamColor();
+
                 }
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.GatherResource)

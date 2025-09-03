@@ -120,7 +120,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public void HurtUnit(Unit fromUnit)
     {
-        animator.SetTrigger("Hurt");
+     //   animator.SetTrigger("Hurt");
         if(unitTaskManager.taskTransform == null)
             StartCoroutine(IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage());
     }
@@ -147,18 +147,9 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
-        if (component == null)
-            return;
-
-        var team = component.GetTeam();
-        if (component == null)
-            return;
-
-        var props = component.GetProperties<Transform>();
-        if (component == null)
-            return;
-
-        unitTaskManager.RequestToServerToCreateAttackEntityTask(team, props);
-        SetActiveEnemyDetector(false);
+//        if (!isOwned) // lub !isLocalPlayer / !hasAuthority w zale¿noœci od konfiguracji
+//return;
+        if(PlayerController.LocalPlayer.teamColor == teamColor)
+            unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
 }

@@ -11,8 +11,12 @@ public class MeleeWarrior : Unit
             unitTaskManager.RequestToServerToCreateGoToPositionTask(hit.point);
 
         else if(hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
+        {
+            Debug.Log("STRZELAM W OBIEKT " + hit.collider.gameObject.name + "   " + component.GetTeam() + "   " + teamColor);
             if (component.GetTeam() != teamColor)
                 unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
+
+        }
     }
 
     public override void PlayerLeftMouseButtonCommand(RaycastHit hit, bool isShiftPressed)

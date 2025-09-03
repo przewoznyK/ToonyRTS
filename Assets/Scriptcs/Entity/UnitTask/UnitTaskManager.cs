@@ -44,6 +44,7 @@ public class UnitTaskManager : NetworkBehaviour
             {
                 RequestToServerToAttackEntity(attackTarget.targetTransform);
                 RequestToServerToChangeAnimatorSpeed(1);
+                Debug.Log(unit.teamColor + " DO TASK ATTACK ");
             }
             else if (currentTask is AggressiveApproachTask aggressiveApproach)
             {
@@ -63,6 +64,7 @@ public class UnitTaskManager : NetworkBehaviour
                 return;
             }
             isOnTask = true;
+   
         }
     }
 
@@ -84,6 +86,7 @@ public class UnitTaskManager : NetworkBehaviour
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
                 {
+                    // Working Task Unitl Unit Reach Enemy 
                     RequestToServerToMoveUnit(taskTransform.position);
 
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
@@ -93,20 +96,15 @@ public class UnitTaskManager : NetworkBehaviour
                         else
                             StartCoroutine(AttackCycle("Attack"));
                         attackCycleActivated = true;
-                        isOnTask = false;
                         RequestToServerToChangeAnimatorSpeed(0);
+                        isOnTask = false;
                     }
                 }
-                else
+                else if (taskTransform == null && requestedTasks.Count == 1)
                 {
-                    Unit closetEnemyUnit = FindNearestEnemy(enemyTeamTarget);
+                    GoToNextTask();
+                    AttackNearestEnemyByTeamColor();
 
-                    if (closetEnemyUnit != null)
-                    {
-                        RequestToServerToAttackEntity(closetEnemyUnit.transform);
-                    }
-                    else
-                        GoToNextTask();
                 }
             }
         }
@@ -117,9 +115,15 @@ public class UnitTaskManager : NetworkBehaviour
         {
             if (taskTransform != null)
             {
+             //   Debug.Log(unit.teamColor + "   " + taskTransform.gameObject.name + "   " + taskTransform.GetComponent<Unit>().teamColor);
                 var direction = taskTransform.position - transform.position;
-                var targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * UnityEngine.Time.deltaTime);
+
+       
+                    var targetRotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * UnityEngine.Time.deltaTime);
+        
+                
+           
             }
             else
                 rotateToTaskTransform = false;
@@ -134,6 +138,7 @@ public class UnitTaskManager : NetworkBehaviour
         RequestToServerToChangeAnimatorSpeed(0);
         DoTask();
         unit.SetActiveEnemyDetector(true);
+      //  Debug.Log(unit.teamColor + " GO TO NEXT TASK");
     }
 
     public IEnumerator AttackCycle(string animationTriggerName)
@@ -165,28 +170,31 @@ public class UnitTaskManager : NetworkBehaviour
             }
            
         }
-        if (taskTransform == null && requestedTasks.Count == 0)
+        else if (taskTransform == null && requestedTasks.Count == 1)
         {
-            Unit closetEnemyUnit = FindNearestEnemy(enemyTeamTarget);
-
-            if (closetEnemyUnit != null)
-            {
-                RequestToServerToAttackEntity(closetEnemyUnit.transform);
-                return false;
-            }
-        }
-        else
             GoToNextTask();
+            AttackNearestEnemyByTeamColor();
+
+        }
+        Debug.Log(unit.teamColor + " AKTUALNIE MAM " + requestedTasks.Count + " TASKOW ");
+
+        foreach (var item in requestedTasks)
+        {
+            Debug.Log("TASK " + item.unitTaskType);
+        }
+        //else
+        //    GoToNextTask();
 
 
         return false;
     }
-    private void AttackNearestEnemyByTeamColor()
+    internal void AttackNearestEnemyByTeamColor()
     {
+        Debug.Log(unit.teamColor + " SZUKAM ENEMY " + enemyTeamTarget);
         Unit closettEnemy = FindNearestEnemy(enemyTeamTarget);
         if (closettEnemy != null)
         {
-          //  Debug.Log("Znalazlem enemy");
+            Debug.Log(unit.teamColor + " Znalazlem enemy");
             if (Vector3.Distance(closettEnemy.transform.position, transform.position) > unit.attackRange)
             {
                 AttackTargetTask newTask = new(closettEnemy.transform);
@@ -258,11 +266,14 @@ public class UnitTaskManager : NetworkBehaviour
     // Attack Single Entity Task
     public virtual void RequestToServerToCreateAttackEntityTask(TeamColorEnum targetTeam, Transform targetEntity)
     {
+      //  if (!isLocalPlayer) return;
+        Debug.Log(unit.teamColor + "   REQUEST ATTACK  " + targetTeam + "  " + targetEntity.GetComponent<Unit>().teamColor);
         if (PlayerController.LocalPlayer.isLocalPlayer)
             PlayerController.LocalPlayer.CmdCreateAttackEntityTask(this.GetComponent<NetworkIdentity>(), targetTeam, targetEntity);
     }
     public void RespondFromServerToCreateAttackEntityTask(TeamColorEnum targetTeam, Transform targetEntity)
     {
+        Debug.Log(unit.teamColor + "   RESPOND ATTACK  " + targetTeam + "  " + targetEntity.GetComponent<Unit>().teamColor);
         unit.SetActiveEnemyDetector(false);
         AttackTargetTask newTask = new(targetEntity);
         enemyTeamTarget = targetTeam;
@@ -296,12 +307,16 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void RequestToServerToAttackEntity(Transform targetTransform)
     {
+        Debug.Log(unit.teamColor + " REQUEST FROM SERVER " + targetTransform.GetComponent<Unit>().teamColor);
+
         if (PlayerController.LocalPlayer.isLocalPlayer)
             PlayerController.LocalPlayer.CmdAttackEntity(this.GetComponent<NetworkIdentity>(), targetTransform);
     }
     public void RespondFromServerToAttackEntity(Transform targetTransform)
     {
         taskTransform = targetTransform;
+        unit.SetActiveEnemyDetector(false);
+   //     Debug.Log(unit.teamColor + " ReSPOND FROM SERVER " + targetTransform.GetComponent<Unit>().teamColor);
     }
     public virtual void RequestToServerToBuildConstructionTask(GameObject constructionInstantiate) { }
 
