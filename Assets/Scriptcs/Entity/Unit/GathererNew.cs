@@ -9,11 +9,11 @@ public class GathererNew : Unit
     public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
         if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
-            unitTaskManager.RequestToServerToResetTasks();
+         //   unitTaskManager.RequestToServerToResetTasks();
 
         if (hit.collider.CompareTag("Ground"))
         {
-            unitTaskManager.RequestToServerToCreateGoToPositionTask(hit.point);
+     //       unitTaskManager.RequestToServerToCreateGoToPositionTask(hit.point);
 
         }
         else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
@@ -22,7 +22,7 @@ public class GathererNew : Unit
             {
                 if (component.GetBuildingType() == BuildingTypeEnum.resource)
                 {
-                    unitTaskManager.GatherResourceTask(component.GetProperties<GatherableResource>());
+                   // unitTaskManager.GatherResourceTask(component.GetProperties<GatherableResource>());
                     return;
                 }
             }
@@ -37,7 +37,7 @@ public class GathererNew : Unit
             }
             if(component.GetTeam() != teamColor)
             {
-                unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
+              //  unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
                 return;
             }
         }
@@ -54,6 +54,6 @@ public class GathererNew : Unit
 
     internal void BuildConstruction(GameObject constructionInstantiate)
     {
-        unitTaskManager.RequestToServerToBuildConstructionTask(constructionInstantiate);
+       // unitTaskManager.RequestToServerToBuildConstructionTask(constructionInstantiate);
     }
 }

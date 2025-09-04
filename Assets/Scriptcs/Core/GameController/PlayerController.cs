@@ -332,6 +332,7 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     internal void RpcRemoveUnit(Unit unit)
     {
+        Debug.Log(unit.teamColor + " RPC REMOVE UNIT===================================== ");
         unit.RespondFromServerToRemoveUnit();
 
 

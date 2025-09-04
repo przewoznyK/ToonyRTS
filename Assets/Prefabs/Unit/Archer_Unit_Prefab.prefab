@@ -19434,7 +19434,7 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
@@ -21079,6 +21079,7 @@ MonoBehaviour:
   teamColor: 1
   entityType: 0
   enemyDecetorCollider: {fileID: 4627618923152200639}
+  aggressiveApproach: 0
   damage: 5
   attackRange: 30
   attackCooldown: 2
@@ -21112,7 +21113,7 @@ MonoBehaviour:
   taskVisualization: {fileID: 5056698454448629128}
   lineRenderer: {fileID: 1069294825508298024}
   animatorSpeedValue: 0
-  respondFromServer: 0
+  detectionSphereEnemyAggressionApproachRadius: 10
 --- !u!114 &7971430098367275717
 MonoBehaviour:
   m_ObjectHideFlags: 0

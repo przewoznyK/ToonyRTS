@@ -53,6 +53,10 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     {
         bodyToDrop = transform.GetChild(2);
         activator = transform.GetChild(0);
+
+        if (isServer)
+            enemyDecetorCollider.enabled = true;
+
         enemyDecetorCollider.radius = enemyDetectionRadius;
         
         agent.stoppingDistance = defaultStoppingDistance;
@@ -147,9 +151,11 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
-//        if (!isOwned) // lub !isLocalPlayer / !hasAuthority w zale¿noœci od konfiguracji
-//return;
-        if(PlayerController.LocalPlayer.teamColor == teamColor)
-            unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
+        if (isServer)
+            Debug.Log(teamColor + " [SERVER] AttackDetectionTarget " + component.GetTeam());
+        else
+            Debug.Log(teamColor + " [CLIENT] AttackDetectionTarget " + component.GetTeam());
+
+        unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
 }

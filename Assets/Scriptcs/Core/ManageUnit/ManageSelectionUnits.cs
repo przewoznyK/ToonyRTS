@@ -52,7 +52,7 @@ public class ManageSelectionUnits : MonoBehaviour
         bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
         {
             foreach (var unit in controlledUnits.selectedUnits)
             {

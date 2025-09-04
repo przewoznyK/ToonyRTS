@@ -14,12 +14,15 @@ public class PlayerStartGameSetup : MonoBehaviour
         //currentConstructionData.buildingData.buildingID = 1;
         //constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
 
-        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(0, teamColor, xPosition -3, zPosition -3);
+       // PlayerController.LocalPlayer.CmdSpawnUnitOnStart(0, teamColor, xPosition -3, zPosition -3);
         PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition -3, zPosition -4);
         PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition -3, zPosition -8);
         PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition -3, zPosition -12);
-        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(2, teamColor, xPosition - 3, zPosition - 5);
-        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(3, teamColor, xPosition - 3, zPosition - 6);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition -6, zPosition -4);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition -6, zPosition -8);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition -6, zPosition -12);
+     //   PlayerController.LocalPlayer.CmdSpawnUnitOnStart(2, teamColor, xPosition - 3, zPosition - 5);
+      //  PlayerController.LocalPlayer.CmdSpawnUnitOnStart(3, teamColor, xPosition - 3, zPosition - 6);
     }
 
 }
