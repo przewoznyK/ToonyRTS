@@ -265,7 +265,7 @@ public class GathererTaskManager : UnitTaskManager
             ReturnToStockpileTask newTask = new(stockPile.stockPilePosition.transform.position);
             requestedTasks.AddLast(newTask);
             DoTask();
-            newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
+       //     newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
         }
     }
     public override void GatherResourceTask(GatherableResource resource)
@@ -274,7 +274,7 @@ public class GathererTaskManager : UnitTaskManager
         GathererResourceTask newTask = new(resource);
         requestedTasks.AddLast(newTask);
         DoTask();
-        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
+    //    newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
 
     public override void RequestToServerToBuildConstructionTask(GameObject construction)
@@ -289,6 +289,6 @@ public class GathererTaskManager : UnitTaskManager
         BuildConstructionTask newTask = new(construction);
         requestedTasks.AddLast(newTask);
         DoTask();
-        newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
+      //  newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
 }

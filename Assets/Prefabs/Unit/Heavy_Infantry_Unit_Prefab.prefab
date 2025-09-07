@@ -20,7 +20,6 @@ GameObject:
   - component: {fileID: 4078867702477575506}
   - component: {fileID: 2657769516678870146}
   - component: {fileID: 2350333161342798090}
-  - component: {fileID: 8585613956843332965}
   m_Layer: 3
   m_Name: Heavy_Infantry_Unit_Prefab
   m_TagString: Untagged
@@ -360,7 +359,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   unit: {fileID: 4078867702477575506}
-  taskVisualization: {fileID: 8585613956843332965}
+  taskVisualization: {fileID: 0}
   lineRenderer: {fileID: 8179056158159362906}
   animatorSpeedValue: 0
   detectionSphereEnemyAggressionApproachRadius: 10
@@ -384,21 +383,6 @@ MonoBehaviour:
   - {fileID: 4059576045859813433}
   skinnedMeshToChangeMaterial:
   - {fileID: 4059576045871662049}
---- !u!114 &8585613956843332965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 25436527979274690}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 562c142725566e640b355909bc75faef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 8179056158159362906}
-  taskVizualizationPrefab: {fileID: 7024873852308596011, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
-  taskVizualizationContainer: {fileID: 1507132636819172518}
 --- !u!1 &754462242492320489
 GameObject:
   m_ObjectHideFlags: 0

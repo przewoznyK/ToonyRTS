@@ -44,8 +44,8 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     }
     internal void RequestToServerToUpdateMeetingPoint(Vector3 newMeetingPointPosition)
     {
-     //   if (PlayerController.LocalPlayer.isLocalPlayer)
-         //   PlayerController.LocalPlayer.CmdUpdateMeetingPointBuilding(this.GetComponent<NetworkIdentity>(), newMeetingPointPosition);
+        if (PlayerController.LocalPlayer.isLocalPlayer)
+            PlayerController.LocalPlayer.CmdUpdateMeetingPointBuilding(this.GetComponent<NetworkIdentity>(), newMeetingPointPosition);
     }
     public void ServerSpawnUnit(int unitID, TeamColorEnum teamColor)
     {

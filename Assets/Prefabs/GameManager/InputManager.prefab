@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff90456bac32af24ebb4f9ee684dfd54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMouseOverGameObject: 0
 --- !u!114 &2830214369412706071
 MonoBehaviour:
   m_ObjectHideFlags: 0

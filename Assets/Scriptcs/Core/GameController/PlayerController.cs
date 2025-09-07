@@ -2,7 +2,10 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class PlayerController : NetworkBehaviour
@@ -14,7 +17,8 @@ public class PlayerController : NetworkBehaviour
     [SyncVar] public TeamColorEnum teamColor;
     [SyncVar] public int startPositionX;
     [SyncVar] public int startPositionZ;
-    public GameObject contructionRepresentationPrefab;
+    public GameObject contructionRepresentationPrefab;    
+    
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
@@ -38,7 +42,35 @@ public class PlayerController : NetworkBehaviour
 
         CreatePlayerController(teamColor, startPositionX, startPositionZ);
     }
-    
+
+
+
+    private InputAction RMBClickAction;
+    private InputAction LMBClickAction;
+    private InputAction ShiftClickAction;
+
+    [SerializeField] private LayerMask ignoreLayerMask;
+    private bool initialized;
+
+    internal void Init(InputManager inputManager, ControlledUnits controlledUnits)
+    {
+
+    }
+    private void OnEnable()
+    {
+        if (initialized)
+        {
+            RMBClickAction.performed += OnRMBClick;
+            LMBClickAction.performed += OnLMBClick;
+        }
+    }
+
+    private void OnDisable()
+    {
+        RMBClickAction.performed -= OnRMBClick;
+        LMBClickAction.performed -= OnLMBClick;
+    }
+
     void InitClientSide()
     {
         var playerControlledBuildings = new PlayerControlledBuildings();
@@ -49,18 +81,27 @@ public class PlayerController : NetworkBehaviour
 
         // Init 
         GameManager.Instance.removeEntity.Init(GameManager.Instance.gridDataNetwork);
-        GameManager.Instance.manageSelectionUnits.Init(GameManager.Instance.inputManager, controlledUnits);
+     //   GameManager.Instance.manageSelectionUnits.Init(GameManager.Instance.inputManager, controlledUnits);
         GameManager.Instance.commandPanelUI.Init(playerResources, shopManager, GameManager.Instance.buildingProduction, GameManager.Instance.inputManager, GameManager.Instance.previewSystem);
         GameManager.Instance.selectionInfoUI.Init(controlledUnits);
         GameManager.Instance.activeClickableObject.Init(GameManager.Instance.inputManager, controlledUnits, GameManager.Instance.selectionInfoUI, GameManager.Instance.commandPanelUI,
-        GameManager.Instance.boxVisual, teamColor);
+        GameManager.Instance.boxVisual, GameManager.Instance.taskVisualization, teamColor);
         GameManager.Instance.buildingProduction.Init(GameManager.Instance.commandPanelUI, teamColor);
         GameManager.Instance.previewSystem.Init(playerResources, GameManager.Instance.inputManager, GameManager.Instance.constructionPlacerSystem, GameManager.Instance.gridDataNetwork, GameManager.Instance.activeClickableObject, teamColor);
         GameManager.Instance.constructionPlacerSystem.Init(playerResources, GameManager.Instance.activeClickableObject);
         GameManager.Instance.commandShortcutKeyManager.Init(GameManager.Instance.inputManager, GameManager.Instance.commandPanelUI);
 
         GameManager.Instance.playerStartGameSetup.Init(playerResources, GameManager.Instance.constructionPlacerSystem, GameManager.Instance.gridDataNetwork, teamColor, startPositionX, startPositionZ);
+        GameManager.Instance.taskVisualization.Init(controlledUnits);
 
+        RMBClickAction = GameManager.Instance.inputManager.Inputs.actions[InputManager.INPUT_GAME_RMB_Click];
+        LMBClickAction = GameManager.Instance.inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
+        ShiftClickAction = GameManager.Instance.inputManager.Inputs.actions[InputManager.INPUT_GAME_SHIFT];
+
+        RMBClickAction.performed += OnRMBClick;
+        LMBClickAction.performed += OnLMBClick;
+
+        initialized = true;
     }
 
 
@@ -70,34 +111,34 @@ public class PlayerController : NetworkBehaviour
     internal void CmdChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcChangeAnimatorSpeedUnit(networkIdentity, speedValue);
+            taskManager.RespondFromServerUpdateAnimatorSpeedValue(speedValue);
     }
     [ClientRpc]
     void RpcChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
     {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerUpdateAnimatorSpeedValue(speedValue);
+        //if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        //    taskManager.RespondFromServerUpdateAnimatorSpeedValue(speedValue);
     }
 
     [Command]
     internal void CmdSetBoolAnimation(NetworkIdentity networkIdentity, string animationName, bool value)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcSetBoolAnimation(networkIdentity, animationName, value);
+            taskManager.RespondFromServerToSetBoolAnimation(animationName, value);
     }
     [ClientRpc]
     void RpcSetBoolAnimation(NetworkIdentity networkIdentity, string animationName, bool value)
     {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToSetBoolAnimation(animationName, value);
+        //if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        //    taskManager.RespondFromServerToSetBoolAnimation(animationName, value);
     }
 
     // Move Unit
     [Command]
-    public void CmdMoveUnit(NetworkIdentity networkIdentity, Vector3 targetPos)
+    public void CmdMoveUnit(NetworkIdentity networkIdentity, Vector3 targetPosition)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcMoveUnit(networkIdentity, targetPos);
+            RpcMoveUnit(networkIdentity, targetPosition);
     }
     [ClientRpc]
     public void RpcMoveUnit(NetworkIdentity networkIdentity, Vector3 targetPosition)
@@ -121,30 +162,34 @@ public class PlayerController : NetworkBehaviour
     }
 
     // Reset Tasks
-    [Command]
-    public void CmdResetTasksUnit(NetworkIdentity networkIdentity)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcResetTaskUnit(networkIdentity);
-    }
+    //[Command]
+    //public void CmdResetTasksUnit(NetworkIdentity networkIdentity)
+    //{
+    //    if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+    //        taskManager.RespondFromServerToResetTasks();
+    //}
     [ClientRpc]
     internal void RpcResetTaskUnit(NetworkIdentity networkIdentity)
     {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToResetTasks();
+     //   if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+     //       taskManager.RespondFromServerToResetTasks();
     }
     // Go To Position Task
     [Command]
     public void CmdCreateGoToPositionTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
     {
+        Debug.Log("START TASK ");
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcCreateGoToPositionTask(networkIdentity, positionPoint);
+        {
+            Debug.Log("CmdCreateGoToPositionTask");
+            taskManager.RespondFromServerToCreateGoToPositionTask(positionPoint);
+        }
     }
     [ClientRpc]
     internal void RpcCreateGoToPositionTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
     {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToCreateGoToPositionTask(positionPoint);
+     //   if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+           //taskManager.RespondFromServerToCreateGoToPositionTask(positionPoint);
     }
 
     // Attack Entity Task
@@ -152,15 +197,15 @@ public class PlayerController : NetworkBehaviour
     internal void CmdCreateAttackEntityTask(NetworkIdentity networkIdentity, TeamColorEnum targetTeam, Transform targetEntity)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcCreateAttackEntityTask(networkIdentity, targetTeam, targetEntity);
+            taskManager.RespondFromServerToCreateAttackEntityTask(targetTeam, targetEntity);
     }
 
     [ClientRpc]
-    internal void RpcCreateAttackEntityTask(NetworkIdentity networkIdentity, TeamColorEnum targetTeam, Transform targetEntity)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToCreateAttackEntityTask(targetTeam, targetEntity);
-    }
+    //internal void RpcCreateAttackEntityTask(NetworkIdentity networkIdentity, TeamColorEnum targetTeam, Transform targetEntity)
+    //{
+    //    if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+    //        taskManager.RespondFromServerToCreateAttackEntityTask(targetTeam, targetEntity);
+    //}
 
     [Command]
     public void CmdCreateAggressiveApproachTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
@@ -180,13 +225,13 @@ public class PlayerController : NetworkBehaviour
     public void CmdAttackEntity(NetworkIdentity networkIdentity, Transform targetTransform)
     {
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            RpcAttackEntity(networkIdentity, targetTransform);
+            taskManager.RespondFromServerToAttackEntity(targetTransform);
     }
     [ClientRpc]
     void RpcAttackEntity(NetworkIdentity networkIdentity, Transform targetTransform)
     {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToAttackEntity(targetTransform);
+     //   if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+     //       taskManager.RespondFromServerToAttackEntity(targetTransform);
     }
 
     // Build Construction
@@ -338,4 +383,83 @@ public class PlayerController : NetworkBehaviour
 
     }
     #endregion
+
+
+    [Command]
+    public void PlayerUnitCommandHandler(NetworkIdentity networkIdentity, Vector3 point, bool isShiftPressed)
+    {
+        PlayerMoveUnitCommand(networkIdentity, point, isShiftPressed);
+    }
+  
+    public void PlayerMoveUnitCommand(NetworkIdentity networkIdentity, Vector3 point, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            Debug.Log(taskManager.requestedTasks + "   " + isShiftPressed);
+            CmdCreateGoToPositionTask(networkIdentity, point);
+        }
+            //RpcBuildConstructionTask(networkIdentity, construction);
+    }
+
+
+    [Command]
+    public void MoveUnitCommand(NetworkIdentity networkIdentity, Vector3 point, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            if (isShiftPressed == false)
+                taskManager.RespondFromServerToResetTasks();
+  
+            taskManager.RespondFromServerToCreateGoToPositionTask(point);
+        }
+    }
+
+    [Command]
+    public void AttackEntityCommand(NetworkIdentity networkIdentity, TeamColorEnum enemyTeamColor, Transform enemyTransform, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            if (isShiftPressed == false)
+                taskManager.RespondFromServerToResetTasks();
+
+            taskManager.RespondFromServerToCreateAttackEntityTask(enemyTeamColor, enemyTransform);
+          //  CmdCreateAttackEntityTask(networkIdentity, enemyTeamColor, enemyTransform);
+         //   taskManager.RequestToServerToCreateAttackEntityTask(enemyTeamColor, enemyTransform);
+         //   taskManager.RequestToServerToCreateGoToPositionTask(point);
+        }
+    }
+
+
+    public void OnLMBClick(InputAction.CallbackContext ctx)
+    {
+
+    }
+
+    public void OnRMBClick(InputAction.CallbackContext ctx)
+    {
+        if (InputManager.Instance.isMouseOverGameObject)
+            return;
+
+        bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            if (hit.collider.CompareTag("Ground"))
+                foreach (var unit in controlledUnits.selectedUnits)
+                    MoveUnitCommand(unit.netIdentity, hit.point, isShiftPressed);
+            else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
+                foreach (var unit in controlledUnits.selectedUnits)
+                {
+                    if(teamColor != component.GetTeam())
+                        AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+                }
+        }
+    }
+    [Command]
+    internal void CmdSpawnTaskVizualization(GameObject vizualizationGameObject)
+    {
+        Debug.Log("CmdSpawnTaskVizualization ");
+        NetworkServer.Spawn(vizualizationGameObject);
+    }
 }

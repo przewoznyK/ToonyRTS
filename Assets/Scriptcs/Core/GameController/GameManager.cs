@@ -22,12 +22,13 @@ public class GameManager : MonoBehaviour
     public SummaryPanelUI summaryPanelUI;
     [Header("HoldSelectionUnitsCanvas")]
     public RectTransform boxVisual;
+    public TaskVisualization taskVisualization;
     [Header("ConstructionSystem")]
-
     public ConstructionPreviewSystem previewSystem;
     public ConstructionPlacerSystem constructionPlacerSystem;
     public Transform previewSystemTransform;
     public GridDataNetwork gridDataNetwork;
+
 
     private void Awake()
     {

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 public class ActiveClickableObject : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class ActiveClickableObject : MonoBehaviour
     public ControlledUnits controlledUnits;
     SelectionInfoUI selectionInfoUI;
     CommandPanelUI commandPanelUI;
+    TaskVisualization taskVisualization;
     #endregion
     #region Inputs
     private InputAction LMBClickAction;
@@ -31,13 +31,14 @@ public class ActiveClickableObject : MonoBehaviour
     #endregion
     TeamColorEnum playerControllerTeamColor;
     [SerializeField] private LayerMask clickableLayer;
-    public void Init(InputManager inputManager, ControlledUnits controlledUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI, RectTransform boxVisual, TeamColorEnum playerControllerTeamColor)
+    public void Init(InputManager inputManager, ControlledUnits controlledUnits, SelectionInfoUI selectionInfoUI, CommandPanelUI commandPanelUI, RectTransform boxVisual, TaskVisualization  taskVisualization,TeamColorEnum playerControllerTeamColor)
     {
         this.inputManager = inputManager;
         this.controlledUnits = controlledUnits;
         this.selectionInfoUI = selectionInfoUI;
         this.commandPanelUI = commandPanelUI;
         this.boxVisual = boxVisual;
+        this.taskVisualization = taskVisualization;
         this.playerControllerTeamColor = playerControllerTeamColor;
 
         LMBClickAction = inputManager.Inputs.actions[InputManager.INPUT_GAME_LMB_Click];
@@ -101,19 +102,26 @@ public class ActiveClickableObject : MonoBehaviour
                         commandPanelUI.PrepareUnitUI(controlledUnits.TakeSelectedUnitList());
                         commandPanelUI.gameObject.SetActive(true);
 
+                        //   taskVisualization.ShowCurrentTask(unitToPrepare.unitTaskManager);
                         // Selection Info if more selected units than 1
                         //selectionInfoUI
+                        return;
                     }
                     // Active Building
                     else if (clickable.CheckObjectType() == ObjectTypeEnum.building)
                     {
+                      
+
                         clickable.ActiveObject();
                         Building buildingToPrepare = hit.collider.GetComponent<Building>();
                         commandPanelUI.PrepareBuildingUI(buildingToPrepare);
                         commandPanelUI.gameObject.SetActive(true);
                     }
+                
                 }
             }
+            controlledUnits.ClearSelectedUnitsList();
+            // else taskVisualization.ClearVisualization();
         }
 
     }

@@ -85,13 +85,13 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     public void ActiveObject() 
     { 
         activator.gameObject.SetActive(true);
-        unitTaskManager.taskVisualization.enabled = true;
+     //   unitTaskManager.taskVisualization.enabled = true;
     }
 
     public void DeActiveObject() 
     {
         activator.gameObject.SetActive(false);
-        unitTaskManager.taskVisualization.enabled = false;
+      //  unitTaskManager.taskVisualization.enabled = false;
     } 
 
     public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
