@@ -130,15 +130,16 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     public void RequestToServerToRemoveUnit()
     {
-        if(teamColor == PlayerController.LocalPlayer.teamColor)
-            PlayerController.LocalPlayer.CmdRemoveUnit(this.netIdentity, this);
+        PlayerController.LocalPlayer.controlledUnits.RemoveUnit(this);
+        PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
+
+        //PlayerController.LocalPlayer.CmdRemoveUnit(this.netIdentity, this);
     }
 
     public void RespondFromServerToRemoveUnit()
     {
-        PlayerController.LocalPlayer.controlledUnits.RemoveUnit(this);
-        if (isServer)
-            PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
+
+       // PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
     }
     public void SetActiveEnemyDetector(bool value) =>  enemyDecetorCollider.enabled = value;
 

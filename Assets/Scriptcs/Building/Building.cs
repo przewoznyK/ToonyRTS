@@ -56,7 +56,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
         unit.meetingPoint = meetingPoint.transform.position;
         Debug.Log("ORIGIN " + meetingPoint.transform.position);
         unit.teamColor = teamColor;
-        NetworkServer.Spawn(unitInstantiate, connectionToClient);        
+        NetworkServer.Spawn(unitInstantiate);        
     }
 
     public void SetPositionToOccupy(List<Vector3Int> positionToOccupy) => this.positionToOccupy = positionToOccupy;

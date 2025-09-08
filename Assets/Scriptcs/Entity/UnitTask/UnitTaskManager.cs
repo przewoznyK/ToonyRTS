@@ -14,7 +14,7 @@ public class UnitTaskManager : NetworkBehaviour
     public LinkedList<UnitTask> requestedTasks = new();
     public SyncList<TaskDataForVisualization> taskDataForVisualizationList = new();
     protected UnitTask currentTask;
-    public Transform taskTransform { get; protected set; }
+    public Transform taskTransform;
     protected Vector3 taskVector;
     protected TeamColorEnum enemyTeamTarget;
     protected bool attackCycleActivated;
@@ -24,7 +24,7 @@ public class UnitTaskManager : NetworkBehaviour
     private void Update()
     {
         WorkingTask();
-      //  RotateToTaskTransform();
+        RotateToTaskTransform();
     }
     public virtual void DoTask()
     {
@@ -78,7 +78,6 @@ public class UnitTaskManager : NetworkBehaviour
     {
         if (isOnTask)
         {
-            Debug.Log("WorkingTask IS ON TASK " + currentTask.unitTaskType + "  " + taskTransform);
             if (currentTask.unitTaskType == UnitTaskTypeEnum.GoToPosition)
             {
                 if (Vector3.Distance(taskVector, transform.position) <= unit.agent.stoppingDistance)
@@ -87,7 +86,7 @@ public class UnitTaskManager : NetworkBehaviour
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget && taskTransform != null)
             {
-                    Debug.Log("WorkingTask ATtack Target");
+                    Debug.Log("WorkingTask ATtack Target " + taskTransform.gameObject);
                     rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
@@ -107,11 +106,13 @@ public class UnitTaskManager : NetworkBehaviour
                         isOnTask = false;
                     }
                 }
-                else if (taskTransform == null && requestedTasks.Count == 1)
-                {
-                    GoToNextTask();
-                    AttackNearestEnemyByTeamColor();
-                }
+ 
+            }
+            else if(currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget && taskTransform == null)
+            {
+                Debug.Log("NEXT ENEMY");
+                GoToNextTask();
+                AttackNearestEnemyByTeamColor();
             }
         }
     }
@@ -124,8 +125,6 @@ public class UnitTaskManager : NetworkBehaviour
                 var direction = taskTransform.position - transform.position;
                 var targetRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, unit.rotationSpeed * UnityEngine.Time.deltaTime);
-                if(unit.teamColor == TeamColorEnum.Red)
-                    Debug.Log("ROTATE " + targetRotation);
             }
             else
                 rotateToTaskTransform = false;
@@ -312,13 +311,14 @@ public class UnitTaskManager : NetworkBehaviour
         DoTask();
      //   newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
-    public virtual void RequestToServerToCreateAggressiveApproachTask(Vector3 positionPoint)
-    {
-        if (PlayerController.LocalPlayer.isLocalPlayer)
-            PlayerController.LocalPlayer.CmdCreateAggressiveApproachTask(this.GetComponent<NetworkIdentity>(), positionPoint);
-    }
+    //public virtual void RequestToServerToCreateAggressiveApproachTask(Vector3 positionPoint)
+    //{
+    //    if (PlayerController.LocalPlayer.isLocalPlayer)
+    //        PlayerController.LocalPlayer.CmdCreateAggressiveApproachTask(this.GetComponent<NetworkIdentity>(), positionPoint);
+    //}
     public void RespondFromServerToCreateAggressiveApproachTask(Vector3 positionPoint)
     {
+        Debug.Log("RespondFromServerToCreateAggressiveApproachTask");
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         AggressiveApproachTask newTask = new(positionPoint);
