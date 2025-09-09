@@ -77,9 +77,9 @@ public class ActiveClickableObject : MonoBehaviour
     private void OnLpmClick(InputAction.CallbackContext ctx)
     {
         Debug.Log("ON LPM CLICK");
-        // Active Clickable Object and CommandUI
-        if(pointerOverUI == false)
-        {
+        if (PlayerController.LocalPlayer.aggressiveApproachCommand) return;
+            // Active Clickable Object and CommandUI
+            if (pointerOverUI == true) return;
             commandPanelUI.gameObject.SetActive(false);
             selectionInfoUI.gameObject.SetActive(false);
             if (shiftAction.IsPressed() == false)
@@ -119,8 +119,8 @@ public class ActiveClickableObject : MonoBehaviour
                     }
                 
                 }
-            }
-            controlledUnits.ClearSelectedUnitsList();
+ 
+                controlledUnits.ClearSelectedUnitsList();
             // else taskVisualization.ClearVisualization();
         }
 

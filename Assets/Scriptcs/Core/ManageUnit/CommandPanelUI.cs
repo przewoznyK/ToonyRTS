@@ -96,11 +96,13 @@ public class CommandPanelUI : MonoBehaviour
         toggleAggresiveApproachButton.onClick.RemoveAllListeners();
         toggleAggresiveApproachButtonStatusColor.color = Color.white;
 
-        aggresiveApproach = false;
+        // aggresiveApproach = false;
+
+        toggleAggresiveApproachButton.onClick.AddListener(() => SetAggresiveApproachButton());
         foreach (var unit in unitsList)
         {
             removeEntityButton.onClick.AddListener(() => RemoveEntityWithButton(unit));
-            toggleAggresiveApproachButton.onClick.AddListener(() => SetAggresiveApproachButton());
+
         }
 
 
@@ -224,8 +226,8 @@ public class CommandPanelUI : MonoBehaviour
 
     public void ToggleAggresiveApproachButton()
     {
-        if (gameObject.activeSelf == false)
-            return;
+        if (gameObject.activeSelf == false) return;
+        
         if (aggresiveApproach == false)
             SetAggresiveApproachButton();
         else ResetAggresiveApproachButton();
@@ -238,28 +240,19 @@ public class CommandPanelUI : MonoBehaviour
         Debug.Log("SET");
         toggleAggresiveApproachButton.onClick.RemoveAllListeners();
 
-        foreach (var unit in currentSelectedUnits)
-        {
-            toggleAggresiveApproachButton.onClick.AddListener(() => ResetAggresiveApproachButton());
-            unit.aggressiveApproach = true;
-
-        }
+        PlayerController.LocalPlayer.aggressiveApproachCommand = true;
+        toggleAggresiveApproachButton.onClick.AddListener(() => ResetAggresiveApproachButton());
 
         toggleAggresiveApproachButtonStatusColor.color = Color.red;
     }
 
-    private void ResetAggresiveApproachButton()
+    public void ResetAggresiveApproachButton()
     {
         Debug.Log("RESET");
         toggleAggresiveApproachButton.onClick.RemoveAllListeners();
 
-        foreach (var unit in currentSelectedUnits)
-        {
-            toggleAggresiveApproachButton.onClick.AddListener(() => SetAggresiveApproachButton());
-            unit.aggressiveApproach = true;
-
-        }
-
+        PlayerController.LocalPlayer.aggressiveApproachCommand = false;
+        toggleAggresiveApproachButton.onClick.AddListener(() => SetAggresiveApproachButton());
         toggleAggresiveApproachButtonStatusColor.color = Color.white;
     }
 }

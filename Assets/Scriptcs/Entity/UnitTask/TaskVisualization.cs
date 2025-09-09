@@ -54,7 +54,9 @@ public class TaskVisualization : NetworkBehaviour
             Vector3 destinationPosition = Vector3.zero;
             if (taskData.followTarget)
             {
+                if (taskData.targetIdentity == null) return;
                 targetTransform = taskData.targetIdentity.GetComponent<Transform>();
+
                 destinationPosition = targetTransform.transform.position;
                 GameObject newFollowFlag = Instantiate(taskVizualizationPrefab, destinationPosition, Quaternion.identity, taskVizualizationContainer);
                 followFlags.Add(newFollowFlag, targetTransform);
@@ -74,6 +76,7 @@ public class TaskVisualization : NetworkBehaviour
         foreach (Transform child in taskVizualizationContainer)
             Destroy(child.gameObject);
 
+        if (unitTaskManager.taskDataForVisualizationList.Count <= 1) return;
 
         foreach (var taskData in unitTaskManager.taskDataForVisualizationList)
         {
@@ -81,6 +84,7 @@ public class TaskVisualization : NetworkBehaviour
             Vector3 destinationPosition = Vector3.zero;
             if (taskData.followTarget)
             {
+                if (taskData.targetIdentity == null) break;
                 targetTransform = taskData.targetIdentity.GetComponent<Transform>();
                 destinationPosition = targetTransform.transform.position;
                 GameObject newFollowFlag = Instantiate(taskVizualizationPrefab, destinationPosition, Quaternion.identity, taskVizualizationContainer);

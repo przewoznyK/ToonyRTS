@@ -48,14 +48,14 @@ public class GathererTaskManager : UnitTaskManager
                     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                     taskTransform = null;
                     Vector3 pos = goToPositionTask.taskPosition;
-                    RequestToServerToMoveUnit(pos);
-                    RequestToServerToChangeAnimatorSpeed(1);
+                RespondFromServerToMoveUnit(pos);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
                     taskVector = pos;
                 }
                 else if (currentTask is AttackTargetTask attackTarget)
                 {
-                    RequestToServerToAttackEntity(attackTarget.targetTransform);
-                    RequestToServerToChangeAnimatorSpeed(1);
+                RespondFromServerToAttackEntity(attackTarget.targetTransform);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
                 }
                 else if (currentTask is AggressiveApproachTask aggressiveApproach)
                 {
@@ -64,13 +64,13 @@ public class GathererTaskManager : UnitTaskManager
 
                     if (closetEnemyUnit != null)
                     {
-                        RequestToServerToCreateAttackEntityTask(closetEnemyUnit.teamColor, closetEnemyUnit.transform);
+                    RespondFromServerToCreateAttackEntityTask(closetEnemyUnit.teamColor, closetEnemyUnit.transform);
 
                     }
                     else
-                        RequestToServerToCreateGoToPositionTask(aggressiveApproach.taskPosition);
+                    RespondFromServerToCreateGoToPositionTask(aggressiveApproach.taskPosition);
 
-                    RequestToServerToChangeAnimatorSpeed(1);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
                     GoToNextTask();
                     return;
                 }
@@ -80,8 +80,8 @@ public class GathererTaskManager : UnitTaskManager
                     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                     taskTransform = gatherResource.targetTransform;
                     currentResourceTypeGathering = gatherResource.currentResourceTypeGathering;
-                    RequestToServerToMoveUnit(taskTransform.position);
-                    RequestToServerToChangeAnimatorSpeed(1);
+                RespondFromServerToMoveUnit(taskTransform.position);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
                 }
                 else if (currentTask is ReturnToStockpileTask returnToStockpile)
                 {
@@ -91,8 +91,8 @@ public class GathererTaskManager : UnitTaskManager
 
                     taskVector = pos;
 
-                    RequestToServerToMoveUnit(pos);
-                    RequestToServerToChangeAnimatorSpeed(1);
+                RespondFromServerToMoveUnit(pos);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
                     isGoingToStockPile = true;
                 }
                 else if (currentTask is BuildConstructionTask construction)
@@ -101,8 +101,8 @@ public class GathererTaskManager : UnitTaskManager
                     construction.constructionBuildingRepresentation.gatherersBuildingThisConstruction.Add((GathererNew)this.unit);
                     unit.agent.stoppingDistance = unit.attackRange;
                 Debug.Log("Change Position");
-                    RequestToServerToMoveUnit(construction.constructionPosition);
-                    RequestToServerToChangeAnimatorSpeed(1);
+                RespondFromServerToMoveUnit(construction.constructionPosition);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
                     isGoingToBuildingConstruction = true;
                 }
                 isOnTask = true;
@@ -114,7 +114,7 @@ public class GathererTaskManager : UnitTaskManager
         {
             if (currentTask.unitTaskType == UnitTaskTypeEnum.GoToPosition)
             {
-                RequestToServerToSetBoolAnimation("Harvest", false);
+                RespondFromServerToSetBoolAnimation("Harvest", false);
 
                 if (Vector3.Distance(taskVector, transform.position) <= unit.agent.stoppingDistance)
                 {
@@ -129,7 +129,7 @@ public class GathererTaskManager : UnitTaskManager
                 if (taskTransform != null)
                 {
                     // Working Task Unitl Unit Reach Enemy 
-                    RequestToServerToMoveUnit(taskTransform.position);
+                    RespondFromServerToMoveUnit(taskTransform.position);
 
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
@@ -138,7 +138,7 @@ public class GathererTaskManager : UnitTaskManager
                         else
                             StartCoroutine(AttackCycle("Attack"));
                         attackCycleActivated = true;
-                        RequestToServerToChangeAnimatorSpeed(0);
+                        RespondFromServerUpdateAnimatorSpeedValue(0);
                         isOnTask = false;
                     }
                 }
@@ -154,9 +154,9 @@ public class GathererTaskManager : UnitTaskManager
                 if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
                 {
                     unit.agent.ResetPath();
-                    RequestToServerToChangeAnimatorSpeed(0);
+                    RespondFromServerUpdateAnimatorSpeedValue(0);
                     isOnTask = false;
-                    RequestToServerToSetBoolAnimation("Harvest", true);
+                    RespondFromServerToSetBoolAnimation("Harvest", true);
                 }
             }
 
@@ -165,7 +165,7 @@ public class GathererTaskManager : UnitTaskManager
                 if (Vector3.Distance(stockPile.stockPilePosition.position, transform.position) <= unit.agent.stoppingDistance)
                 {
                     isGoingToStockPile = false;
-                    RequestToServerToChangeAnimatorSpeed(0);
+                    RespondFromServerUpdateAnimatorSpeedValue(0);
                     var returnObjectPrices = stockPile.AddResourcesToStockPile(gatheredResources);
                     UpdateGatheredResourcesAmount(returnObjectPrices);
 
@@ -184,8 +184,8 @@ public class GathererTaskManager : UnitTaskManager
                 if (Vector3.Distance(constructionToBuildPosition, transform.position) <= unit.agent.stoppingDistance)
                 {
                     unit.agent.ResetPath();
-                    RequestToServerToChangeAnimatorSpeed(0);
-                    RequestToServerToSetBoolAnimation("Building", true);
+                    RespondFromServerUpdateAnimatorSpeedValue(0);
+                    RespondFromServerToSetBoolAnimation("Building", true);
                     isGoingToBuildingConstruction = false;
                 }
             }
@@ -202,9 +202,9 @@ public class GathererTaskManager : UnitTaskManager
     }
     public void ResetGathererProperties()
     {
-        RequestToServerToSetBoolAnimation("Harvest", false);
+        RespondFromServerToSetBoolAnimation("Harvest", false);
         isGoingToStockPile = false;
-        RequestToServerToSetBoolAnimation("Building", false);
+        RespondFromServerToSetBoolAnimation("Building", false);
         GoToNextTask();
     }
 
@@ -213,7 +213,7 @@ public class GathererTaskManager : UnitTaskManager
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
         isOnTask = false;
-        RequestToServerToSetBoolAnimation("Harvest", false);
+        RespondFromServerToSetBoolAnimation("Harvest", false);
 
         if (requestedTasks.Count == 0)
         {
@@ -255,7 +255,7 @@ public class GathererTaskManager : UnitTaskManager
     {
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
-        RequestToServerToSetBoolAnimation("Harvest", false);
+        RespondFromServerToSetBoolAnimation("Harvest", false);
 
         stockPile = PlayerController.LocalPlayer.stockPileManager.GetClosestStockPile(transform.position);
         if (stockPile != null)

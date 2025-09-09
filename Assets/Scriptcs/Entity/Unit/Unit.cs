@@ -70,7 +70,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 
     void GoToMeetingPoint()
     {
-        unitTaskManager.RequestToServerToCreateGoToPositionTask(meetingPoint);
+        unitTaskManager.RespondFromServerToCreateGoToPositionTask(meetingPoint);
         StartCoroutine(ChangeAgentQualityAfterDelay(ObstacleAvoidanceType.HighQualityObstacleAvoidance, 3f));
     }
 
@@ -85,13 +85,11 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     public void ActiveObject() 
     { 
         activator.gameObject.SetActive(true);
-     //   unitTaskManager.taskVisualization.enabled = true;
     }
 
     public void DeActiveObject() 
     {
         activator.gameObject.SetActive(false);
-      //  unitTaskManager.taskVisualization.enabled = false;
     } 
 
     public List<UnitNameEnum> GetUnitsCanBuyList() => throw new System.NotImplementedException();
@@ -124,23 +122,16 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
 
     public void HurtUnit(Unit fromUnit)
     {
-     //   animator.SetTrigger("Hurt");
         if(unitTaskManager.taskTransform == null)
             StartCoroutine(IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage());
     }
     public void RequestToServerToRemoveUnit()
     {
         PlayerController.LocalPlayer.controlledUnits.RemoveUnit(this);
-        PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
-
-        //PlayerController.LocalPlayer.CmdRemoveUnit(this.netIdentity, this);
+        if(isServer)
+            PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
     }
 
-    public void RespondFromServerToRemoveUnit()
-    {
-
-       // PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
-    }
     public void SetActiveEnemyDetector(bool value) =>  enemyDecetorCollider.enabled = value;
 
     IEnumerator IncreaseEnemeyDetectionRadiusForAMomentAfterTakingDamage()
@@ -152,11 +143,7 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     }
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
-        if (isServer)
-            Debug.Log(teamColor + " [SERVER] AttackDetectionTarget " + component.GetTeam());
-        else
-            Debug.Log(teamColor + " [CLIENT] AttackDetectionTarget " + component.GetTeam());
-
-        unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
+        if (unitTaskManager.taskTransform) return;
+        unitTaskManager.RespondFromServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
 }

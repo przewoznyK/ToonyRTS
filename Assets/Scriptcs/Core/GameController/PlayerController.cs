@@ -14,11 +14,13 @@ public class PlayerController : NetworkBehaviour
     public PlayerStockPileList stockPileManager = new PlayerStockPileList();
     public ControlledUnits controlledUnits = new ControlledUnits();
     public PlayerResources playerResources;
+    public CommandPanelUI commandPanelUI;
     [SyncVar] public TeamColorEnum teamColor;
     [SyncVar] public int startPositionX;
     [SyncVar] public int startPositionZ;
-    public GameObject contructionRepresentationPrefab;    
-    
+    public GameObject contructionRepresentationPrefab;
+
+    public bool aggressiveApproachCommand;
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
@@ -75,6 +77,7 @@ public class PlayerController : NetworkBehaviour
     {
         var playerControlledBuildings = new PlayerControlledBuildings();
 
+        commandPanelUI = GameManager.Instance.commandPanelUI;
         // Shop Manager
         var shopManager = new ShopManager(GameManager.Instance.buildingProduction);
         playerResources = new PlayerResources(GameManager.Instance.summaryPanelUI, GameManager.Instance.commandPanelUI, 3000, 3000, 2000, 1000);
@@ -106,29 +109,7 @@ public class PlayerController : NetworkBehaviour
 
 
     #region Unit Server 
-    // Update Animator Speed
-    [Command]
-    internal void CmdChangeAnimatorSpeedUnit(NetworkIdentity networkIdentity, int speedValue)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerUpdateAnimatorSpeedValue(speedValue);
-    }
 
-    [Command]
-    internal void CmdSetBoolAnimation(NetworkIdentity networkIdentity, string animationName, bool value)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToSetBoolAnimation(animationName, value);
-    }
-
-
-    // Move Unit
-    [Command]
-    public void CmdMoveUnit(NetworkIdentity networkIdentity, Vector3 targetPosition)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToMoveUnit(targetPosition);
-    }
 
     // Update Meeting Point
     [Command]
@@ -144,48 +125,10 @@ public class PlayerController : NetworkBehaviour
             building.meetingPoint.transform.position = newMeetingPosition;
     }
 
-    // Go To Position Task
-    [Command]
-    public void CmdCreateGoToPositionTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
-    {
-        Debug.Log("START TASK ");
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            Debug.Log("CmdCreateGoToPositionTask");
-            taskManager.RespondFromServerToCreateGoToPositionTask(positionPoint);
-        }
-    }
 
 
-    // Attack Entity Task
-    [Command]
-    internal void CmdCreateAttackEntityTask(NetworkIdentity networkIdentity, TeamColorEnum targetTeam, Transform targetEntity)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToCreateAttackEntityTask(targetTeam, targetEntity);
-    }
 
 
-    //[Command]
-    //public void CmdCreateAggressiveApproachTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
-    //{
-    //    if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-    //        taskManager.RespondFromServerToCreateAggressiveApproachTask(positionPoint);
-    //}
-    //[ClientRpc]
-    //internal void RpcCreateAggressiveApproachTask(NetworkIdentity networkIdentity, Vector3 positionPoint)
-    //{
-    //    if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-    //        taskManager.RespondFromServerToCreateAggressiveApproachTask(positionPoint);
-    //}
-
-    // Attack Entity 
-    [Command]
-    public void CmdAttackEntity(NetworkIdentity networkIdentity, Transform targetTransform)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-            taskManager.RespondFromServerToAttackEntity(targetTransform);
-    }
 
 
     // Build Construction
@@ -356,43 +299,34 @@ public class PlayerController : NetworkBehaviour
     [Command]
     public void AggressiveAproachCommand(NetworkIdentity networkIdentity, Vector3 position, bool isShiftPressed)
     {
-        Debug.Log("AggressiveAproachCommand 2 ");
         if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
         {
             if (isShiftPressed == false)
                 taskManager.RespondFromServerToResetTasks();
 
-            Debug.Log("AggressiveAproachCommand 3");
             taskManager.RespondFromServerToCreateAggressiveApproachTask(position);
         }
     }
 
     public void OnLMBClick(InputAction.CallbackContext ctx)
     {
-        Debug.Log(controlledUnits.selectedUnits.Count);
         if (InputManager.Instance.isMouseOverGameObject)
             return;
 
         bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
         {
+            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.CompareTag("Ground"))
             {
                 foreach (var unit in controlledUnits.selectedUnits)
                 {
-                    Debug.Log("AggressiveAproachCommand 1 ");
                     AggressiveAproachCommand(unit.netIdentity, hit.point, isShiftPressed);
                 }
+                commandPanelUI.ResetAggresiveApproachButton();
             }
-     
-            //else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
-            //    foreach (var unit in controlledUnits.selectedUnits)
-            //    {
-            //        if (teamColor != component.GetTeam())
-            //            AggressiveAproachCommand(unit.netIdentity, hit.point, isShiftPressed);
-            //    }
         }
     }
 

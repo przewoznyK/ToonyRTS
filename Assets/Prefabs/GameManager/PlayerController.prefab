@@ -48,10 +48,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  commandPanelUI: {fileID: 0}
   teamColor: 0
   startPositionX: 0
   startPositionZ: 0
   contructionRepresentationPrefab: {fileID: 4185059133582313794, guid: 566c19c2432728f408d655d726e9ea01, type: 3}
+  aggressiveApproachCommand: 0
+  ignoreLayerMask:
+    serializedVersion: 2
+    m_Bits: 76
 --- !u!114 &3196159571080704159
 MonoBehaviour:
   m_ObjectHideFlags: 0

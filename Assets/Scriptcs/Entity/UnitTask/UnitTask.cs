@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class UnitTask
 {
-    public UnitTaskTypeEnum unitTaskType { protected set; get; }
+    public UnitTaskTypeEnum unitTaskType;
     public GameObject flagGameObject;
     public Vector3 taskPosition;
     public Transform targetTransform;
