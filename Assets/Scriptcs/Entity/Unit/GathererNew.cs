@@ -2,46 +2,46 @@ using UnityEngine;
 
 public class GathererNew : Unit
 {
-    private void Update()
-    {
-        var collider = GetComponent<CapsuleCollider>();
-    }
-    public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
-    {
-        if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
-         //   unitTaskManager.RequestToServerToResetTasks();
+    //private void Update()
+    //{
+    //    var collider = GetComponent<CapsuleCollider>();
+    //}
+    //public override void PlayerRightMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
+    //{
+    //    if (isShiftPressed == false && unitTaskManager.requestedTasks.Count > 0)
+    //     //   unitTaskManager.RequestToServerToResetTasks();
 
-        if (hit.collider.CompareTag("Ground"))
-        {
-     //       unitTaskManager.RequestToServerToCreateGoToPositionTask(hit.point);
+    //    if (hit.collider.CompareTag("Ground"))
+    //    {
+    // //       unitTaskManager.RequestToServerToCreateGoToPositionTask(hit.point);
 
-        }
-        else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
-        {
-            if ((component.GetTeam() & teamColor) != 0)
-            {
-                if (component.GetBuildingType() == BuildingTypeEnum.resource)
-                {
-                   // unitTaskManager.GatherResourceTask(component.GetProperties<GatherableResource>());
-                    return;
-                }
-            }
-            if (component.GetTeam() == teamColor)
-            {
-                if (component.GetBuildingType() == BuildingTypeEnum.contructionToBuild)
-                {
-                    GameObject buildingRepresentation = component.GetProperties<InConstructionBuildingRepresentation>().gameObject;
-                    BuildConstruction(buildingRepresentation);
-                    return;
-                }
-            }
-            if(component.GetTeam() != teamColor)
-            {
-              //  unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
-                return;
-            }
-        }
-    }
+    //    }
+    //    else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
+    //    {
+    //        if ((component.GetTeam() & teamColor) != 0)
+    //        {
+    //            if (component.GetBuildingType() == BuildingTypeEnum.resource)
+    //            {
+    //               // unitTaskManager.GatherResourceTask(component.GetProperties<GatherableResource>());
+    //                return;
+    //            }
+    //        }
+    //        if (component.GetTeam() == teamColor)
+    //        {
+    //            if (component.GetBuildingType() == BuildingTypeEnum.contructionToBuild)
+    //            {
+    //                GameObject buildingRepresentation = component.GetProperties<InConstructionBuildingRepresentation>().gameObject;
+    //                BuildConstruction(buildingRepresentation);
+    //                return;
+    //            }
+    //        }
+    //        if(component.GetTeam() != teamColor)
+    //        {
+    //          //  unitTaskManager.RequestToServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
+    //            return;
+    //        }
+    //    }
+    //}
 
     public override void PlayerLeftMouseButtonCommand(RaycastHit hit, bool isShiftPressed)
     {
@@ -54,6 +54,6 @@ public class GathererNew : Unit
 
     internal void BuildConstruction(GameObject constructionInstantiate)
     {
-       // unitTaskManager.RequestToServerToBuildConstructionTask(constructionInstantiate);
+        unitTaskManager.RequestToServerToBuildConstructionTask(constructionInstantiate);
     }
 }

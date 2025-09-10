@@ -18,7 +18,6 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
         foreach (var mesh in meshsToChangeMaterial)
             mesh.material = teamMaterialUnit;
 
-        if (building.isStockPile && (building.teamColor == PlayerController.LocalPlayer.teamColor))
-            PlayerController.LocalPlayer.stockPileManager.stockPiles.Add(building);
+
     }
 }

@@ -237,7 +237,6 @@ public class CommandPanelUI : MonoBehaviour
 
     private void SetAggresiveApproachButton()
     {
-        Debug.Log("SET");
         toggleAggresiveApproachButton.onClick.RemoveAllListeners();
 
         PlayerController.LocalPlayer.aggressiveApproachCommand = true;
@@ -248,7 +247,6 @@ public class CommandPanelUI : MonoBehaviour
 
     public void ResetAggresiveApproachButton()
     {
-        Debug.Log("RESET");
         toggleAggresiveApproachButton.onClick.RemoveAllListeners();
 
         PlayerController.LocalPlayer.aggressiveApproachCommand = false;

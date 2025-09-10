@@ -3898,7 +3898,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 0
+  m_ObstacleAvoidanceType: 4
 --- !u!120 &4838299357745353647
 LineRenderer:
   serializedVersion: 2
@@ -4048,7 +4048,7 @@ MonoBehaviour:
   damage: 5
   attackRange: 2
   attackCooldown: 2
-  maxEnemySearchingDistance: 5
+  maxEnemySearchingDistance: 60
   rotationSpeed: 360
   defaultStoppingDistance: 2.5
   defaultMovementSpeed: 3

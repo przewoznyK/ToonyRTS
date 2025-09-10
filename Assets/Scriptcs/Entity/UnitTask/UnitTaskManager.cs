@@ -27,7 +27,6 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public virtual void DoTask()
     {
-
         attackCycleActivated = false;
         if (requestedTasks.Count > 0 && isOnTask == false)
         {
@@ -126,14 +125,18 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public void GoToNextTask()
     {
-        isOnTask = false;
-        requestedTasks.First.Value.EndTask();
-        requestedTasks.RemoveFirst();
-        if(taskDataForVisualizationList.Count > 0)
-            taskDataForVisualizationList.Remove(taskDataForVisualizationList[0]);
+        if(requestedTasks.Count > 0)
+        {
+            isOnTask = false;
+            requestedTasks.First.Value.EndTask();
+            requestedTasks.RemoveFirst();
+            if (taskDataForVisualizationList.Count > 0)
+                taskDataForVisualizationList.Remove(taskDataForVisualizationList[0]);
 
-        RespondFromServerUpdateAnimatorSpeedValue(0);
-        DoTask();
+            RespondFromServerUpdateAnimatorSpeedValue(0);
+            DoTask();
+        }
+
         unit.SetActiveEnemyDetector(true);
     }
 
@@ -189,7 +192,7 @@ public class UnitTaskManager : NetworkBehaviour
     }
     public Unit FindNearestEnemy(TeamColorEnum teamColor)
     {
-        Unit closettEnemy = EntitiesOnMapDatabase.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance * unit.attackRange);
+        Unit closettEnemy = EntitiesOnMapDatabase.Instance.GetClosestTransformEnemyByTeamColor(teamColor, transform.position, unit.maxEnemySearchingDistance * 3);
         return closettEnemy;
     }
     #region tasks
@@ -268,9 +271,16 @@ public class UnitTaskManager : NetworkBehaviour
 
 
     private Collider[] overlapResults = new Collider[50];
+
     public Unit DetectUnits(Vector3 position)
     {
-        int hits = Physics.OverlapSphereNonAlloc(position, detectionSphereEnemyAggressionApproachRadius, overlapResults);
+        int hits = Physics.OverlapSphereNonAlloc(
+            position,
+            detectionSphereEnemyAggressionApproachRadius,
+            overlapResults
+        );
+
+        Vector3 myPosition = this.unit.transform.position;
 
         Unit closestUnit = null;
         float closestDistanceSqr = float.MaxValue;
@@ -280,7 +290,7 @@ public class UnitTaskManager : NetworkBehaviour
             Unit unit = overlapResults[i].GetComponent<Unit>();
             if (unit != null && this.unit.teamColor != unit.teamColor)
             {
-                float distanceSqr = (unit.transform.position - position).sqrMagnitude;
+                float distanceSqr = (unit.transform.position - myPosition).sqrMagnitude;
                 if (distanceSqr < closestDistanceSqr)
                 {
                     closestUnit = unit;
@@ -288,8 +298,8 @@ public class UnitTaskManager : NetworkBehaviour
                 }
             }
         }
-
         return closestUnit;
     }
 
+    public virtual void RespondFromServerToBuildConstructionTask(GameObject construction) { }
 }

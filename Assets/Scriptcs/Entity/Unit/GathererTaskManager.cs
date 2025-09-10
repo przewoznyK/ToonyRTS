@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System.Drawing;
 public class GathererTaskManager : UnitTaskManager
 {
     public List<ObjectPrices> gatheredResources { get; private set; } = new();
@@ -39,90 +40,96 @@ public class GathererTaskManager : UnitTaskManager
     }
     public override void DoTask()
     {
-            attackCycleActivated = false;
-            if (requestedTasks.Count > 0 && isOnTask == false)
+        attackCycleActivated = false;
+        if (requestedTasks.Count > 0 && isOnTask == false)
+        {
+            currentTask = requestedTasks.First.Value;
+            if (currentTask is GoToPositionTask goToPositionTask)
             {
-                currentTask = requestedTasks.First.Value;
-                if (currentTask is GoToPositionTask goToPositionTask)
-                {
-                    unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                    taskTransform = null;
-                    Vector3 pos = goToPositionTask.taskPosition;
+                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                taskTransform = null;
+                Vector3 pos = goToPositionTask.taskPosition;
                 RespondFromServerToMoveUnit(pos);
                 RespondFromServerUpdateAnimatorSpeedValue(1);
-                    taskVector = pos;
-                }
-                else if (currentTask is AttackTargetTask attackTarget)
-                {
+                taskVector = pos;
+            }
+            else if (currentTask is AttackTargetTask attackTarget)
+            {
                 RespondFromServerToAttackEntity(attackTarget.targetTransform);
                 RespondFromServerUpdateAnimatorSpeedValue(1);
-                }
-                else if (currentTask is AggressiveApproachTask aggressiveApproach)
+            }
+            else if (currentTask is AggressiveApproachTask aggressiveApproach)
+            {
+                unit.agent.stoppingDistance = unit.attackRange;
+                Unit closetEnemyUnit = DetectUnits(aggressiveApproach.taskPosition);
+
+                if (closetEnemyUnit != null)
                 {
-                    unit.agent.stoppingDistance = unit.attackRange;
-                    Unit closetEnemyUnit = DetectUnits(aggressiveApproach.taskPosition);
-
-                    if (closetEnemyUnit != null)
-                    {
-                    RespondFromServerToCreateAttackEntityTask(closetEnemyUnit.teamColor, closetEnemyUnit.transform);
-
-                    }
-                    else
-                    RespondFromServerToCreateGoToPositionTask(aggressiveApproach.taskPosition);
-
-                RespondFromServerUpdateAnimatorSpeedValue(1);
-                    GoToNextTask();
-                    return;
+                    enemyTeamTarget = closetEnemyUnit.teamColor;
+                    RespondFromServerToAttackEntity(closetEnemyUnit.transform);
+                    currentTask.unitTaskType = UnitTaskTypeEnum.AttackTarget;
                 }
-                else if (currentTask is GathererResourceTask gatherResource)
-                {
-                    currentGatherableResource = gatherResource.gatherableResource;
-                    unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                    taskTransform = gatherResource.targetTransform;
-                    currentResourceTypeGathering = gatherResource.currentResourceTypeGathering;
-                RespondFromServerToMoveUnit(taskTransform.position);
-                RespondFromServerUpdateAnimatorSpeedValue(1);
-                }
-                else if (currentTask is ReturnToStockpileTask returnToStockpile)
+                else
                 {
                     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                     taskTransform = null;
-                    Vector3 pos = returnToStockpile.taskPosition;
-
+                    Vector3 pos = aggressiveApproach.taskPosition;
+                    RespondFromServerToMoveUnit(pos);
                     taskVector = pos;
+                    currentTask.unitTaskType = UnitTaskTypeEnum.GoToPosition;
+                }
+                RespondFromServerUpdateAnimatorSpeedValue(1);
+            }
+            else if (currentTask is GathererResourceTask gatherResource)
+            {
+                currentGatherableResource = gatherResource.gatherableResource;
+                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                taskTransform = gatherResource.targetTransform;
+                currentResourceTypeGathering = gatherResource.currentResourceTypeGathering;
+                RespondFromServerToMoveUnit(taskTransform.position);
+                RespondFromServerUpdateAnimatorSpeedValue(1);
+            }
+            else if (currentTask is ReturnToStockpileTask returnToStockpile)
+            {
+                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                taskTransform = null;
+                Vector3 pos = returnToStockpile.taskPosition;
+
+                taskVector = pos;
 
                 RespondFromServerToMoveUnit(pos);
                 RespondFromServerUpdateAnimatorSpeedValue(1);
-                    isGoingToStockPile = true;
-                }
-                else if (currentTask is BuildConstructionTask construction)
-                {
-                    currentConstionBuildingTarget = construction.constructionBuildingRepresentation;
-                    construction.constructionBuildingRepresentation.gatherersBuildingThisConstruction.Add((GathererNew)this.unit);
-                    unit.agent.stoppingDistance = unit.attackRange;
-                Debug.Log("Change Position");
+                isGoingToStockPile = true;
+            }
+            else if (currentTask is BuildConstructionTask construction)
+            {
+                currentConstionBuildingTarget = construction.constructionBuildingRepresentation;
+                construction.constructionBuildingRepresentation.gatherersBuildingThisConstruction.Add((GathererNew)this.unit);
+                
+                Vector2 buildingSize = construction.constructionBuildingRepresentation.buildingSize;
+                float buildingRadius = Mathf.Max(buildingSize.x, buildingSize.y) * 0.5f;
+                float unitRadius = unit.agent.radius; // NavMeshAgent ma swój radius
+                unit.agent.stoppingDistance = buildingRadius + unitRadius;
+               
+                Debug.Log("BuildConstructionTask Change Position");
                 RespondFromServerToMoveUnit(construction.constructionPosition);
                 RespondFromServerUpdateAnimatorSpeedValue(1);
-                    isGoingToBuildingConstruction = true;
-                }
-                isOnTask = true;
+                isGoingToBuildingConstruction = true;
             }
+            isOnTask = true;
+        }
     }
+
     public override void WorkingTask()
     {
         if (isOnTask)
         {
             if (currentTask.unitTaskType == UnitTaskTypeEnum.GoToPosition)
             {
-                RespondFromServerToSetBoolAnimation("Harvest", false);
-
                 if (Vector3.Distance(taskVector, transform.position) <= unit.agent.stoppingDistance)
-                {
                     GoToNextTask();
-                }
             }
-      
-            else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget)
+            else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget && taskTransform != null)
             {
                 rotateToTaskTransform = true;
                 unit.agent.stoppingDistance = unit.attackRange;
@@ -130,24 +137,23 @@ public class GathererTaskManager : UnitTaskManager
                 {
                     // Working Task Unitl Unit Reach Enemy 
                     RespondFromServerToMoveUnit(taskTransform.position);
-
                     if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
                         if (unit.isRanged)
                             StartCoroutine(AttackCycle("Shoot"));
                         else
                             StartCoroutine(AttackCycle("Attack"));
+
                         attackCycleActivated = true;
                         RespondFromServerUpdateAnimatorSpeedValue(0);
                         isOnTask = false;
                     }
                 }
-                else if (taskTransform == null && requestedTasks.Count == 1)
-                {
-                    GoToNextTask();
-                    AttackNearestEnemyByTeamColor();
-
-                }
+            }
+            else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget && taskTransform == null)
+            {
+                GoToNextTask();
+                AttackNearestEnemyByTeamColor();
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.GatherResource)
             {
@@ -181,7 +187,7 @@ public class GathererTaskManager : UnitTaskManager
             }
             else if (isGoingToBuildingConstruction)
             {
-                if (Vector3.Distance(constructionToBuildPosition, transform.position) <= unit.agent.stoppingDistance)
+                if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance)
                 {
                     unit.agent.ResetPath();
                     RespondFromServerUpdateAnimatorSpeedValue(0);
@@ -191,7 +197,7 @@ public class GathererTaskManager : UnitTaskManager
             }
         }
     }
-
+    
     public void UpdateGatheredResourcesAmount(List<ObjectPrices> newObjectPrices)
     {
         gatheredResources = newObjectPrices;
@@ -253,11 +259,12 @@ public class GathererTaskManager : UnitTaskManager
 
     public void ReturnToStockPile()
     {
+        Debug.Log("RETURN TO STOCK PILE");
         requestedTasks.First.Value.EndTask();
         requestedTasks.RemoveFirst();
         RespondFromServerToSetBoolAnimation("Harvest", false);
 
-        stockPile = PlayerController.LocalPlayer.stockPileManager.GetClosestStockPile(transform.position);
+        stockPile = PlayerController.LocalPlayer.stockPileManager.GetClosestStockPile(unit.teamColor, transform.position);
         if (stockPile != null)
         {
             unit.SetActiveEnemyDetector(false);
@@ -265,7 +272,6 @@ public class GathererTaskManager : UnitTaskManager
             ReturnToStockpileTask newTask = new(stockPile.stockPilePosition.transform.position);
             requestedTasks.AddLast(newTask);
             DoTask();
-       //     newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
         }
     }
     public override void GatherResourceTask(GatherableResource resource)
@@ -274,21 +280,16 @@ public class GathererTaskManager : UnitTaskManager
         GathererResourceTask newTask = new(resource);
         requestedTasks.AddLast(newTask);
         DoTask();
-    //    newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
 
-    public override void RequestToServerToBuildConstructionTask(GameObject construction)
+    public override void RespondFromServerToBuildConstructionTask(GameObject construction)
     {
-        if (PlayerController.LocalPlayer.isLocalPlayer)
-            PlayerController.LocalPlayer.CmdBuildConstructionTask(this.GetComponent<NetworkIdentity>(), construction);
-    }
-    public void RespondFromServerToBuildConstructionTask(GameObject construction)
-    {
+
+        Debug.Log("RespondFromServerToBuildConstructionTask");
         unit.SetActiveEnemyDetector(false);
         attackCycleActivated = false;
         BuildConstructionTask newTask = new(construction);
         requestedTasks.AddLast(newTask);
         DoTask();
-      //  newTask.TakeVisualizationTask(taskVisualization.AddNewTaskAndRefreshLineRenderer(requestedTasks));
     }
 }

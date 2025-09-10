@@ -10,7 +10,7 @@ public class InConstructionBuildingRepresentation : NetworkBehaviour, IGetTeamAn
     public GameObject finishBuilding;
     public List<Vector3Int> positionToOccupy;
     public List<GathererNew> gatherersBuildingThisConstruction;
-
+    public Vector2 buildingSize;
 
     [SerializeField] private int timeToBuilt;
     public void SetFinishBuilding(GameObject builtToCreate, List<Vector3Int> positionOccupied)

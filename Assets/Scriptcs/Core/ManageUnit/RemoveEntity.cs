@@ -13,10 +13,10 @@ public class RemoveEntity : MonoBehaviour
 
     public void RemoveEntityFromGame(Building building)
     {
-        if(building.isStockPile)
+        if(building.isServer && building.isStockPile)
         {
             IStockPile stockPile = building.GetComponent<IStockPile>();
-            PlayerController.LocalPlayer.stockPileManager.stockPiles.Remove(stockPile);
+            PlayerController.LocalPlayer.stockPileManager.RemoveStockPileByTeam(building.teamColor, stockPile);
         }
         Debug.Log(building.positionToOccupy.Count + " < --- ");
         gridData.RequestToServerToRemoveObjectFromGridData(building.positionToOccupy);

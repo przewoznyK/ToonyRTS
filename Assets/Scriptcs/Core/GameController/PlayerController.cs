@@ -1,12 +1,8 @@
 using Mirror;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -72,7 +68,6 @@ public class PlayerController : NetworkBehaviour
         RMBClickAction.performed -= OnRMBClick;
         LMBClickAction.performed -= OnLMBClick;
     }
-
     void InitClientSide()
     {
         var playerControlledBuildings = new PlayerControlledBuildings();
@@ -185,7 +180,7 @@ public class PlayerController : NetworkBehaviour
     {
         GameObject contructionRepresentationInstantiate = Instantiate(contructionRepresentationPrefab, position, Quaternion.identity);
         contructionRepresentationInstantiate.transform.rotation = Quaternion.Euler(90, 0, 0);
- 
+        contructionRepresentationInstantiate.GetComponent<InConstructionBuildingRepresentation>().buildingSize = size;
         NetworkServer.Spawn(contructionRepresentationInstantiate);
 
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(buildingId).buildingPrefab;
@@ -204,7 +199,7 @@ public class PlayerController : NetworkBehaviour
             if (unit is GathererNew)
             {
                 GathererNew gatherer = unit as GathererNew;
-                gatherer.BuildConstruction(contructionRepresentationInstantiate);
+                gatherer.unitTaskManager.RespondFromServerToBuildConstructionTask(contructionRepresentationInstantiate);
             }
         }
 
@@ -262,55 +257,15 @@ public class PlayerController : NetworkBehaviour
             resource.available--;
     }
 
-    [ClientRpc]
-    internal void RpcRemoveUnit(Unit unit)
-    {
-        Debug.Log(unit.teamColor + " RPC REMOVE UNIT===================================== ");
-        controlledUnits.RemoveUnit(unit);
-
-    }
     #endregion
 
 
 
-    [Command]
-    public void MoveUnitCommand(NetworkIdentity networkIdentity, Vector3 point, bool isShiftPressed)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            if (isShiftPressed == false)
-                taskManager.RespondFromServerToResetTasks();
-  
-            taskManager.RespondFromServerToCreateGoToPositionTask(point);
-        }
-    }
 
-    [Command]
-    public void AttackEntityCommand(NetworkIdentity networkIdentity, TeamColorEnum enemyTeamColor, Transform enemyTransform, bool isShiftPressed)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            if (isShiftPressed == false)
-                taskManager.RespondFromServerToResetTasks();
-
-            taskManager.RespondFromServerToCreateAttackEntityTask(enemyTeamColor, enemyTransform);
-        }
-    }
-    [Command]
-    public void AggressiveAproachCommand(NetworkIdentity networkIdentity, Vector3 position, bool isShiftPressed)
-    {
-        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
-        {
-            if (isShiftPressed == false)
-                taskManager.RespondFromServerToResetTasks();
-
-            taskManager.RespondFromServerToCreateAggressiveApproachTask(position);
-        }
-    }
 
     public void OnLMBClick(InputAction.CallbackContext ctx)
     {
-        if (InputManager.Instance.isMouseOverGameObject)
+        if (InputManager.Instance.isMouseOverGameObject || aggressiveApproachCommand == false)
             return;
 
         bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
@@ -338,17 +293,82 @@ public class PlayerController : NetworkBehaviour
         bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
         {
             if (hit.collider.CompareTag("Ground"))
                 foreach (var unit in controlledUnits.selectedUnits)
-                    MoveUnitCommand(unit.netIdentity, hit.point, isShiftPressed);
-            else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
-                foreach (var unit in controlledUnits.selectedUnits)
                 {
-                    if(teamColor != component.GetTeam())
-                        AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+                    MoveUnitCommand(unit.netIdentity, hit.point, isShiftPressed);
                 }
+            else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
+            {
+                if ((component.GetTeam() & teamColor) != 0)
+                {
+                    if (component.GetBuildingType() == BuildingTypeEnum.resource)
+                    {
+                        foreach (var unit in controlledUnits.selectedUnits)
+                        {
+                            if (unit is GathererNew)
+                                GatherResourceCommand(unit.netIdentity, hit.point, component.GetProperties<GatherableResource>(), isShiftPressed);
+                        }
+                        return;
+                    }
+                }
+                else if (component.GetTeam() != teamColor)
+                {
+                    foreach (var unit in controlledUnits.selectedUnits)
+                        if (teamColor != component.GetTeam())
+                            AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+                }
+            }
         }
     }
+
+    [Command]
+    public void MoveUnitCommand(NetworkIdentity networkIdentity, Vector3 point, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            if (isShiftPressed == false)
+                taskManager.RespondFromServerToResetTasks();
+
+            taskManager.RespondFromServerToCreateGoToPositionTask(point);
+        }
+    }
+
+    [Command]
+    public void AttackEntityCommand(NetworkIdentity networkIdentity, TeamColorEnum enemyTeamColor, Transform enemyTransform, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            if (isShiftPressed == false)
+                taskManager.RespondFromServerToResetTasks();
+
+            taskManager.RespondFromServerToCreateAttackEntityTask(enemyTeamColor, enemyTransform);
+        }
+    }
+    [Command]
+    public void AggressiveAproachCommand(NetworkIdentity networkIdentity, Vector3 position, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<UnitTaskManager>(out var taskManager))
+        {
+            if (isShiftPressed == false)
+                taskManager.RespondFromServerToResetTasks();
+
+            taskManager.RespondFromServerToCreateAggressiveApproachTask(position);
+        }
+    }
+
+    [Command]
+    private void GatherResourceCommand(NetworkIdentity networkIdentity, Vector3 point, GatherableResource gatherableResource, bool isShiftPressed)
+    {
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GathererTaskManager>(out var gathererTaskManager))
+        {
+            if (isShiftPressed == false)
+                gathererTaskManager.RespondFromServerToResetTasks();
+
+            gathererTaskManager.GatherResourceTask(gatherableResource);
+        }
+    }
+
 }

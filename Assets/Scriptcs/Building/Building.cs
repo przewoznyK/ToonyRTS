@@ -2,6 +2,7 @@ using Mirror;
 using Mirror.BouncyCastle.Asn1.X509;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(NetworkIdentity))]
 public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeamAndProperties
@@ -26,6 +27,14 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     {
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onDeathActiom += () => RemoveEntity.Instance.RemoveEntityFromGame(this);
+
+        Debug.Log("BuildingSetProperstiesByTeamColor INIT " + isServer + "   " + isStockPile);
+        if (isStockPile)
+        {
+            Debug.Log("DODAJE STOCKPILE " + teamColor);
+
+            PlayerController.LocalPlayer.stockPileManager.AddStockPileByTeam(teamColor, this);
+        }
     }
     public ObjectTypeEnum CheckObjectType()
     {

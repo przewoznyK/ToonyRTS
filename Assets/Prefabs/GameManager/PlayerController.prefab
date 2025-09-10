@@ -56,7 +56,7 @@ MonoBehaviour:
   aggressiveApproachCommand: 0
   ignoreLayerMask:
     serializedVersion: 2
-    m_Bits: 76
+    m_Bits: 68
 --- !u!114 &3196159571080704159
 MonoBehaviour:
   m_ObjectHideFlags: 0
