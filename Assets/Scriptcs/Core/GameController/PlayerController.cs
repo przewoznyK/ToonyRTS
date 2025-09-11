@@ -163,12 +163,13 @@ public class PlayerController : NetworkBehaviour
             building.ServerSpawnUnit(unitID, teamColor);
     }
     [Command]
-    public void CmdSpawnBuilding(int buildingId, Vector3Int position, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy)
+    public void CmdSpawnBuilding(int buildingId, Vector3Int position, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy, Vector2 buildingSize)
     {
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(buildingId).buildingPrefab;
         GameObject buildingInstantiate = Instantiate(prefab, position, Quaternion.identity);
         Building building = buildingInstantiate.GetComponent<Building>();
         building.teamColor = teamColor;
+        building.buildingSize = buildingSize;
 
         NetworkServer.Spawn(buildingInstantiate);
         RpcSetActiveGameObject(buildingInstantiate.gameObject, true);
@@ -176,7 +177,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnConstructionRepresentation(int buildingId, Vector3 position, Vector2 size, List<Unit> selectedUnits, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy)
+    public void CmdSpawnConstructionRepresentation(int buildingId, Vector3 position, Vector2 size, List<Unit> selectedUnits, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy, Vector2 buildingSize)
     {
         GameObject contructionRepresentationInstantiate = Instantiate(contructionRepresentationPrefab, position, Quaternion.identity);
         contructionRepresentationInstantiate.transform.rotation = Quaternion.Euler(90, 0, 0);
@@ -187,6 +188,7 @@ public class PlayerController : NetworkBehaviour
         GameObject buildingInstantiate = Instantiate(prefab, position, Quaternion.identity);
         Building building = buildingInstantiate.GetComponent<Building>();
         building.teamColor = teamColor;
+        building.buildingSize = buildingSize;
 
         NetworkServer.Spawn(buildingInstantiate);
 
@@ -250,11 +252,15 @@ public class PlayerController : NetworkBehaviour
     public void CmdRemoveGameObject(GameObject gameObject) => NetworkServer.Destroy(gameObject);
 
     [Command]
-    public void CmdTakeResource(NetworkIdentity resourceNetId)
+    public void CmdTakeResource(NetworkIdentity networkIdentity)
     {
-        var resource = resourceNetId.GetComponent<GatherableResource>();
-        if (resource != null)
-            resource.available--;
+
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GatherableResource>(out var gatherableResource))
+        {
+            if (gatherableResource != null)
+                gatherableResource.available--;
+        }
+
     }
 
     #endregion

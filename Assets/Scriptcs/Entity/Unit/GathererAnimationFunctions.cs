@@ -11,12 +11,19 @@ public class GathererAnimationFunctions : UnitAnimationFunctions
             if (gathererTaskManager.currentGatherableResource == null) return;
             obj.AddValue(1);
             gathererTaskManager.currentGathered = obj.priceValue;
-            if (gathererTaskManager.currentGatherableResource.Take(gathererTaskManager) == false || gathererTaskManager.currentGathered >= gathererTaskManager.maxCarried)
+            if (gathererTaskManager.currentGatherableResource.Take(gathererTaskManager) == false)
             {
-                if (gathererTaskManager.CheckIfGathererHaveToReturnToStockPile())
-                    gathererTaskManager.ReturnToStockPile();
-                else
-                    gathererTaskManager.GoToNextResource();  
+                if (gathererTaskManager.maxCarried <= gathererTaskManager.currentGathered)
+                {
+                    if (gathererTaskManager.CheckIfGathererHaveToReturnToStockPile())
+                    {
+                        gathererTaskManager.ReturnToStockPile();
+                          return;
+
+                    }
+                }
+
+                gathererTaskManager.GoToNextResource();
             }
         }
     }

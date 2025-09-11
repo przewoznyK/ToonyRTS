@@ -130,7 +130,7 @@ MonoBehaviour:
   entityType: 1
   buildingType: 1
   resourceType: 8
-  totalAvailable: 1
+  totalAvailable: 30
   available: 0
 --- !u!208 &9101726549383073459
 NavMeshObstacle:

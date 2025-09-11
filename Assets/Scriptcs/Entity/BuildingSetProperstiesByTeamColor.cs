@@ -17,7 +17,5 @@ public class BuildingSetProperstiesByTeamColor : MonoBehaviour
         Material teamMaterialUnit = TeamColorDatabase.Instance.GetTeamBuildingUnit(building.teamColor);
         foreach (var mesh in meshsToChangeMaterial)
             mesh.material = teamMaterialUnit;
-
-
     }
 }

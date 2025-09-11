@@ -28,6 +28,12 @@ public class TaskVisualization : NetworkBehaviour
                 if (item.Value == null) return;
                 item.Key.transform.position = item.Value.transform.position;
             }
+
+        }
+
+        if (lineRenderer.positionCount > 1 && unitTaskManager)
+        {
+            lineRenderer.SetPosition(0, unitTaskManager.transform.position);
         }
     }
     public void Init(ControlledUnits controlledUnits)
@@ -35,6 +41,8 @@ public class TaskVisualization : NetworkBehaviour
         Instance = this;
         this.controlledUnits = controlledUnits;
         controlledUnits.OnSelectedUnitsChanged += ShowCurrentTask;
+ 
+
     }
     internal void ShowCurrentTask()
     {
@@ -42,12 +50,20 @@ public class TaskVisualization : NetworkBehaviour
         {
             ClearVisualization();
             return;
-        } 
-
+        }
+     
         this.unitTaskManager = controlledUnits.selectedUnits[0].unitTaskManager;
         if(callbackRegistered == false)
             unitTaskManager.taskDataForVisualizationList.Callback += OnTaskListChanged;
 
+        if(unitTaskManager.taskDataForVisualizationList.Count > 1)
+            lineRenderer.enabled = true;
+        else
+            lineRenderer.enabled = false;
+
+        lineRenderer.positionCount = unitTaskManager.taskDataForVisualizationList.Count + 1;
+        int lrIndex = 0;
+        lineRenderer.SetPosition(lrIndex, unitTaskManager.transform.position);
         callbackRegistered = true;
         foreach (var taskData in unitTaskManager.taskDataForVisualizationList)
         {
@@ -66,6 +82,8 @@ public class TaskVisualization : NetworkBehaviour
                 destinationPosition = taskData.position;
                 Instantiate(taskVizualizationPrefab, destinationPosition, Quaternion.identity, taskVizualizationContainer);
             }
+            lrIndex++;
+            lineRenderer.SetPosition(lrIndex, destinationPosition);
         }
     }
 
@@ -76,11 +94,18 @@ public class TaskVisualization : NetworkBehaviour
         foreach (Transform child in taskVizualizationContainer)
             Destroy(child.gameObject);
 
+        lineRenderer.positionCount = 0;
         if (unitTaskManager.taskDataForVisualizationList.Count <= 1) return;
-
+        if (unitTaskManager.taskDataForVisualizationList.Count > 1)
+            lineRenderer.enabled = true;
+        else
+            lineRenderer.enabled = false;
+        lineRenderer.positionCount = unitTaskManager.taskDataForVisualizationList.Count + 1;
+        int lrIndex = 0;
+        lineRenderer.SetPosition(lrIndex, unitTaskManager.transform.position);
         foreach (var taskData in unitTaskManager.taskDataForVisualizationList)
         {
-          
+            
             Vector3 destinationPosition = Vector3.zero;
             if (taskData.followTarget)
             {
@@ -89,12 +114,16 @@ public class TaskVisualization : NetworkBehaviour
                 destinationPosition = targetTransform.transform.position;
                 GameObject newFollowFlag = Instantiate(taskVizualizationPrefab, destinationPosition, Quaternion.identity, taskVizualizationContainer);
                 followFlags.Add(newFollowFlag, targetTransform);
+
             }
             else
             {
                 destinationPosition = taskData.position;
                 Instantiate(taskVizualizationPrefab, destinationPosition, Quaternion.identity, taskVizualizationContainer);
             }
+            lrIndex++;
+            lineRenderer.SetPosition(lrIndex, destinationPosition);
+
         }
     }
 
@@ -109,91 +138,11 @@ public class TaskVisualization : NetworkBehaviour
         followFlags.Clear();
         foreach (Transform child in taskVizualizationContainer)
             Destroy(child.gameObject);
+
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 0;
+            lineRenderer.enabled = false;
+        }
     }
-
-    //int requestedTaskCount;
-    //private Vector3 worldPosition;
-    //private Quaternion worldRotation = Quaternion.identity;
-    //private void OnEnable()
-    //{
-    //    taskVizualizationContainer.position = worldPosition;
-    //    taskVizualizationContainer.rotation = worldRotation;
-
-    //    lineRenderer.enabled = true;
-    //    taskVizualizationContainer.gameObject.SetActive(true);
-    //}
-
-    //private void OnDisable()
-    //{
-    //    lineRenderer.enabled = false;
-    //    taskVizualizationContainer.gameObject.SetActive(false);
-    //}
-    //private void Update()
-    //{
-    //    if(requestedTaskCount > 0)
-    //        lineRenderer.SetPosition(0, transform.position);
-
-    //    foreach (var taskData in updatingPositionTasksData)
-    //    {
-    //        if(taskData != null)
-    //        {
-    //            if (taskData.taskTargetTransform == null) return;
-    //            taskData.taskVizualizationGameObject.transform.position = taskData.taskTargetTransform.position;
-
-    //            lineRenderer.SetPosition(taskData.taskLineRendererIndex, taskData.taskTargetTransform.position);
-    //        }
-    //    }
-    //}
-    //private void LateUpdate()
-    //{
-    //    taskVizualizationContainer.position = worldPosition;
-    //    taskVizualizationContainer.rotation = worldRotation;
-    //}
-
-    //public GameObject AddNewTaskAndRefreshLineRenderer(LinkedList<UnitTask> requestedTasks)
-    //{
-
-    //    ClearVisulalizationFlags();
-    //    updatingPositionTasksData.Clear();
-    //    GameObject vizualizationGameObject = null;
-    //    lineRenderer.positionCount = 1;
-    //    requestedTaskCount = requestedTasks.Count;
-    //    if (requestedTasks.Count >= 1)
-    //    {
-    //        int renderLineIndex = 0;
-    //        lineRenderer.positionCount = requestedTasks.Count + 1;
-    //        foreach (var task in requestedTasks)
-    //        {
-    //            vizualizationGameObject = Instantiate(taskVizualizationPrefab, task.taskPosition, Quaternion.identity, taskVizualizationContainer);
-    //            PlayerController.LocalPlayer.CmdSpawnTaskVizualization(vizualizationGameObject);
-    //            if (task.unitTaskType == UnitTaskTypeEnum.GoToPosition)
-    //            {
-    //                renderLineIndex++;
-    //            }
-    //            else if(task.unitTaskType == UnitTaskTypeEnum.AttackTarget)
-    //            {
-    //                renderLineIndex++;
-    //                MovingTargetTaskVisualizationData movingTaskTarget = new(vizualizationGameObject, task.targetTransform, renderLineIndex);
-    //                updatingPositionTasksData.Add(movingTaskTarget);
-    //            }
-    //            else if((task.unitTaskType == UnitTaskTypeEnum.GatherResource )|| task.unitTaskType == UnitTaskTypeEnum.BuildingConstruction)
-    //            {
-    //                renderLineIndex++;
-
-    //            }
-    //            lineRenderer.SetPosition(renderLineIndex, task.taskPosition);
-
-    //        }
-
-    //    }
-    //    return vizualizationGameObject;
-    //}
-
-    //public void ClearVisulalizationFlags()
-    //{
-    //    foreach (Transform child in taskVizualizationContainer)
-    //    {
-    //        GameObject.Destroy(child.gameObject);
-    //    }
-    //}
 }

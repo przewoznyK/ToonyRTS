@@ -266,7 +266,7 @@ NavMeshObstacle:
   m_Shape: 1
   m_Extents: {x: 4, y: 4.5, z: 4}
   m_MoveThreshold: 0.1
-  m_Carve: 0
+  m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 4, z: 0}
   m_TimeToStationary: 0.5
@@ -327,6 +327,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e18d9c9755fb014c92ef7fa7d0550f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   floatingHealthBsr: {fileID: 3558880059156693512}
   maxHealth: 10
 --- !u!114 &6425730865762764628
@@ -647,7 +650,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 844388770890777717, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 844388770890777717, guid: 5733e47c6d0c07c40b815d15877ece97, type: 3}
       propertyPath: m_LocalRotation.w

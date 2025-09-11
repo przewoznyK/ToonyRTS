@@ -82,6 +82,7 @@ public class GathererTaskManager : UnitTaskManager
             }
             else if (currentTask is GathererResourceTask gatherResource)
             {
+                Debug.Log("DO GATHERER TASK");
                 currentGatherableResource = gatherResource.gatherableResource;
                 unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                 taskTransform = gatherResource.targetTransform;
@@ -91,7 +92,11 @@ public class GathererTaskManager : UnitTaskManager
             }
             else if (currentTask is ReturnToStockpileTask returnToStockpile)
             {
-                unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                Vector2 buildingSize = returnToStockpile.buildingSize;
+                float buildingRadius = Mathf.Max(buildingSize.x, buildingSize.y) * 0.5f;
+                float unitRadius = unit.agent.radius; // NavMeshAgent ma swój radius
+                unit.agent.stoppingDistance = buildingRadius + unitRadius;
+           //     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                 taskTransform = null;
                 Vector3 pos = returnToStockpile.taskPosition;
 
@@ -157,18 +162,28 @@ public class GathererTaskManager : UnitTaskManager
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.GatherResource)
             {
-                if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance)
+                if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance)
                 {
-                    unit.agent.ResetPath();
-                    RespondFromServerUpdateAnimatorSpeedValue(0);
-                    isOnTask = false;
-                    RespondFromServerToSetBoolAnimation("Harvest", true);
+                    if(currentTask.targetTransform != null)
+                    {
+                        unit.agent.ResetPath();
+                        RespondFromServerUpdateAnimatorSpeedValue(0);
+                        isOnTask = false;
+                        RespondFromServerToSetBoolAnimation("Harvest", true);
+                    }
+                    else
+                    {
+                        if (CheckIfGathererHaveToReturnToStockPile())
+                            ReturnToStockPile();
+                        else
+                            GoToNextResource();
+                    }
                 }
             }
 
             if (isGoingToStockPile)
             {
-                if (Vector3.Distance(stockPile.stockPilePosition.position, transform.position) <= unit.agent.stoppingDistance)
+                if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance)
                 {
                     isGoingToStockPile = false;
                     RespondFromServerUpdateAnimatorSpeedValue(0);
@@ -220,9 +235,10 @@ public class GathererTaskManager : UnitTaskManager
         requestedTasks.RemoveFirst();
         isOnTask = false;
         RespondFromServerToSetBoolAnimation("Harvest", false);
-
+        Debug.Log("REQUEST " + requestedTasks.Count);
         if (requestedTasks.Count == 0)
         {
+            Debug.Log("SZUKAJ MNIE");
             GatherableResource nextResource = FindNearestResource();
             if (nextResource != null)
                 GatherResourceTask(nextResource); 
@@ -269,7 +285,7 @@ public class GathererTaskManager : UnitTaskManager
         {
             unit.SetActiveEnemyDetector(false);
             attackCycleActivated = false;
-            ReturnToStockpileTask newTask = new(stockPile.stockPilePosition.transform.position);
+            ReturnToStockpileTask newTask = new(stockPile.stockPilePosition.transform.position, stockPile.stockPileSize);
             requestedTasks.AddLast(newTask);
             DoTask();
         }

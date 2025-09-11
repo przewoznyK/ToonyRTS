@@ -71,14 +71,6 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     void GoToMeetingPoint()
     {
         unitTaskManager.RespondFromServerToCreateGoToPositionTask(meetingPoint);
-        StartCoroutine(ChangeAgentQualityAfterDelay(ObstacleAvoidanceType.HighQualityObstacleAvoidance, 3f));
-    }
-
-    IEnumerator ChangeAgentQualityAfterDelay(ObstacleAvoidanceType obstacleAvoidanceType, float time)
-    {
-
-        yield return new WaitForSeconds(time);
-        agent.obstacleAvoidanceType = obstacleAvoidanceType;
     }
     public ObjectTypeEnum CheckObjectType() => ObjectTypeEnum.unit;
 

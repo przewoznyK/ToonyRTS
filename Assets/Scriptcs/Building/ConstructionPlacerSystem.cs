@@ -26,9 +26,9 @@ public class ConstructionPlacerSystem : NetworkBehaviour
             Vector2 size = currentConstructionData.buildingData.size;
 
             List<Unit> selectedUnits = activeClickableObject.controlledUnits.TakeSelectedUnitList();
-            PlayerController.LocalPlayer.CmdSpawnConstructionRepresentation(currentConstructionData.buildingData.buildingID, position, size, selectedUnits, currentConstructionData.teamColor, positionsToOccupy);
+            PlayerController.LocalPlayer.CmdSpawnConstructionRepresentation(currentConstructionData.buildingData.buildingID, position, size, selectedUnits, currentConstructionData.teamColor, positionsToOccupy, currentConstructionData.buildingData.size);
         }
         else
-            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.buildingData.buildingID ,currentConstructionData.positionToOccupy, currentConstructionData.teamColor, positionsToOccupy);
+            PlayerController.LocalPlayer.CmdSpawnBuilding(currentConstructionData.buildingData.buildingID ,currentConstructionData.positionToOccupy, currentConstructionData.teamColor, positionsToOccupy, currentConstructionData.buildingData.size);
     }
 }
