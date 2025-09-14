@@ -3889,7 +3889,7 @@ NavMeshAgent:
   m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 16
-  avoidancePriority: 50
+  avoidancePriority: 0
   m_AngularSpeed: 360
   m_StoppingDistance: 1.5
   m_AutoTraverseOffMeshLink: 1
@@ -4050,7 +4050,7 @@ MonoBehaviour:
   attackCooldown: 2
   maxEnemySearchingDistance: 60
   rotationSpeed: 360
-  defaultStoppingDistance: 2.5
+  defaultStoppingDistance: 1.5
   defaultMovementSpeed: 3
   enemyDetectionRadius: 1
   isGoingToMeetingPoint: 0
@@ -4081,7 +4081,7 @@ MonoBehaviour:
   detectionSphereEnemyAggressionApproachRadius: 10
   currentGatherableResource: {fileID: 0}
   currentResourceTypeGathering: 0
-  maxCarried: 2
+  maxCarried: 50
   currentGathered: 0
   reachedPerSecond: 0
 --- !u!114 &2014780516793684383

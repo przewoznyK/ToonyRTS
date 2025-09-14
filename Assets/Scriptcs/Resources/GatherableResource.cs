@@ -2,9 +2,12 @@ using Mirror;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
-public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties
+public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties, IHighlight
 {
+    [SerializeField] private Renderer rr;
+    [SerializeField] private NavMeshObstacle obstacle;
     [SerializeField] private TeamColorEnum teamColor;
     [SerializeField] private EntityTypeEnum entityType;
     [SerializeField] private BuildingTypeEnum buildingType;
@@ -12,36 +15,37 @@ public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties
 
     [SerializeField] private int totalAvailable = 20;
 
-    [SyncVar(hook = nameof(OnAvailableChanged))]
     public int available;
-
+    private Color originalColor;
     private void OnEnable()
     {
         available = totalAvailable;
+        originalColor = rr.material.color;
     }
 
     public bool Take(GathererTaskManager gathererTaskManager)
     {
         PlayerController.LocalPlayer.CmdTakeResource(this.netIdentity);
-        Debug.Log(available);
-        if (available <= 0)
+    
+        if (available <= 1)
         {
             gathererTaskManager.currentGatherableResource = null;
+            obstacle.enabled = false;
             PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
             return false;
         }
         return true;
     }
 
-    private void OnAvailableChanged(int oldValue, int newValue)
-    {
-        float scale = (float)available / totalAvailable;
-        if (scale > 0 && scale < 1f)
-        {
-            var vectorScale = Vector3.one * scale;
-            transform.localScale = vectorScale;
-        }
-    }
+    //private void OnAvailableChanged(int oldValue, int newValue)
+    //{
+    //    float scale = (float)available / totalAvailable;
+    //    if (scale > 0 && scale < 1f)
+    //    {
+    //        var vectorScale = Vector3.one * scale;
+    //        transform.localScale = vectorScale;
+    //    }
+    //}
 
     [ContextMenu("Snap")]
     private void Snap()
@@ -77,5 +81,22 @@ public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties
         return null;
     }
 
+    public void HightLight()
+    {
+   //     Debug.Log("ZMIENIAM HIGHTLIGHT");
+        Color c = rr.material.color;
+        c.a = 0.5f;  // pó³przezroczystoœæ
+        rr.material.color = Color.yellow;
 
+    }
+
+    //private void OnMouseEnter()
+    //{
+    //    rr.material.color = Color.yellow;
+    //}
+
+    //private void OnMouseExit()
+    //{
+    //    rr.material.color = originalColor;
+    //}
 }

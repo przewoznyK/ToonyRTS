@@ -136,6 +136,8 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     internal void AttackDetectionTarget(IGetTeamAndProperties component)
     {
         if (unitTaskManager.taskTransform) return;
+
+        if (component == null) return;
         unitTaskManager.RespondFromServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
 }

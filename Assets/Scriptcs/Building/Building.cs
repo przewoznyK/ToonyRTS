@@ -17,12 +17,14 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     [SerializeField] private List<UnitNameEnum> unitsToBuy;
     [SerializeField] public Transform meetingPoint;
     public Vector2 buildingSize;
+    [SerializeField] private Transform unitSpawnPoint;
     [Header("OPTIONAL STOCKPILE")]
     [SerializeField] private ResourceTypesEnum stockPileType;
     [field: SerializeField] public bool isStockPile { get; private set; }
     public Transform stockPilePosition => transform;
 
     public Vector2 stockPileSize => buildingSize;
+    public Collider stockPileCollider => GetComponent<Collider>();
     private void Start()
     {
         EntityHealth entityHealth = GetComponent<EntityHealth>();
@@ -59,7 +61,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
     public void ServerSpawnUnit(int unitID, TeamColorEnum teamColor)
     {
         GameObject unitPrefab = UnitDatabase.Instance.GetUnitDataByID(unitID).unitPrefab;
-        GameObject unitInstantiate = Instantiate(unitPrefab, transform.position, Quaternion.identity);
+        GameObject unitInstantiate = Instantiate(unitPrefab, unitSpawnPoint.transform.position, Quaternion.identity);
         Unit unit = unitInstantiate.GetComponent<Unit>();
         unit.transform.rotation = Quaternion.Euler(0, 180f, 0);
 

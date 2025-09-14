@@ -42,13 +42,13 @@ public class RoomManager : NetworkBehaviour
                 slot0Name = playerToAdd.playerName;
                 playerToAdd.teamColor = TeamColorEnum.Blue;
                 Debug.Log("USTAWIAM NA " + TeamColorEnum.Blue);
-                playerToAdd.startPositionOnMap = new Vector2(-5, 0);
+                playerToAdd.startPositionOnMap = new Vector2(-85, 0);
                 break;
             case 1:
                 slot1Name = playerToAdd.playerName;
                 playerToAdd.teamColor = TeamColorEnum.Red;
                 Debug.Log("USTAWIAM NA " + TeamColorEnum.Red);
-                playerToAdd.startPositionOnMap = new Vector2(5, 0);
+                playerToAdd.startPositionOnMap = new Vector2(85, 0);
 
 
 

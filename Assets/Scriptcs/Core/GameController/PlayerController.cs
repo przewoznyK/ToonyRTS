@@ -268,67 +268,25 @@ public class PlayerController : NetworkBehaviour
 
 
 
-
-    public void OnLMBClick(InputAction.CallbackContext ctx)
+    [Command]
+    void MoveUnitsInFormation(List<Unit> units, Vector3 target, float spacing)
     {
-        if (InputManager.Instance.isMouseOverGameObject || aggressiveApproachCommand == false)
-            return;
+        int rowLength = Mathf.CeilToInt(Mathf.Sqrt(units.Count));
+        int index = 0;
 
-        bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
+        for (int i = 0; i < rowLength; i++)
         {
-            Debug.Log(hit.collider.gameObject.name);
-            if (hit.collider.CompareTag("Ground"))
+            for (int j = 0; j < rowLength; j++)
             {
-                foreach (var unit in controlledUnits.selectedUnits)
-                {
-                    AggressiveAproachCommand(unit.netIdentity, hit.point, isShiftPressed);
-                }
-                commandPanelUI.ResetAggresiveApproachButton();
+                if (index >= units.Count) return;
+
+                Vector3 offset = new Vector3(i * spacing, 0, j * spacing);
+                units[index].agent.SetDestination(target + offset);
+                index++;
             }
         }
     }
 
-    public void OnRMBClick(InputAction.CallbackContext ctx)
-    {
-        if (InputManager.Instance.isMouseOverGameObject)
-            return;
-
-        bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
-        {
-            if (hit.collider.CompareTag("Ground"))
-                foreach (var unit in controlledUnits.selectedUnits)
-                {
-                    MoveUnitCommand(unit.netIdentity, hit.point, isShiftPressed);
-                }
-            else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
-            {
-                if ((component.GetTeam() & teamColor) != 0)
-                {
-                    if (component.GetBuildingType() == BuildingTypeEnum.resource)
-                    {
-                        foreach (var unit in controlledUnits.selectedUnits)
-                        {
-                            if (unit is GathererNew)
-                                GatherResourceCommand(unit.netIdentity, hit.point, component.GetProperties<GatherableResource>(), isShiftPressed);
-                        }
-                        return;
-                    }
-                }
-                else if (component.GetTeam() != teamColor)
-                {
-                    foreach (var unit in controlledUnits.selectedUnits)
-                        if (teamColor != component.GetTeam())
-                            AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
-                }
-            }
-        }
-    }
 
     [Command]
     public void MoveUnitCommand(NetworkIdentity networkIdentity, Vector3 point, bool isShiftPressed)
@@ -368,6 +326,7 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void GatherResourceCommand(NetworkIdentity networkIdentity, Vector3 point, GatherableResource gatherableResource, bool isShiftPressed)
     {
+        Debug.Log("GATHEERER RESOURCE COMMAND");
         if (networkIdentity != null && networkIdentity.TryGetComponent<GathererTaskManager>(out var gathererTaskManager))
         {
             if (isShiftPressed == false)
@@ -377,4 +336,110 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    [Command]
+    public void CmdSpawnResource(int prefabId, Vector3 position)
+    {
+            
+            GameObject obj = Instantiate(DefaultMapGenerator.Instance.objectsToSpawn[prefabId], position, Quaternion.identity);
+            NetworkServer.Spawn(obj);
+    }
+
+    private void Update()
+    {
+        if (controlledUnits.selectedUnits.Count <= 0) return;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
+        {
+            if (hit.collider.gameObject.TryGetComponent<IHighlight>(out IHighlight IHighlight))
+            {
+                if (hit.collider.gameObject.CompareTag("Resource"))
+                {
+                    if (controlledUnits.selectedUnits[0].unitTaskManager.CanReachDestination(hit.collider.gameObject.transform.position))
+                    {
+
+                        IHighlight.HightLight();
+                    }
+                }
+       
+            }
+        }
+
+    }
+
+    public void OnLMBClick(InputAction.CallbackContext ctx)
+    {
+        if (InputManager.Instance.isMouseOverGameObject || aggressiveApproachCommand == false)
+            return;
+
+        bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.CompareTag("Ground"))
+            {
+                foreach (var unit in controlledUnits.selectedUnits)
+                {
+                    AggressiveAproachCommand(unit.netIdentity, hit.point, isShiftPressed);
+                }
+                commandPanelUI.ResetAggresiveApproachButton();
+            }
+        }
+    }
+
+    public void OnRMBClick(InputAction.CallbackContext ctx)
+    {
+        if (InputManager.Instance.isMouseOverGameObject)
+            return;
+
+        bool isShiftPressed = ShiftClickAction.ReadValue<float>() > 0f;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
+        {
+            if (hit.collider.CompareTag("Ground"))
+            {
+                float spacing = 1f;
+                int unitsPerRow = Mathf.CeilToInt(Mathf.Sqrt(controlledUnits.selectedUnits.Count));
+                int index = 0;
+
+                foreach (var unit in controlledUnits.selectedUnits)
+                {
+                    int row = index / unitsPerRow;
+                    int col = index % unitsPerRow;
+
+                    Vector3 offset = new Vector3(col * spacing, 0, row * spacing);
+                    MoveUnitCommand(unit.netIdentity, hit.point + offset, isShiftPressed);
+
+                    index++;
+                }
+            }
+
+
+            else if (hit.collider.TryGetComponent<IGetTeamAndProperties>(out IGetTeamAndProperties component))
+            {
+                if ((component.GetTeam() & teamColor) != 0)
+                {
+                    if (component.GetBuildingType() == BuildingTypeEnum.resource)
+                    {
+                        foreach (var unit in controlledUnits.selectedUnits)
+                        {
+                            if (unit is GathererNew)
+                                GatherResourceCommand(unit.netIdentity, hit.point, component.GetProperties<GatherableResource>(), isShiftPressed);
+                        }
+                        return;
+                    }
+                }
+                else if (component.GetTeam() != teamColor)
+                {
+                    
+                    foreach (var unit in controlledUnits.selectedUnits)
+                        if (teamColor != component.GetTeam())
+                            AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+                }
+            }
+        }
+    }
 }

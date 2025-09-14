@@ -76,7 +76,6 @@ public class ActiveClickableObject : MonoBehaviour
     }
     private void OnLpmClick(InputAction.CallbackContext ctx)
     {
-        Debug.Log("ON LPM CLICK");
         if (PlayerController.LocalPlayer.aggressiveApproachCommand) return;
             // Active Clickable Object and CommandUI
             if (pointerOverUI == true) return;
@@ -90,7 +89,6 @@ public class ActiveClickableObject : MonoBehaviour
             {
                 var clickable = hit.collider.GetComponent<IActiveClickable>();
                 var teamColor = hit.collider.GetComponent<IGetTeamAndProperties>().GetTeam();
-                Debug.Log(" GRACZ  " + playerControllerTeamColor + " KLIKA " + teamColor);
                 if (clickable != null && teamColor == playerControllerTeamColor)
                 {
                     // Active Unit
@@ -147,7 +145,6 @@ public class ActiveClickableObject : MonoBehaviour
     private void OnLpmDoubleClick(InputAction.CallbackContext ctx)
     {
 
-        Debug.Log("lpmDoubleClick");
     }
     private void Update()
     {

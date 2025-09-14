@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public RTSCameraController rtsCameraController;
     public InputManager inputManager;
     public ActiveClickableObject activeClickableObject;
     public ManageSelectionUnits manageSelectionUnits;
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
     public RemoveEntity removeEntity;
     public BuildingProduction buildingProduction;
     public CommandShortcutKeyManager commandShortcutKeyManager;
+    public DefaultMapGenerator defaultMapGenerator;
+
 
     [Header("PlayerUI")]
     public SelectionInfoUI selectionInfoUI;

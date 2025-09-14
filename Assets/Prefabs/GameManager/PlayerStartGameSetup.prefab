@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingData: {fileID: 11400000, guid: 31f4ef55eaf7a0045b0022dc5a4ebfae, type: 2}
+  treeResourcePrefab: {fileID: 6406861800826851747, guid: 9688bf977e9f65c43a1aa24d35bfec88, type: 3}

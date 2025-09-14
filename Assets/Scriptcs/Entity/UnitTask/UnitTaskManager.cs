@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 public class UnitTaskManager : NetworkBehaviour
 {
     [SerializeField] protected Unit unit;
@@ -37,16 +38,28 @@ public class UnitTaskManager : NetworkBehaviour
                 taskTransform = null;
                 Vector3 pos = goToPositionTask.taskPosition;
                 RespondFromServerToMoveUnit(pos);
-                RespondFromServerUpdateAnimatorSpeedValue(1);
+                RespondFromServerToUpdateAnimatorSpeedValue(1);
                 taskVector = pos;
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
+                if(attackTarget.targetTransform == null)
+                {
+                    Debug.LogError("TARGET IS NULL IN DO TASK");
+                    return;
+                }
+                if(attackTarget.targetTransform.TryGetComponent<Building>(out Building building))
+                {
+                    float buildingRadius = Mathf.Max(building.buildingSize.x, building.buildingSize.y) * 0.5f;
+                    float unitRadius = unit.agent.radius;
+                    unit.agent.stoppingDistance = buildingRadius + unitRadius;
+                }
                 RespondFromServerToAttackEntity(attackTarget.targetTransform);
-                RespondFromServerUpdateAnimatorSpeedValue(1);
+                RespondFromServerToUpdateAnimatorSpeedValue(1);
             }
             else if (currentTask is AggressiveApproachTask aggressiveApproach)
             {
+
                 unit.agent.stoppingDistance = unit.attackRange;
                 Unit closetEnemyUnit = DetectUnits(aggressiveApproach.taskPosition);
 
@@ -66,7 +79,7 @@ public class UnitTaskManager : NetworkBehaviour
                     taskVector = pos;
                     currentTask.unitTaskType = UnitTaskTypeEnum.GoToPosition;
                 }
-                RespondFromServerUpdateAnimatorSpeedValue(1);
+                RespondFromServerToUpdateAnimatorSpeedValue(1);
             }
             isOnTask = true;
         }
@@ -89,7 +102,7 @@ public class UnitTaskManager : NetworkBehaviour
                 {
                     // Working Task Unitl Unit Reach Enemy 
                     RespondFromServerToMoveUnit(taskTransform.position);
-                    if (Vector3.Distance(taskTransform.position, transform.position) <= unit.agent.stoppingDistance && attackCycleActivated == false)
+                    if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
                         if (unit.isRanged)
                             StartCoroutine(AttackCycle("Shoot"));
@@ -97,7 +110,7 @@ public class UnitTaskManager : NetworkBehaviour
                             StartCoroutine(AttackCycle("Attack"));
 
                         attackCycleActivated = true;
-                        RespondFromServerUpdateAnimatorSpeedValue(0);
+                        RespondFromServerToUpdateAnimatorSpeedValue(0);
                         isOnTask = false;
                     }
                 }
@@ -133,7 +146,7 @@ public class UnitTaskManager : NetworkBehaviour
             if (taskDataForVisualizationList.Count > 0)
                 taskDataForVisualizationList.Remove(taskDataForVisualizationList[0]);
 
-            RespondFromServerUpdateAnimatorSpeedValue(0);
+            RespondFromServerToUpdateAnimatorSpeedValue(0);
             DoTask();
         }
 
@@ -142,7 +155,7 @@ public class UnitTaskManager : NetworkBehaviour
 
     public IEnumerator AttackCycle(string animationTriggerName)
     {
-        RespondFromServerUpdateAnimatorSpeedValue(0);
+        RespondFromServerToUpdateAnimatorSpeedValue(0);
         yield return new WaitForSeconds(0.5f);
 
         if (AttackAndCheckIfCanContinueAttackOrSearchNewEnemy(animationTriggerName) == false) yield break;
@@ -201,9 +214,9 @@ public class UnitTaskManager : NetworkBehaviour
     #endregion
 
     // Change Animator Speed
-    public void RespondFromServerUpdateAnimatorSpeedValue(int newValue)
+    public void RespondFromServerToUpdateAnimatorSpeedValue(int newValue)
     {
-        unit.animator.SetFloat("Speed", newValue);
+        unit.animator.SetFloat("Speed", 0);
     }
 
     public void RespondFromServerToSetBoolAnimation(string animationName, bool value)
@@ -254,7 +267,9 @@ public class UnitTaskManager : NetworkBehaviour
 
     public void RespondFromServerToMoveUnit(Vector3 targetPos)
     {
-        unit.agent.SetDestination(targetPos);
+     //   if (CanReachDestination(targetPos))
+            unit.agent.SetDestination(targetPos);
+       //W else Debug.Log("CCHE ALE NIE MOZE SADEQ DLA TYPA");
     }
 
     public void RespondFromServerToAttackEntity(Transform targetTransform)
@@ -302,4 +317,21 @@ public class UnitTaskManager : NetworkBehaviour
     }
 
     public virtual void RespondFromServerToBuildConstructionTask(GameObject construction) { }
+
+
+    public bool CanReachDestination(Vector3 targetPosition)
+    {
+        NavMeshPath path = new NavMeshPath();
+
+        // "snap" punkt do najbli¿szego na NavMesh
+        if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+        {
+            if (unit.agent.CalculatePath(hit.position, path))
+            {
+                return path.status == NavMeshPathStatus.PathComplete;
+            }
+        }
+     //   Debug.Log("CANT REACH");
+        return false;
+    }
 }
