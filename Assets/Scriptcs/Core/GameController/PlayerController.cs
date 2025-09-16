@@ -326,7 +326,6 @@ public class PlayerController : NetworkBehaviour
     [Command]
     private void GatherResourceCommand(NetworkIdentity networkIdentity, Vector3 point, GatherableResource gatherableResource, bool isShiftPressed)
     {
-        Debug.Log("GATHEERER RESOURCE COMMAND");
         if (networkIdentity != null && networkIdentity.TryGetComponent<GathererTaskManager>(out var gathererTaskManager))
         {
             if (isShiftPressed == false)
@@ -346,23 +345,23 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (controlledUnits.selectedUnits.Count <= 0) return;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
-        {
-            if (hit.collider.gameObject.TryGetComponent<IHighlight>(out IHighlight IHighlight))
-            {
-                if (hit.collider.gameObject.CompareTag("Resource"))
-                {
-                    if (controlledUnits.selectedUnits[0].unitTaskManager.CanReachDestination(hit.collider.gameObject.transform.position))
-                    {
+        //if (controlledUnits.selectedUnits.Count <= 0) return;
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~ignoreLayerMask))
+        //{
+        //    if (hit.collider.gameObject.TryGetComponent<IHighlight>(out IHighlight IHighlight))
+        //    {
+        //        if (hit.collider.gameObject.CompareTag("Resource"))
+        //        {
+        //            if (controlledUnits.selectedUnits[0].unitTaskManager.CanReachDestination(hit.collider.gameObject.transform.position))
+        //            {
 
-                        IHighlight.HightLight();
-                    }
-                }
+        //                IHighlight.HightLight();
+        //            }
+        //        }
        
-            }
-        }
+        //    }
+        //}
 
     }
 
@@ -422,6 +421,9 @@ public class PlayerController : NetworkBehaviour
             {
                 if ((component.GetTeam() & teamColor) != 0)
                 {
+                    Debug.Log(component.GetTeam() + " TEAM");
+                    if (component.GetEntityType() == EntityTypeEnum.unit) return;
+                    
                     if (component.GetBuildingType() == BuildingTypeEnum.resource)
                     {
                         foreach (var unit in controlledUnits.selectedUnits)
@@ -434,10 +436,42 @@ public class PlayerController : NetworkBehaviour
                 }
                 else if (component.GetTeam() != teamColor)
                 {
-                    
+
                     foreach (var unit in controlledUnits.selectedUnits)
+                    {
+
                         if (teamColor != component.GetTeam())
                             AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+                    }
+
+                    //    if (component.GetProperties<Transform>().TryGetComponent<Building>(out Building building))
+                    //{
+                    //    Debug.Log("TO JEST BUDYENK");
+                    //    foreach (var unit in controlledUnits.selectedUnits)
+                    //    {
+
+                    //        float buildingRadius = Mathf.Max(building.buildingSize.x, building.buildingSize.y) * 0.5f;
+                    //        float unitRadius = unit.agent.radius;
+                    //        unit.agent.stoppingDistance = buildingRadius + unitRadius;
+                    //        unit.attackRange = unit.agent.stoppingDistance;
+
+                    //        AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    foreach (var unit in controlledUnits.selectedUnits)
+                    //    {
+                    //       // unit.agent.stoppingDistance = unit.defaultStoppingDistance;
+                    //   //     unit.attackRange = unit.agent.stoppingDistance;
+                    //        if (teamColor != component.GetTeam())
+                    //            AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
+
+                    //    }
+                    //}
+
+                   
                 }
             }
         }

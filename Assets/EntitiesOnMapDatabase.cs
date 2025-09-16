@@ -39,11 +39,11 @@ public class EntitiesOnMapDatabase : MonoBehaviour
                 continue;
             float distanceSqr = (fromPosition - enemy.transform.position).sqrMagnitude;
 
-            Debug.Log("SZUKAM ENEMY " + distanceSqr + "   " + minDistance);
+           // Debug.Log("SZUKAM ENEMY " + distanceSqr + "   " + minDistance);
             
             if (distanceSqr < minDistance)
             {
-                Debug.Log("MAM CLOSEST ENEMY");
+             //   Debug.Log("MAM CLOSEST ENEMY");
                 minDistance = distanceSqr;
                 closestEnemy = enemy;
             }

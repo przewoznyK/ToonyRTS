@@ -21,6 +21,7 @@ public class UnitTaskManager : NetworkBehaviour
     public int animatorSpeedValue;
     public float detectionSphereEnemyAggressionApproachRadius = 10f;
 
+
     private void Update()
     {
         WorkingTask();
@@ -43,19 +44,23 @@ public class UnitTaskManager : NetworkBehaviour
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
-                if(attackTarget.targetTransform == null)
+                if(attackTarget.targetTransform != null)
                 {
-                    Debug.LogError("TARGET IS NULL IN DO TASK");
-                    return;
+                    taskVector = Vector3.zero;
+                    if (attackTarget.targetTransform.TryGetComponent<Building>(out Building building))
+                    {
+                        Collider buildingCollider = building.GetComponent<Collider>();
+                        Vector3 closest = buildingCollider.ClosestPoint(unit.transform.position);
+                 
+                        taskVector = closest;
+                    }
+           
+                    RespondFromServerToAttackEntity(attackTarget.targetTransform);
+                    RespondFromServerToUpdateAnimatorSpeedValue(1);
+                    rotateToTaskTransform = true;
+                    unit.agent.stoppingDistance = unit.attackRange;
                 }
-                if(attackTarget.targetTransform.TryGetComponent<Building>(out Building building))
-                {
-                    float buildingRadius = Mathf.Max(building.buildingSize.x, building.buildingSize.y) * 0.5f;
-                    float unitRadius = unit.agent.radius;
-                    unit.agent.stoppingDistance = buildingRadius + unitRadius;
-                }
-                RespondFromServerToAttackEntity(attackTarget.targetTransform);
-                RespondFromServerToUpdateAnimatorSpeedValue(1);
+
             }
             else if (currentTask is AggressiveApproachTask aggressiveApproach)
             {
@@ -96,12 +101,14 @@ public class UnitTaskManager : NetworkBehaviour
             }
             else if (currentTask.unitTaskType == UnitTaskTypeEnum.AttackTarget && taskTransform != null)
             {
-                rotateToTaskTransform = true;
-                unit.agent.stoppingDistance = unit.attackRange;
                 if (taskTransform != null)
                 {
                     // Working Task Unitl Unit Reach Enemy 
-                    RespondFromServerToMoveUnit(taskTransform.position);
+                    if(taskVector != Vector3.zero)
+                        RespondFromServerToMoveUnit(taskVector);
+                    else
+                        RespondFromServerToMoveUnit(taskTransform.position);
+
                     if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance && attackCycleActivated == false)
                     {
                         if (unit.isRanged)
@@ -166,7 +173,7 @@ public class UnitTaskManager : NetworkBehaviour
     {
         if (taskTransform)
         {
-            if(Vector3.Distance(taskTransform.position, transform.position) < unit.attackRange)
+            if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance)
             {
                 unit.animator.SetTrigger(animationTriggerName);
                 return true;
@@ -184,8 +191,10 @@ public class UnitTaskManager : NetworkBehaviour
             }
         }
         else if (taskTransform == null)
+        {
             AttackNearestEnemyByTeamColor();
 
+        }
         return false;
     }
     internal void AttackNearestEnemyByTeamColor()
@@ -267,9 +276,7 @@ public class UnitTaskManager : NetworkBehaviour
 
     public void RespondFromServerToMoveUnit(Vector3 targetPos)
     {
-     //   if (CanReachDestination(targetPos))
             unit.agent.SetDestination(targetPos);
-       //W else Debug.Log("CCHE ALE NIE MOZE SADEQ DLA TYPA");
     }
 
     public void RespondFromServerToAttackEntity(Transform targetTransform)

@@ -137,7 +137,14 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
     {
         if (unitTaskManager.taskTransform) return;
 
-        if (component == null) return;
+  if ((UnityEngine.Object)component == null)
+    return;
+
+
+        var targetTransform = component.GetProperties<Transform>();
+        if (!targetTransform) return;
+
+
         unitTaskManager.RespondFromServerToCreateAttackEntityTask(component.GetTeam(), component.GetProperties<Transform>());
     }
 }

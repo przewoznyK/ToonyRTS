@@ -20,6 +20,7 @@ public class DetectionCollider : MonoBehaviour
     private IEnumerator DelayedAttack(IGetTeamAndProperties target)
     {
         yield return new WaitForSeconds(2f);
+        if(target != null)
             unit.AttackDetectionTarget(target);
     }
 }

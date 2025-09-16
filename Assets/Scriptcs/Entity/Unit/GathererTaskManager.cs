@@ -58,7 +58,7 @@ public class GathererTaskManager : UnitTaskManager
             }
             else if (currentTask is AttackTargetTask attackTarget)
             {
-                if (attackTarget.targetTransform.TryGetComponent<Building>(out Building building))       
+                if (attackTarget.targetTransform.TryGetComponent<Building>(out Building building))
                 {
                     float buildingRadius = Mathf.Max(building.buildingSize.x, building.buildingSize.y) * 0.5f;
                     float unitRadius = unit.agent.radius;

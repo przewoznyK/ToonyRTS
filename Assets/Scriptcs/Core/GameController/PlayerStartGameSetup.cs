@@ -11,16 +11,35 @@ public class PlayerStartGameSetup : MonoBehaviour
     
             ConstructionData currentConstructionData = new(buildingData, xPosition, zPosition, teamColor);
             currentConstructionData.buildingData.buildingID = 0;
-            constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
+           constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
 
         //currentConstructionData.positionToOccupy = new Vector3Int(xPosition + 10, 0, zPosition + 10);
         //currentConstructionData.buildingData.buildingID = 1;
         //constructionPlacerSystem.PlaceConstruction(playerResources, gridData, currentConstructionData);
         //if(PlayerController.LocalPlayer.isServer)
         //{
-        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(0, teamColor, xPosition + 5, zPosition + 5);
-        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 2, zPosition);
-        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 4, zPosition);
+      //  PlayerController.LocalPlayer.CmdSpawnUnitOnStart(0, teamColor, xPosition + 5, zPosition + 5);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 5, zPosition + 2);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 5, zPosition + 1);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 5, zPosition);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 5, zPosition - 1);
+        PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, teamColor, xPosition + 5, zPosition - 2);
+
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition + 2);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition + 1);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition - 1);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition - 2);
+
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 10, zPosition + 1);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 10, zPosition);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 10, zPosition - 1);
+
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition + 2);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition + 1);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition - 1);
+        //PlayerController.LocalPlayer.CmdSpawnUnitOnStart(1, TeamColorEnum.Red, xPosition + 15, zPosition - 2);
 
         GameManager.Instance.rtsCameraController.gameObject.transform.position = new Vector3(xPosition, 30, -20);
 
