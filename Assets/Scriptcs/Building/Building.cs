@@ -30,11 +30,8 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
         EntityHealth entityHealth = GetComponent<EntityHealth>();
         entityHealth.onDeathActiom += () => RemoveEntity.Instance.RemoveEntityFromGame(this);
 
-        Debug.Log("BuildingSetProperstiesByTeamColor INIT " + isServer + "   " + isStockPile);
         if (isStockPile)
         {
-            Debug.Log("DODAJE STOCKPILE " + teamColor);
-
             PlayerController.LocalPlayer.stockPileManager.AddStockPileByTeam(teamColor, this);
         }
     }
@@ -67,7 +64,7 @@ public class Building : NetworkBehaviour, IActiveClickable, IStockPile, IGetTeam
 
         unit.isGoingToMeetingPoint = true;
         unit.meetingPoint = meetingPoint.transform.position;
-        Debug.Log("ORIGIN " + meetingPoint.transform.position);
+
         unit.teamColor = teamColor;
         NetworkServer.Spawn(unitInstantiate);        
     }

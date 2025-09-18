@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a4ac8b1b190e24fac7463893398ee5, type: 3}
+  m_Name: Wall_Building_Data 4
+  m_EditorClassIdentifier: 
+  buildingID: 9
+  buildingName: 0
+  health: 1000
+  buildingIcon: {fileID: 21300000, guid: 8f8d55c48ed40854a9350daa84b19822, type: 3}
+  buildingPreviewMesh: {fileID: 4300008, guid: 38f7e2d8e36aee34ea1626e31c1db895, type: 3}
+  buildingPrefab: {fileID: 5639745269200610455, guid: db70438bdd26b4e409a6932d9fff66dc, type: 3}
+  <size>k__BackingField: {x: 2, y: 2}
+  objectPrices:
+  - <priceType>k__BackingField: 0
+    <priceValue>k__BackingField: 100

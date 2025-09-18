@@ -81,6 +81,7 @@ public class CommandPanelUI : MonoBehaviour
 
         removeEntityButton.onClick.RemoveAllListeners();
         removeEntityButton.onClick.AddListener(() => RemoveEntityWithButton(building));
+
     }
     public void PrepareUnitUI(List<Unit> unitsList)
     {
@@ -113,11 +114,11 @@ public class CommandPanelUI : MonoBehaviour
         bool allGatherers = unitsList.All(unit => unit is GathererNew);
         if (allGatherers)
         {
-            var buildingList = BuildingDatabase.Instance.GetBuildingList();
+            var avalibleBuildingList = BuildingDatabase.Instance.GetAvalibleBuildingList();
 
-            for (int i = 0; i < buildingList.Count; i++)
+            for (int i = 0; i < avalibleBuildingList.Count; i++)
             {
-                var buildingDataForButton = buildingList[i];
+                var buildingDataForButton = avalibleBuildingList[i];
                 var currentButton = classCommandButtons[i];
                 currentButton.onClick.RemoveAllListeners();
                 currentButton.image.sprite = buildingDataForButton.buildingIcon;

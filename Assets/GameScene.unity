@@ -2032,6 +2032,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5951415638533605820, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
+      propertyPath: resourceData
+      value: 
+      objectReference: {fileID: 11400000, guid: 759abf90cf18a6d4aadfc16f8682d0eb, type: 2}
+    - target: {fileID: 5951415638533605820, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
+      propertyPath: goldResourceData
+      value: 
+      objectReference: {fileID: 11400000, guid: 722c0f0fb9142ec4d94597451dd1bab3, type: 2}
+    - target: {fileID: 5951415638533605820, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
+      propertyPath: treeResourceData
+      value: 
+      objectReference: {fileID: 11400000, guid: 759abf90cf18a6d4aadfc16f8682d0eb, type: 2}
+    - target: {fileID: 5951415638533605820, guid: 7fd9713198b91f541865fe3bf390b728, type: 3}
+      propertyPath: stoneResourceData
+      value: 
+      objectReference: {fileID: 11400000, guid: 21c6ca27234522b49adaf9be0c03972f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2686,6 +2702,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 443293e019816634a8610be7a661da30, type: 2}
   - {fileID: 11400000, guid: 72b7c5aae2840614cb0bef8cd7b95d21, type: 2}
   - {fileID: 11400000, guid: 361fb8710e23f5a40a5355de98403f09, type: 2}
+  - {fileID: 11400000, guid: 88732eabf78d2e94987f7b36368ee3b6, type: 2}
+  - {fileID: 11400000, guid: 722c0f0fb9142ec4d94597451dd1bab3, type: 2}
+  - {fileID: 11400000, guid: 21c6ca27234522b49adaf9be0c03972f, type: 2}
+  - {fileID: 11400000, guid: 759abf90cf18a6d4aadfc16f8682d0eb, type: 2}
+  - {fileID: 11400000, guid: c35938c522b206e41840692af2de3e72, type: 2}
+  avalibleBuildingDataList:
+  - {fileID: 11400000, guid: 31f4ef55eaf7a0045b0022dc5a4ebfae, type: 2}
+  - {fileID: 11400000, guid: e9891cc7134ea984e9b995b448268254, type: 2}
+  - {fileID: 11400000, guid: 443293e019816634a8610be7a661da30, type: 2}
+  - {fileID: 11400000, guid: 361fb8710e23f5a40a5355de98403f09, type: 2}
+  - {fileID: 11400000, guid: 88732eabf78d2e94987f7b36368ee3b6, type: 2}
+  - {fileID: 11400000, guid: 72b7c5aae2840614cb0bef8cd7b95d21, type: 2}
+  - {fileID: 11400000, guid: c35938c522b206e41840692af2de3e72, type: 2}
 --- !u!1001 &1911726911
 PrefabInstance:
   m_ObjectHideFlags: 0

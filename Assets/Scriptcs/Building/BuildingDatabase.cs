@@ -5,8 +5,9 @@ using UnityEngine;
 public class BuildingDatabase : MonoBehaviour
 {
     public static BuildingDatabase Instance;
-    [SerializeField]
-    private List<BuildingData> buildingDataList = new();
+    [SerializeField] private List<BuildingData> buildingDataList = new();
+    [SerializeField] private List<BuildingData> avalibleBuildingDataList = new();
+
     private void Awake()
     {
         Instance = this;
@@ -24,5 +25,10 @@ public class BuildingDatabase : MonoBehaviour
     internal List<BuildingData> GetBuildingList()
     {
         return buildingDataList;
+    }
+
+    internal List<BuildingData> GetAvalibleBuildingList()
+    {
+        return avalibleBuildingDataList;
     }
 }

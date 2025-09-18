@@ -113,7 +113,7 @@ public class ConstructionPreviewSystem : MonoBehaviour
         }
 
         var previewConstructionMesh = previewConstructionPrefab.transform.GetChild(0);
-        Debug.Log(teamColor);
+
         currentConstructionData = new ConstructionData(unit, buildingData, teamColor);
         isOnPreview = true;
     }

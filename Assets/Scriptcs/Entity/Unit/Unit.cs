@@ -48,6 +48,11 @@ public class Unit : NetworkBehaviour, IActiveClickable, IGetTeamAndProperties
         if (isGoingToMeetingPoint)
             GoToMeetingPoint();
 
+        if (teamColor == TeamColorEnum.Red)
+        {
+            unitTaskManager.enemyTeamTarget = TeamColorEnum.Blue;
+            unitTaskManager.AttackNearestEnemyByTeamColor();
+        }
     }
     public void InitUniversalFunction()
     {

@@ -167,18 +167,26 @@ public class PlayerController : NetworkBehaviour
     {
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(buildingId).buildingPrefab;
         GameObject buildingInstantiate = Instantiate(prefab, position, Quaternion.identity);
-        Building building = buildingInstantiate.GetComponent<Building>();
-        building.teamColor = teamColor;
-        building.buildingSize = buildingSize;
 
+        if(buildingInstantiate.GetComponent<Building>())
+        {
+            Building building = buildingInstantiate.GetComponent<Building>();
+            building.teamColor = teamColor;
+            building.buildingSize = buildingSize;
+            NetworkServer.Spawn(buildingInstantiate);
+            RpcSetActiveGameObject(buildingInstantiate.gameObject, true);
+            RpcSetPositionsOccupyToBuilding(building, positionToOccupy);
+            return;
+        }
+        buildingInstantiate.GetComponent<GridElement>().SetPositionToOccupy(positionToOccupy);
         NetworkServer.Spawn(buildingInstantiate);
         RpcSetActiveGameObject(buildingInstantiate.gameObject, true);
-        RpcSetPositionsOccupyToBuilding(building, positionToOccupy);
     }
 
     [Command]
     public void CmdSpawnConstructionRepresentation(int buildingId, Vector3 position, Vector2 size, List<Unit> selectedUnits, TeamColorEnum teamColor, List<Vector3Int> positionToOccupy, Vector2 buildingSize)
     {
+
         GameObject contructionRepresentationInstantiate = Instantiate(contructionRepresentationPrefab, position, Quaternion.identity);
         contructionRepresentationInstantiate.transform.rotation = Quaternion.Euler(90, 0, 0);
         contructionRepresentationInstantiate.GetComponent<InConstructionBuildingRepresentation>().buildingSize = size;
@@ -186,16 +194,26 @@ public class PlayerController : NetworkBehaviour
 
         GameObject prefab = BuildingDatabase.Instance.GetBuildingDataByID(buildingId).buildingPrefab;
         GameObject buildingInstantiate = Instantiate(prefab, position, Quaternion.identity);
-        Building building = buildingInstantiate.GetComponent<Building>();
-        building.teamColor = teamColor;
-        building.buildingSize = buildingSize;
+        if(buildingInstantiate.GetComponent<Building>())
+        {
+            Building building = buildingInstantiate.GetComponent<Building>();
+            building.teamColor = teamColor;
+            building.buildingSize = buildingSize;
 
-        NetworkServer.Spawn(buildingInstantiate);
+            NetworkServer.Spawn(buildingInstantiate);
+            RpcSetActiveGameObject(buildingInstantiate.gameObject, false);
+            RpcSetPositionsOccupyToBuilding(building, positionToOccupy);
+        }
+        else
+        {
+            NetworkServer.Spawn(buildingInstantiate);
+            buildingInstantiate.GetComponent<GridElement>().SetPositionToOccupy(positionToOccupy);
+            RpcSetActiveGameObject(buildingInstantiate.gameObject, false);
+
+        }
 
 
         RpcSetFinishBuilding(contructionRepresentationInstantiate.GetComponent<InConstructionBuildingRepresentation>(), buildingInstantiate);
-        RpcSetActiveGameObject(buildingInstantiate.gameObject, false);
-        RpcSetPositionsOccupyToBuilding(building, positionToOccupy);
         foreach (var unit in selectedUnits)
         {
             if (unit is GathererNew)
@@ -336,11 +354,15 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnResource(int prefabId, Vector3 position)
+    private void BuildConstructionCommand(NetworkIdentity networkIdentity, GameObject construction, bool isShiftPressed)
     {
-            
-            GameObject obj = Instantiate(DefaultMapGenerator.Instance.objectsToSpawn[prefabId], position, Quaternion.identity);
-            NetworkServer.Spawn(obj);
+        if (networkIdentity != null && networkIdentity.TryGetComponent<GathererTaskManager>(out var gathererTaskManager))
+        {
+            if (isShiftPressed == false)
+                gathererTaskManager.RespondFromServerToResetTasks();
+
+            gathererTaskManager.RespondFromServerToBuildConstructionTask(construction);
+        }
     }
 
     private void Update()
@@ -421,57 +443,40 @@ public class PlayerController : NetworkBehaviour
             {
                 if ((component.GetTeam() & teamColor) != 0)
                 {
-                    Debug.Log(component.GetTeam() + " TEAM");
                     if (component.GetEntityType() == EntityTypeEnum.unit) return;
-                    
+
                     if (component.GetBuildingType() == BuildingTypeEnum.resource)
                     {
                         foreach (var unit in controlledUnits.selectedUnits)
                         {
                             if (unit is GathererNew)
+                            {
+                                Debug.Log(component.GetProperties<GatherableResource>());
                                 GatherResourceCommand(unit.netIdentity, hit.point, component.GetProperties<GatherableResource>(), isShiftPressed);
+                            }
                         }
                         return;
+                    }
+                    else if (component.GetBuildingType() == BuildingTypeEnum.contructionToBuild)
+                    {
+                        Debug.Log("1");
+                        foreach (var unit in controlledUnits.selectedUnits)
+                        {
+                            if (unit is GathererNew)
+                            {
+                                Debug.Log("2");
+                                BuildConstructionCommand(unit.netIdentity, hit.collider.gameObject, isShiftPressed);
+                            }
+                        }
                     }
                 }
                 else if (component.GetTeam() != teamColor)
                 {
-
                     foreach (var unit in controlledUnits.selectedUnits)
                     {
-
                         if (teamColor != component.GetTeam())
                             AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
                     }
-
-                    //    if (component.GetProperties<Transform>().TryGetComponent<Building>(out Building building))
-                    //{
-                    //    Debug.Log("TO JEST BUDYENK");
-                    //    foreach (var unit in controlledUnits.selectedUnits)
-                    //    {
-
-                    //        float buildingRadius = Mathf.Max(building.buildingSize.x, building.buildingSize.y) * 0.5f;
-                    //        float unitRadius = unit.agent.radius;
-                    //        unit.agent.stoppingDistance = buildingRadius + unitRadius;
-                    //        unit.attackRange = unit.agent.stoppingDistance;
-
-                    //        AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
-
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    foreach (var unit in controlledUnits.selectedUnits)
-                    //    {
-                    //       // unit.agent.stoppingDistance = unit.defaultStoppingDistance;
-                    //   //     unit.attackRange = unit.agent.stoppingDistance;
-                    //        if (teamColor != component.GetTeam())
-                    //            AttackEntityCommand(unit.netIdentity, component.GetTeam(), component.GetProperties<Transform>(), isShiftPressed);
-
-                    //    }
-                    //}
-
-                   
                 }
             }
         }

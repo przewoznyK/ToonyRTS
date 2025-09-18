@@ -173,11 +173,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3, y: 1, z: 3}
+  m_Size: {x: 6, y: 1, z: 6}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3334851891081401883
 MonoBehaviour:
@@ -198,9 +198,11 @@ MonoBehaviour:
   positionToOccupy: []
   teamColor: 0
   entityType: 1
-  buildingType: 0
+  buildingType: 1
   unitsToBuy: 00000000
   meetingPoint: {fileID: 0}
+  buildingSize: {x: 0, y: 0}
+  unitSpawnPoint: {fileID: 0}
   stockPileType: 15
   <isStockPile>k__BackingField: 1
 --- !u!114 &1328018414837704350
@@ -218,6 +220,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  rr: {fileID: 0}
+  obstacle: {fileID: 0}
   teamColor: 0
   entityType: 1
   buildingType: 1
@@ -236,6 +240,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e18d9c9755fb014c92ef7fa7d0550f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   floatingHealthBsr: {fileID: 7178303940386923296}
   maxHealth: 10
 --- !u!114 &7719530033636538349

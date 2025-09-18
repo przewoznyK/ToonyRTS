@@ -16,7 +16,7 @@ public class UnitTaskManager : NetworkBehaviour
     protected UnitTask currentTask;
     public Transform taskTransform;
     protected Vector3 taskVector;
-    protected TeamColorEnum enemyTeamTarget;
+    public TeamColorEnum enemyTeamTarget;
     protected bool attackCycleActivated;
     public int animatorSpeedValue;
     public float detectionSphereEnemyAggressionApproachRadius = 10f;
@@ -173,6 +173,7 @@ public class UnitTaskManager : NetworkBehaviour
     {
         if (taskTransform)
         {
+            unit.agent.SetDestination(taskTransform.position);
             if (!unit.agent.pathPending && unit.agent.remainingDistance <= unit.agent.stoppingDistance)
             {
                 unit.animator.SetTrigger(animationTriggerName);
@@ -233,7 +234,7 @@ public class UnitTaskManager : NetworkBehaviour
         unit.animator.SetBool(animationName, value);
     }
 
-    public void RespondFromServerToResetTasks()
+    public virtual void RespondFromServerToResetTasks()
     {
         requestedTasks.Clear();
         isOnTask = false;

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class ActiveClickableObject : MonoBehaviour
 {
@@ -214,21 +215,28 @@ public class ActiveClickableObject : MonoBehaviour
 
     void SelectUnits()
     {
-        // lopp thru all the units
-        foreach (var unit in controlledUnits.allUnits)
+        // loop through all the units
+        foreach (var unit in controlledUnits.allUnits.ToList()) 
         {
-            // if unit is within the bounds ofthe selection rect
-            if (selectionBox.Contains(Camera.main.WorldToScreenPoint(unit.transform.position)))
+            if (unit == null || (UnityEngine.Object)unit == null)
             {
-                // if any unit is within the selection add them to selection
+                controlledUnits.allUnits.Remove(unit);
+                continue;
+            }
+
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(unit.transform.position);
+
+            if (selectionBox.Contains(screenPos))
+            {
                 unit.ActiveObject();
                 controlledUnits.AddToSelectedUnits(unit);
+
                 commandPanelUI.PrepareUnitUI(controlledUnits.TakeSelectedUnitList());
                 commandPanelUI.gameObject.SetActive(true);
-
             }
         }
+
     }
 
-    
+
 }

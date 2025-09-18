@@ -5,6 +5,9 @@ using Mirror;
 
 public class GridDataNetwork : NetworkBehaviour
 {
+    public static GridDataNetwork Instance;
+    private void Awake() => Instance = this;
+    
     Dictionary<Vector3Int, PlacementData> placedObjects = new();
 
     public List<Vector3Int> UpdateGridDataInLocal(Vector3Int cellPosition,

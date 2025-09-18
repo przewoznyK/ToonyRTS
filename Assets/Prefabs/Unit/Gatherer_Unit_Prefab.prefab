@@ -4077,11 +4077,12 @@ MonoBehaviour:
   unit: {fileID: 5854089882970665631}
   lineRenderer: {fileID: 4838299357745353647}
   taskTransform: {fileID: 0}
+  enemyTeamTarget: 0
   animatorSpeedValue: 0
   detectionSphereEnemyAggressionApproachRadius: 10
   currentGatherableResource: {fileID: 0}
   currentResourceTypeGathering: 0
-  maxCarried: 50
+  maxCarried: 8
   currentGathered: 0
   reachedPerSecond: 0
 --- !u!114 &2014780516793684383

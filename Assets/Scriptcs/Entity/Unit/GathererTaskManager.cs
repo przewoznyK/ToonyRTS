@@ -105,25 +105,13 @@ public class GathererTaskManager : UnitTaskManager
             }
             else if (currentTask is ReturnToStockpileTask returnToStockpile)
             {
-                //Vector2 buildingSize = returnToStockpile.buildingSize;
-                //float buildingRadius = Mathf.Max(buildingSize.x, buildingSize.y) * 0.5f;
-                //float unitRadius = unit.agent.radius; // NavMeshAgent ma swój radius
-                //unit.agent.stoppingDistance = buildingRadius + unitRadius - 1;
                 Collider stockpileCollider = returnToStockpile.buildingCollider;
                 Vector3 closestPoint = stockpileCollider.ClosestPoint(unit.transform.position);
 
-                // Dodaj losowe przesuniêcie w obrêbie "strefy odstawiania"
-                float offset = 1.0f; // np. 1 jednostka od œciany
-                Vector3 randomOffset = new Vector3(
-                    Random.Range(-offset, offset),
-                    0,
-                    Random.Range(-offset, offset)
-                );
+                float offset = 1.0f;
+                Vector3 randomOffset = new Vector3(Random.Range(-offset, offset), 0, Random.Range(-offset, offset));
+                unit.agent.stoppingDistance = 0.5f;
 
-
-                unit.agent.stoppingDistance = 0.5f; // minimalnie przed œcian¹
-   
-                //     unit.agent.stoppingDistance = unit.defaultStoppingDistance;
                 taskTransform = null;
                 Vector3 pos = closestPoint + randomOffset;
 
@@ -143,7 +131,6 @@ public class GathererTaskManager : UnitTaskManager
                 float unitRadius = unit.agent.radius;
                 unit.agent.stoppingDistance = buildingRadius + unitRadius;
                
-                Debug.Log("BuildConstructionTask Change Position");
                 RespondFromServerToMoveUnit(construction.constructionPosition);
                 RespondFromServerToUpdateAnimatorSpeedValue(1);
                 isGoingToBuildingConstruction = true;
@@ -279,6 +266,12 @@ public class GathererTaskManager : UnitTaskManager
         else DoTask();
     }
 
+    public override void RespondFromServerToResetTasks()
+    {
+        base.RespondFromServerToResetTasks();
+        currentConstionBuildingTarget = null;
+        isGoingToBuildingConstruction = false;
+    }
     public GatherableResource FindNearestResource()
     {
         GatherableResource[] allResources = FindObjectsOfType<GatherableResource>();

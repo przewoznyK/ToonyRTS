@@ -20,7 +20,10 @@ public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties, IHigh
     private void OnEnable()
     {
         available = totalAvailable;
-        originalColor = rr.material.color;
+        if(rr)
+        {
+            originalColor = rr.material.color;
+        }
     }
 
     public bool Take(GathererTaskManager gathererTaskManager)
@@ -30,7 +33,9 @@ public class GatherableResource : NetworkBehaviour, IGetTeamAndProperties, IHigh
         if (available <= 1)
         {
             gathererTaskManager.currentGatherableResource = null;
-            obstacle.enabled = false;
+            if(obstacle)
+                obstacle.enabled = false;
+            GetComponent<GridElement>().RemoveGridData();
             PlayerController.LocalPlayer.CmdRemoveGameObject(this.gameObject);
             return false;
         }

@@ -27,6 +27,6 @@ public class ConstructionData
 
     public void SetPositionToOccupy(Vector3Int positionToOccupy)
     {
-        this.positionToOccupy = new Vector3Int(positionToOccupy.x, 1, positionToOccupy.z);
+        this.positionToOccupy = new Vector3Int(positionToOccupy.x, 0, positionToOccupy.z);
     }
 }
